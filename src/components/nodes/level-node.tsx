@@ -40,7 +40,7 @@ const levelNodeOptionsSchema = z.object({
 
 type LevelNodeOptions = z.infer<typeof levelNodeOptionsSchema>
 
-const defaultLevelNodeOptions: z.infer<typeof levelNodeOptionsSchema> = {
+const defaultLevelNodeOptions: LevelNodeOptions = {
   low_input: 0,
   high_input: 255,
   low_output: 0,

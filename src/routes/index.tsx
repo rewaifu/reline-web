@@ -3,14 +3,7 @@ import { LevelNodeBody } from "../components/nodes/level-node.tsx"
 import { NodesContext, NodesDispatchContext } from "../contexts.ts"
 import type { GenericNodeOptions, StackNode } from "../types/node"
 import { type NodesAction, NodesActionType } from "../types/actions"
-
-function SectionComponent({ children, ...props }: { children: ReactNode }) {
-  return (
-    <section className="bg-[#202020] rounded p-4" {...props}>
-      {children}
-    </section>
-  )
-}
+import { Card, CardHeader, CardContent } from "~/components/ui/card.tsx"
 
 const nodeBodyComponents: { [key: string]: FC<{ options: GenericNodeOptions; id: number; name: string }> } = {
   level: LevelNodeBody as FC<{ options: GenericNodeOptions; id: number; name: string }>,
@@ -20,12 +13,12 @@ function NodeResolver({ data }: { data: StackNode }) {
   const NodeBodyComponent = nodeBodyComponents[data.name]
 
   return (
-    <div>
-      <span>{data.name}</span>
-      <div>
+    <Card>
+      <CardHeader>{data.name}</CardHeader>
+      <CardContent>
         <NodeBodyComponent options={data.options} id={data.id} name={data.name} />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -49,15 +42,17 @@ export default function HomePage() {
     <main className="p-5 grid grid-cols-2 gap-x-5">
       <NodesContext.Provider value={nodes}>
         <NodesDispatchContext.Provider value={dispatch}>
-          <SectionComponent>
+          <div>
             {nodes.map((data, index) => (
               <NodeResolver key={`${data.name}_${index}`} data={data} />
             ))}
-          </SectionComponent>
-          <SectionComponent>
-            <p>Code</p>
-            <textarea className="w-full" value={JSON.stringify(nodes)} />
-          </SectionComponent>
+          </div>
+          <Card>
+            <CardHeader>Code</CardHeader>
+            <CardContent>
+              <textarea className="w-full" value={JSON.stringify(nodes)} />
+            </CardContent>
+          </Card>
         </NodesDispatchContext.Provider>
       </NodesContext.Provider>
     </main>
