@@ -1,7 +1,7 @@
 import { z } from "zod"
 import useSetState from "../../hooks/useSetState.ts"
 import { useContext } from "react"
-import { NodesDispatchContext } from "../../contexts.ts"
+import { NodesDispatchContext } from "../../context/contexts.ts"
 import { NodesActionType } from "../../types/actions"
 
 interface LevelNodeBodyProps {
