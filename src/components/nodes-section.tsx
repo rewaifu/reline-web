@@ -1,32 +1,36 @@
-import type { GenericNodeOptions, StackNode } from "~/types/node"
 import { Card, CardHeader, CardContent } from "./shared/card"
-import { type FC, useContext } from "react"
-import { NodesContext } from "~/context/contexts"
-import { LevelNodeBody } from "./nodes/level-node"
-
-const nodeBodyComponents: { [key: string]: FC<{ options: GenericNodeOptions; id: number; name: string }> } = {
-  level: LevelNodeBody as FC<{ options: GenericNodeOptions; id: number; name: string }>,
-}
-
-function NodeResolver({ data }: { data: StackNode }) {
-  const NodeBodyComponent = nodeBodyComponents[data.name]
-
-  return (
-    <Card>
-      <CardHeader>{data.name}</CardHeader>
-      <CardContent>
-        <NodeBodyComponent options={data.options} id={data.id} name={data.name} />
-      </CardContent>
-    </Card>
-  )
-}
+import { useContext } from "react"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts"
+import { Button } from "./shared/button"
+import { DEFAULT_NODE_OPTIONS } from "~/constants"
+import { NodeActionType, NodeType } from "~/types/enums"
+import { NodeResolver } from "./node-resolver"
 
 export function NodesSection() {
   const nodes = useContext(NodesContext)
+  const dispatch = useContext(NodesDispatchContext)
   return (
     <Card>
-      <CardHeader>Nodes</CardHeader>
-      <CardContent>
+      <CardHeader className="flex flex-row items-center">
+        <div>Nodes</div>
+        <Button
+          variant="secondary"
+          className="ml-auto"
+          onClick={() => {
+            dispatch({
+              type: NodeActionType.ADD,
+              payload: {
+                id: nodes.length,
+                name: NodeType.LEVEL,
+                options: DEFAULT_NODE_OPTIONS.level,
+              },
+            })
+          }}
+        >
+          Add Node
+        </Button>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {nodes.map((data, index) => (
           <NodeResolver key={`${data.name}_${index}`} data={data} />
         ))}
