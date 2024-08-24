@@ -1,8 +1,9 @@
 export interface StackNode {
-    name: string
-    options: GenericNodeOptions
+  id: number
+  name: string
+  options: GenericNodeOptions
 }
 
 export interface GenericNodeOptions {
-    [key: string]: string | number | boolean | undefined;
+  [key: string]: string | number | boolean | undefined
 }
