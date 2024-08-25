@@ -7,26 +7,10 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/shared/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/shared/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/shared/popover"
-import { NodeActionType, NodeType } from "~/types/enums"
-import { NodesDispatchContext } from "~/context/contexts"
-import { DEFAULT_NODE_OPTIONS } from "~/constants"
 
-export function NodeCombobox({ name, id }: { name: NodeType, id: number }) {
-  const NodeTypes = Object.values(NodeType)
+export function Combobox({ allValues, initialValue, onChange }: { allValues: string[], initialValue: string; onChange: (value: string) => void }) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState(name)
-  const dispatch = React.useContext(NodesDispatchContext)
-  const changeValue = (value: NodeType) => {
-    setValue(value);
-    dispatch({
-      type: NodeActionType.CHANGE,
-      payload: {
-        id,
-        name: value,
-        options: DEFAULT_NODE_OPTIONS[value]
-      }
-    })
-  }
+  const [value, setValue] = React.useState(initialValue)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -40,19 +24,20 @@ export function NodeCombobox({ name, id }: { name: NodeType, id: number }) {
         <Command>
           <CommandInput placeholder="Search node..." />
           <CommandList>
-            <CommandEmpty>No node found.</CommandEmpty>
+            <CommandEmpty>Nothing was found.</CommandEmpty>
             <CommandGroup>
-              {NodeTypes.map((nodeType) => (
+              {allValues.map((_value) => (
                 <CommandItem
-                  key={nodeType}
-                  value={nodeType}
+                  key={_value}
+                  value={_value}
                   onSelect={(currentValue) => {
-                    changeValue(currentValue as NodeType)
+                    setValue(currentValue)
+                    onChange(currentValue)
                     setOpen(false)
                   }}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", value === nodeType ? "opacity-100" : "opacity-0")} />
-                  {nodeType}
+                  <Check className={cn("mr-2 h-4 w-4", value === _value ? "opacity-100" : "opacity-0")} />
+                  {_value}
                 </CommandItem>
               ))}
             </CommandGroup>
