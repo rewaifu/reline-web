@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardContent } from "./shared/card"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "~/context/contexts"
+import { NodesContext } from "~/context/contexts"
 import { NodeResolver } from "./node-resolver"
 import { AddNodeButton } from "./add-node-button"
 

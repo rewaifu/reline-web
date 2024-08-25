@@ -1,10 +1,10 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState.ts"
+import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts.ts"
-import { CvtType, NodeActionType } from "~/types/enums.ts"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select.tsx"
-import { Label } from "../shared/label.tsx"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts"
+import { CvtType, NodeActionType } from "~/types/enums"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
+import { Label } from "../shared/label"
 
 const cvtColorNodeOptionsSchema = z.object({
   cvt_type: z.nativeEnum(CvtType),

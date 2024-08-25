@@ -1,11 +1,11 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState.ts"
+import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts.ts"
-import { NumberInput } from "../shared/number-input.tsx"
-import { NodeActionType } from "~/types/enums.ts"
-import { Checkbox } from "../shared/checkbox.tsx"
-import { Label } from "../shared/label.tsx"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts"
+import { NumberInput } from "../shared/number-input"
+import { NodeActionType } from "~/types/enums"
+import { Checkbox } from "../shared/checkbox"
+import { Label } from "../shared/label"
 
 const sharpNodeOptionsSchema = z.object({
   low_input: z.number().min(0).max(255),

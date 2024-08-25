@@ -1,11 +1,11 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState.ts"
+import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts.ts"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, WriterNodeFormat } from "~/types/enums.ts"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select.tsx"
-import { Input } from "../shared/input.tsx"
-import { Label } from "../shared/label.tsx"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
+import { Input } from "../shared/input"
+import { Label } from "../shared/label"
 
 const folderWriterOptionsSchema = z.object({
   path: z.string(),

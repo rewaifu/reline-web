@@ -1,12 +1,12 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState.ts"
+import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts.ts"
-import { NodeActionType, ReaderNodeMode } from "~/types/enums.ts"
-import { Input } from "../shared/input.tsx"
-import { Checkbox } from "../shared/checkbox.tsx"
-import { Label } from "../shared/label.tsx"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select.tsx"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts"
+import { NodeActionType, ReaderNodeMode } from "~/types/enums"
+import { Input } from "../shared/input"
+import { Checkbox } from "../shared/checkbox"
+import { Label } from "../shared/label"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
 
 const folderReaderOptionsSchema = z.object({
   path: z.string(),
@@ -47,7 +47,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
         />
       </div>
       <div className="flex flex-col space-y-2">
-      <Label>Format</Label>
+      <Label>Mode</Label>
         <Select
           onValueChange={(value) => {
             changeValue({
