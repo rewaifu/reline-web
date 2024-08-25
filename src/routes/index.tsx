@@ -7,7 +7,10 @@ import { nodesReducer } from "~/context/reducer.ts"
 import { DEFAULT_NODE_OPTIONS } from "~/constants.ts"
 import { NodeType } from "~/types/enums.ts"
 
-const testData: StackNode[] = [{ id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level }, { id: 1, name: NodeType.FOLDER_READER, options: DEFAULT_NODE_OPTIONS.folder_reader }]
+const testData: StackNode[] = [
+  { id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: false },
+  { id: 1, name: NodeType.FOLDER_READER, options: DEFAULT_NODE_OPTIONS.folder_reader, collapsed: true },
+]
 
 export default function HomePage() {
   const [nodes, dispatch] = useReducer(nodesReducer, testData)

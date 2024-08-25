@@ -4,7 +4,7 @@ import { useContext } from "react"
 import { NodesContext } from "~/context/contexts"
 
 function nodesToString(nodes: StackNode[]): string {
-  //const nodesWithoutId = nodes.map(({ id, ...keepAttrs }) => keepAttrs)
+  //const nodesWithoutId = nodes.map(({ id, collapsed, ...keepAttrs }) => keepAttrs)
   return JSON.stringify(nodes)
 }
 

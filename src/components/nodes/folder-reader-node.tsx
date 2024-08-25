@@ -1,17 +1,12 @@
 import { z } from "zod"
 import useSetState from "../../hooks/useSetState.ts"
 import { useContext } from "react"
-import { NodesDispatchContext } from "../../context/contexts.ts"
-import { NodeActionType, NodeType, ReaderNodeMode } from "~/types/enums.ts"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts.ts"
+import { NodeActionType, ReaderNodeMode } from "~/types/enums.ts"
 import { Input } from "../shared/input.tsx"
 import { Checkbox } from "../shared/checkbox.tsx"
 import { Label } from "../shared/label.tsx"
 import { RadioGroup, RadioGroupItem } from "../shared/radio-group.tsx"
-
-interface FolderReaderNodeBodyProps {
-  options: FolderReaderNodeOptions
-  id: number
-}
 
 const folderReaderOptionsSchema = z.object({
   path: z.string(),
@@ -21,16 +16,17 @@ const folderReaderOptionsSchema = z.object({
 
 type FolderReaderNodeOptions = z.infer<typeof folderReaderOptionsSchema>
 
-export function FolderReaderNodeBody({ options, id }: FolderReaderNodeBodyProps) {
-  const [state, setState] = useSetState(options)
+export function FolderReaderNodeBody({ id }: { id: number }) {
+  const nodes = useContext(NodesContext)
+  const node = nodes[id]
+  const [state, setState] = useSetState(node.options as FolderReaderNodeOptions)
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<FolderReaderNodeOptions>) => {
     setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
-        id,
-        name: NodeType.FOLDER_READER,
+        ...node,
         options: {
           ...state,
           ...newOptions,
@@ -69,7 +65,8 @@ export function FolderReaderNodeBody({ options, id }: FolderReaderNodeBodyProps)
         </RadioGroup>
       </div>
       <div className="flex items-center space-x-2">
-        <Checkbox checked={state.recursive}
+        <Checkbox
+          checked={state.recursive}
           onCheckedChange={(value) => {
             changeValue({ recursive: !!value })
           }}

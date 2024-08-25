@@ -2,7 +2,6 @@ import { ArrowUp, ArrowDown, X, ChevronDown, ChevronRight } from "lucide-react"
 import { type FC, useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { NodeActionType, NodeType } from "~/types/enums"
-import type { GenericNodeOptions, StackNode } from "~/types/node"
 import { Button } from "./shared/button"
 import { Card, CardHeader, CardContent } from "./shared/card"
 import { Combobox } from "./shared/node-combobox"
@@ -10,18 +9,19 @@ import { DEFAULT_NODE_OPTIONS } from "~/constants"
 import { CvtColorNodeBody, FolderReaderNodeBody, FolderWriterNodeBody, LevelNodeBody, SharpNodeBody } from "./nodes"
 import { Collapsible, CollapsibleContent } from "./shared/collapsible"
 
-const nodeBodyComponents: { [key in NodeType]: FC<{ options: GenericNodeOptions; id: number }> } = {
-  level: LevelNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
-  folder_reader: FolderReaderNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
-  folder_writer: FolderWriterNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
-  cvt_color: CvtColorNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
-  sharp: SharpNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
+const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
+  level: LevelNodeBody as FC<{ id: number }>,
+  folder_reader: FolderReaderNodeBody as FC<{ id: number }>,
+  folder_writer: FolderWriterNodeBody as FC<{ id: number }>,
+  cvt_color: CvtColorNodeBody as FC<{ id: number }>,
+  sharp: SharpNodeBody as FC<{ id: number }>,
 }
 
-export function NodeResolver({ data }: { data: StackNode }) {
-  const [isOpen, setIsOpen] = useState(true)
-  const NodeBodyComponent = nodeBodyComponents[data.name]
+export function NodeResolver({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
+  const data = nodes[id]
+  const [isOpen, setIsOpen] = useState(data.collapsed)
+  const NodeBodyComponent = nodeBodyComponents[data.name]
   const dispatch = useContext(NodesDispatchContext)
   const onTypeChange = (value: string) => {
     dispatch({
@@ -29,6 +29,7 @@ export function NodeResolver({ data }: { data: StackNode }) {
       payload: {
         id: data.id,
         name: value as NodeType,
+        collapsed: data.collapsed,
         options: DEFAULT_NODE_OPTIONS[value as NodeType],
       },
     })
@@ -44,6 +45,13 @@ export function NodeResolver({ data }: { data: StackNode }) {
             size="icon"
             onClick={() => {
               setIsOpen(!isOpen)
+              dispatch({
+                type: NodeActionType.CHANGE,
+                payload: {
+                  ...data,
+                  collapsed: !isOpen,
+                },
+              })
             }}
           >
             {isOpen ? <ChevronDown /> : <ChevronRight />}
@@ -92,7 +100,7 @@ export function NodeResolver({ data }: { data: StackNode }) {
           <CardContent>
             <Card>
               <CardContent className="pt-6">
-                <NodeBodyComponent options={data.options} id={data.id} />
+                <NodeBodyComponent id={id} />
               </CardContent>
             </Card>
           </CardContent>

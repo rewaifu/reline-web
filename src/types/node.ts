@@ -3,6 +3,7 @@ import type { NodeActionType, NodeType } from "./enums"
 export interface StackNode {
   id: number
   name: NodeType
+  collapsed: boolean
   options: GenericNodeOptions
 }
 

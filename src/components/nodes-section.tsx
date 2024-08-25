@@ -22,6 +22,7 @@ export function NodesSection() {
               payload: {
                 id: nodes.length,
                 name: NodeType.LEVEL,
+                collapsed: false,
                 options: DEFAULT_NODE_OPTIONS.level,
               },
             })
@@ -32,7 +33,7 @@ export function NodesSection() {
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {nodes.map((data, index) => (
-          <NodeResolver key={`${data.name}_${index}`} data={data} />
+          <NodeResolver key={`${data.name}_${index}`} id={data.id} />
         ))}
       </CardContent>
     </Card>

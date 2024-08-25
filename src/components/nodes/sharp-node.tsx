@@ -1,16 +1,11 @@
 import { z } from "zod"
 import useSetState from "../../hooks/useSetState.ts"
 import { useContext } from "react"
-import { NodesDispatchContext } from "../../context/contexts.ts"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts.ts"
 import { NumberInput } from "../shared/number-input.tsx"
-import { NodeActionType, NodeType } from "~/types/enums.ts"
+import { NodeActionType } from "~/types/enums.ts"
 import { Checkbox } from "../shared/checkbox.tsx"
 import { Label } from "../shared/label.tsx"
-
-interface SharpNodeBodyProps {
-  options: SharpNodeOptions
-  id: number
-}
 
 const sharpNodeOptionsSchema = z.object({
   low_input: z.number().min(0).max(255),
@@ -23,16 +18,17 @@ const sharpNodeOptionsSchema = z.object({
 
 type SharpNodeOptions = z.infer<typeof sharpNodeOptionsSchema>
 
-export function SharpNodeBody({ options, id }: SharpNodeBodyProps) {
-  const [state, setState] = useSetState(options)
+export function SharpNodeBody({ id }: { id: number }) {
+  const nodes = useContext(NodesContext)
+  const node = nodes[id]
+  const [state, setState] = useSetState(node.options as SharpNodeOptions)
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<SharpNodeOptions>) => {
     setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
-        id,
-        name: NodeType.SHARP,
+        ...node,
         options: {
           ...state,
           ...newOptions,
