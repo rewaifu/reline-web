@@ -22,7 +22,7 @@ export function Combobox({ allValues, initialValue, onChange }: { allValues: str
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search node..." />
+          <CommandInput placeholder="Search..." />
           <CommandList>
             <CommandEmpty>Nothing was found.</CommandEmpty>
             <CommandGroup>

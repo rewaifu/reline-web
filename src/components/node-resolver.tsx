@@ -4,10 +4,10 @@ import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { NodeActionType, NodeType } from "~/types/enums"
 import { Button } from "./shared/button"
 import { Card, CardHeader, CardContent } from "./shared/card"
-import { Combobox } from "./shared/node-combobox"
+import { Combobox } from "./shared/combobox"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
 import { CvtColorNodeBody, FolderReaderNodeBody, FolderWriterNodeBody, LevelNodeBody, SharpNodeBody } from "./nodes"
-import { Collapsible, CollapsibleContent } from "./shared/collapsible"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./shared/collapsible"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   level: LevelNodeBody as FC<{ id: number }>,
@@ -35,27 +35,27 @@ export function NodeResolver({ id }: { id: number }) {
     })
   }
   return (
-    <Collapsible open={!isCollapsed} onOpenChange={setIsCollapsed}>
+    <Collapsible
+      open={!isCollapsed}
+      onOpenChange={(isOpen) => {
+        setIsCollapsed(!isOpen)
+        dispatch({
+          type: NodeActionType.CHANGE,
+          payload: {
+            ...data,
+            collapsed: !isOpen,
+          },
+        })
+      }}
+    >
       <Card>
         <CardHeader className="flex flex-row">
           <Combobox initialValue={data.name} allValues={Object.values(NodeType)} onChange={onTypeChange} />
-          <Button
-            className="ml-3"
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              setIsCollapsed(!isCollapsed)
-              dispatch({
-                type: NodeActionType.CHANGE,
-                payload: {
-                  ...data,
-                  collapsed: !isCollapsed,
-                },
-              })
-            }}
-          >
-            {isCollapsed ? <ChevronRight /> : <ChevronDown />}
-          </Button>
+          <CollapsibleTrigger asChild>
+            <Button className="ml-3" variant="ghost" size="icon">
+              {isCollapsed ? <ChevronRight /> : <ChevronDown />}
+            </Button>
+          </CollapsibleTrigger>
           <Button
             variant="ghost"
             size="icon"

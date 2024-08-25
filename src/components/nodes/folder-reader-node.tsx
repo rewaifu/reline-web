@@ -6,7 +6,7 @@ import { NodeActionType, ReaderNodeMode } from "~/types/enums.ts"
 import { Input } from "../shared/input.tsx"
 import { Checkbox } from "../shared/checkbox.tsx"
 import { Label } from "../shared/label.tsx"
-import { RadioGroup, RadioGroupItem } from "../shared/radio-group.tsx"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select.tsx"
 
 const folderReaderOptionsSchema = z.object({
   path: z.string(),
@@ -47,22 +47,30 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
         />
       </div>
       <div className="flex flex-col space-y-2">
-        <Label>Read mode</Label>
-        <RadioGroup
-          value={state.mode}
-          onValueChange={(value: ReaderNodeMode) => {
-            changeValue({ mode: value })
+      <Label>Format</Label>
+        <Select
+          onValueChange={(value) => {
+            changeValue({
+              mode: value as ReaderNodeMode,
+            })
           }}
+          defaultValue={ReaderNodeMode.DYNAMIC}
         >
-          {Object.values(ReaderNodeMode).map((value) => {
-            return (
-              <div key={value} className="flex items-center space-x-2">
-                <RadioGroupItem value={value} />
-                <Label>{value}</Label>
-              </div>
-            )
-          })}
-        </RadioGroup>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.values(ReaderNodeMode).map((mode) => {
+                return (
+                  <SelectItem key={mode} value={mode}>
+                    {mode}
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox
