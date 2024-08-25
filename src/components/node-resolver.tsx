@@ -20,7 +20,7 @@ const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
 export function NodeResolver({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const data = nodes[id]
-  const [isOpen, setIsOpen] = useState(data.collapsed)
+  const [isCollapsed, setIsCollapsed] = useState(data.collapsed)
   const NodeBodyComponent = nodeBodyComponents[data.name]
   const dispatch = useContext(NodesDispatchContext)
   const onTypeChange = (value: string) => {
@@ -35,7 +35,7 @@ export function NodeResolver({ id }: { id: number }) {
     })
   }
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={!isCollapsed} onOpenChange={setIsCollapsed}>
       <Card>
         <CardHeader className="flex flex-row">
           <Combobox initialValue={data.name} allValues={Object.values(NodeType)} onChange={onTypeChange} />
@@ -44,17 +44,17 @@ export function NodeResolver({ id }: { id: number }) {
             variant="ghost"
             size="icon"
             onClick={() => {
-              setIsOpen(!isOpen)
+              setIsCollapsed(!isCollapsed)
               dispatch({
                 type: NodeActionType.CHANGE,
                 payload: {
                   ...data,
-                  collapsed: !isOpen,
+                  collapsed: !isCollapsed,
                 },
               })
             }}
           >
-            {isOpen ? <ChevronDown /> : <ChevronRight />}
+            {isCollapsed ? <ChevronRight /> : <ChevronDown />}
           </Button>
           <Button
             variant="ghost"

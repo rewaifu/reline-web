@@ -22,8 +22,8 @@ export function NodesSection() {
               payload: {
                 id: nodes.length,
                 name: NodeType.LEVEL,
-                collapsed: false,
                 options: DEFAULT_NODE_OPTIONS.level,
+                collapsed: false,
               },
             })
           }}
