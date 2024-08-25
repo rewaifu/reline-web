@@ -1,4 +1,4 @@
-import { CvtType, type NodeType, ReaderNodeMode } from "./types/enums"
+import { CvtType, type NodeType, ReaderNodeMode, WriterNodeFormat } from "./types/enums"
 import type { GenericNodeOptions } from "./types/node"
 
 export const DEFAULT_NODE_OPTIONS: {
@@ -16,7 +16,19 @@ export const DEFAULT_NODE_OPTIONS: {
     recursive: true,
     mode: ReaderNodeMode.RGB,
   },
+  folder_writer: {
+    path: "content/MyDrive/raws/output",
+    format: WriterNodeFormat.PNG,
+  },
   cvt_color: {
     cvt_type: CvtType.RGB2Gray,
+  },
+  sharp: {
+    low_input: 0,
+    high_input: 255,
+    gamma: 1,
+    diapason_white: -1,
+    diapason_black: -1,
+    canny: false,
   },
 }

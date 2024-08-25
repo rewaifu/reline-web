@@ -12,9 +12,16 @@ export enum ReaderNodeMode {
   DYNAMIC = "dynamic",
 }
 
+export enum WriterNodeFormat {
+  PNG = "png",
+  JPEG = "jpeg",
+}
+
 export enum NodeType {
   LEVEL = "level",
   FOLDER_READER = "folder_reader",
+  FOLDER_WRITER = "folder_writer",
+  SHARP = "sharp",
   CVT_COLOR = "cvt_color",
 }
 

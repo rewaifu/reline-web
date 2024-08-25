@@ -1,23 +1,25 @@
-import { ArrowUp, ArrowDown, X } from "lucide-react"
-import { type FC, useContext } from "react"
+import { ArrowUp, ArrowDown, X, ChevronDown, ChevronRight } from "lucide-react"
+import { type FC, useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { NodeActionType, NodeType } from "~/types/enums"
 import type { GenericNodeOptions, StackNode } from "~/types/node"
-import { FolderReaderNodeBody } from "./nodes/folder-reader-node"
-import { LevelNodeBody } from "./nodes/level-node"
 import { Button } from "./shared/button"
 import { Card, CardHeader, CardContent } from "./shared/card"
 import { Combobox } from "./shared/node-combobox"
-import { CvtColorNodeBody } from "./nodes/cvt-color-node"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
+import { CvtColorNodeBody, FolderReaderNodeBody, FolderWriterNodeBody, LevelNodeBody, SharpNodeBody } from "./nodes"
+import { Collapsible, CollapsibleContent } from "./shared/collapsible"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ options: GenericNodeOptions; id: number }> } = {
   level: LevelNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
   folder_reader: FolderReaderNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
+  folder_writer: FolderWriterNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
   cvt_color: CvtColorNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
+  sharp: SharpNodeBody as FC<{ options: GenericNodeOptions; id: number }>,
 }
 
 export function NodeResolver({ data }: { data: StackNode }) {
+  const [isOpen, setIsOpen] = useState(true)
   const NodeBodyComponent = nodeBodyComponents[data.name]
   const nodes = useContext(NodesContext)
   const dispatch = useContext(NodesDispatchContext)
@@ -27,61 +29,75 @@ export function NodeResolver({ data }: { data: StackNode }) {
       payload: {
         id: data.id,
         name: value as NodeType,
-        options: DEFAULT_NODE_OPTIONS[value as NodeType]
+        options: DEFAULT_NODE_OPTIONS[value as NodeType],
       },
     })
   }
   return (
-    <Card>
-      <CardHeader className="flex flex-row">
-        <Combobox initialValue={data.name} allValues={Object.values(NodeType)} onChange={onTypeChange} />
-        <Button
-          variant="ghost"
-          size="icon"
-          disabled={data.id === 0}
-          className="ml-auto"
-          onClick={() => {
-            dispatch({
-              type: NodeActionType.MOVEUP,
-              payload: data,
-            })
-          }}
-        >
-          <ArrowUp />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          disabled={data.id === nodes.length - 1}
-          onClick={() => {
-            dispatch({
-              type: NodeActionType.MOVEDOWN,
-              payload: data,
-            })
-          }}
-        >
-          <ArrowDown />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            dispatch({
-              type: NodeActionType.DELETE,
-              payload: data,
-            })
-          }}
-        >
-          <X />
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <Card>
-          <CardContent className="pt-6">
-            <NodeBodyComponent options={data.options} id={data.id} />
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card>
+        <CardHeader className="flex flex-row">
+          <Combobox initialValue={data.name} allValues={Object.values(NodeType)} onChange={onTypeChange} />
+          <Button
+            className="ml-3"
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setIsOpen(!isOpen)
+            }}
+          >
+            {isOpen ? <ChevronDown /> : <ChevronRight />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={data.id === 0}
+            className="ml-auto"
+            onClick={() => {
+              dispatch({
+                type: NodeActionType.MOVEUP,
+                payload: data,
+              })
+            }}
+          >
+            <ArrowUp />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={data.id === nodes.length - 1}
+            onClick={() => {
+              dispatch({
+                type: NodeActionType.MOVEDOWN,
+                payload: data,
+              })
+            }}
+          >
+            <ArrowDown />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              dispatch({
+                type: NodeActionType.DELETE,
+                payload: data,
+              })
+            }}
+          >
+            <X />
+          </Button>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent>
+            <Card>
+              <CardContent className="pt-6">
+                <NodeBodyComponent options={data.options} id={data.id} />
+              </CardContent>
+            </Card>
           </CardContent>
-        </Card>
-      </CardContent>
-    </Card>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   )
 }
