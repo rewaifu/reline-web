@@ -1,4 +1,4 @@
-import { CvtType, NodeType, ReaderNodeMode, TilerType, WriterNodeFormat } from "./types/enums"
+import { CvtType, NodeType, ReaderNodeMode, ResizeFilterType, ResizeType, TilerType, WriterNodeFormat } from "./types/enums"
 import type { GenericNodeOptions, StackNode } from "./types/node"
 
 export const MODELS = [
@@ -56,10 +56,16 @@ export const MODELS = [
 ]
 
 export const DEFAULT_MODEL = "4x_dwtp_ds_rplksr_delta"
-export const DEFAULT_TILE_SIZE = 800
 export const MODEL_PREFIX = "/content/models/"
 export const MODEL_POSTFIX = ".pth"
-export const STORAGE_KEY = 'nodes-data'
+export const STORAGE_KEY = "nodes-data"
+
+export const DEFAULT_TILE_SIZE = 800
+export const DEFAULT_SPREAD_SIZE = 2800
+
+export const DEFAULT_RESIZE_WIDTH = 2000
+export const DEFAULT_RESIZE_HEIGHT = 3200
+export const DEFAULT_RESIZE_PERCENT = 50
 
 export const DEFAULT_NODE_OPTIONS: {
   [key in NodeType]: GenericNodeOptions
@@ -97,6 +103,14 @@ export const DEFAULT_NODE_OPTIONS: {
     tiler: TilerType.EXACT,
     exact_tiler_size: DEFAULT_TILE_SIZE,
     allow_cpu_upscale: false,
+  },
+  resize: {
+    resize_type: ResizeType.BY_WIDTH,
+    width: DEFAULT_RESIZE_WIDTH,
+    filter: ResizeFilterType.CUBIC_MITCHELL,
+    spread: true,
+    spread_size: 2800,
+    gamma_correction: true,
   },
 }
 

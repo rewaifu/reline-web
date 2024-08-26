@@ -39,6 +39,12 @@ export function nodesToString(nodes: StackNode[]): string {
           },
         })
       }
+    } else if (pureNode.name === NodeType.RESIZE) {
+      const { resize_type, ...options } = pureNode.options
+      result.push({
+        ...pureNode,
+        options: options,
+      })
     } else {
       result.push(pureNode)
     }

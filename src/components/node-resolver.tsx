@@ -11,6 +11,7 @@ import { UpscaleNodeBody } from "./nodes/upscale-node"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command"
 import { cn } from "~/lib/utils"
+import { ResizeNodeBody } from "./nodes/resize-node"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   level: LevelNodeBody as FC<{ id: number }>,
@@ -19,6 +20,7 @@ const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   cvt_color: CvtColorNodeBody as FC<{ id: number }>,
   sharp: SharpNodeBody as FC<{ id: number }>,
   upscale: UpscaleNodeBody as FC<{ id: number }>,
+  resize: ResizeNodeBody as FC<{ id: number }>,
 }
 
 function Combobox({ allValues, initialValue, onChange }: { allValues: string[]; initialValue: string; onChange: (value: string) => void }) {

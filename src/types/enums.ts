@@ -25,6 +25,7 @@ export enum NodeType {
   SHARP = "sharp",
   CVT_COLOR = "cvt_color",
   UPSCALE = "upscale",
+  RESIZE = "resize",
 }
 
 export enum CvtType {
@@ -38,4 +39,24 @@ export enum TilerType {
   EXACT = "exact",
   MAX = "max",
   NO_TILING = "no_tiling",
+}
+
+export enum ResizeType {
+  BY_WIDTH = "width",
+  BY_HEIGHT = "height",
+  ABSOLUTE = "absolute",
+  PERCENT = "percent",
+}
+
+export enum ResizeFilterType {
+  NEAREST = "nearest",
+  BOX = "box",
+  LINEAR = "linear",
+  HERMITE = "hermite",
+  CUBIC_CATROM = "cubic_catrom",
+  CUBIC_MITCHELL = "cubic_mitchell",
+  CUBIC_BSPLINE = "cubic_bspline",
+  LANCZOS = "lanczos",
+  LAGRANGE = "lagrange",
+  GAUSS = "gauss",
 }

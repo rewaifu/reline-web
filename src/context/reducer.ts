@@ -54,7 +54,7 @@ const processAction = (state: StackNode[], action: NodesAction): StackNode[] => 
         return node
       })
     case NodeActionType.IMPORT:
-      return [...(payload as StackNode[])]
+      return payload as StackNode[]
     default:
       return state
   }
