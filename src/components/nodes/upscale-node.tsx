@@ -1,5 +1,4 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState"
 import { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, TilerType } from "~/types/enums.ts"
@@ -24,9 +23,9 @@ const upscaleOptionsSchema = z.object({
 
 type UpscaleNodeOptions = z.infer<typeof upscaleOptionsSchema>
 
-function Combobox({ initialValue, onChange }: { initialValue: string; onChange: (value: string) => void }) {
+function Combobox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(initialValue)
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -46,7 +45,6 @@ function Combobox({ initialValue, onChange }: { initialValue: string; onChange: 
                   key={model}
                   value={model}
                   onSelect={() => {
-                    setValue(model)
                     onChange(model)
                     setOpen(false)
                   }}
@@ -66,16 +64,15 @@ function Combobox({ initialValue, onChange }: { initialValue: string; onChange: 
 export function UpscaleNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const node = nodes[id]
-  const [state, setState] = useSetState(node.options as UpscaleNodeOptions)
+  const options = node.options as UpscaleNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
-    setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
         ...node,
         options: {
-          ...state,
+          ...node.options,
           ...newOptions,
         },
       },
@@ -85,17 +82,17 @@ export function UpscaleNodeBody({ id }: { id: number }) {
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <Label>Model</Label>
-        {node.options.is_own_model ? (
+        {options.is_own_model ? (
           <Input
             placeholder="Path/to/model"
-            value={state.model}
+            value={options.model}
             onChange={(e) => {
               changeValue({ model: e.target.value })
             }}
           />
         ) : (
           <Combobox
-            initialValue={state.model}
+            value={options.model}
             onChange={(model) => {
               changeValue({
                 model: model,
@@ -120,7 +117,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
               })
             }
           }}
-          value={state.tiler}
+          value={options.tiler}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue />
@@ -138,14 +135,14 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           </SelectContent>
         </Select>
       </div>
-      {state.tiler === TilerType.EXACT && (
+      {options.tiler === TilerType.EXACT && (
         <div className="flex flex-col gap-2">
           <Label>Tile size</Label>
           <Input
             type="number"
             className="w-[180px]"
             step={100}
-            value={state.exact_tiler_size}
+            value={options.exact_tiler_size}
             onChange={(e) => {
               changeValue({
                 exact_tiler_size: Number.parseInt(e.target.value),
@@ -156,10 +153,10 @@ export function UpscaleNodeBody({ id }: { id: number }) {
       )}
       <div className="flex items-center space-x-2">
         <Checkbox
-          checked={state.is_own_model}
+          checked={options.is_own_model}
           onCheckedChange={(value) => {
             if (!value) {
-              changeValue({ model: MODELS.includes(state.model) ? state.model : DEFAULT_MODEL, is_own_model: !!value })
+              changeValue({ model: MODELS.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: !!value })
             } else if (value) {
               changeValue({ model: "", is_own_model: !!value })
             }
@@ -169,7 +166,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox
-          checked={state.allow_cpu_upscale}
+          checked={options.allow_cpu_upscale}
           onCheckedChange={(value) => {
             changeValue({ allow_cpu_upscale: !!value })
           }}

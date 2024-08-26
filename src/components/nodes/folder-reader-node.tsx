@@ -1,5 +1,4 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, ReaderNodeMode } from "~/types/enums"
@@ -19,16 +18,15 @@ type FolderReaderNodeOptions = z.infer<typeof folderReaderOptionsSchema>
 export function FolderReaderNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const node = nodes[id]
-  const [state, setState] = useSetState(node.options as FolderReaderNodeOptions)
+  const options = node.options as FolderReaderNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<FolderReaderNodeOptions>) => {
-    setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
         ...node,
         options: {
-          ...state,
+          ...options,
           ...newOptions,
         },
       },
@@ -40,7 +38,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
         <Label>Path to folder</Label>
         <Input
           placeholder="Path/to/folder"
-          value={state.path}
+          value={options.path}
           onChange={(e) => {
             changeValue({ path: e.target.value })
           }}
@@ -54,7 +52,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
               mode: value as ReaderNodeMode,
             })
           }}
-          value={state.mode}
+          value={options.mode}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue />
@@ -74,7 +72,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox
-          checked={state.recursive}
+          checked={options.recursive}
           onCheckedChange={(value) => {
             changeValue({ recursive: !!value })
           }}

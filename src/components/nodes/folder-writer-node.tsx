@@ -1,5 +1,4 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, WriterNodeFormat } from "~/types/enums.ts"
@@ -17,16 +16,15 @@ type FolderWriterNodeOptions = z.infer<typeof folderWriterOptionsSchema>
 export function FolderWriterNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const node = nodes[id]
-  const [state, setState] = useSetState(node.options as FolderWriterNodeOptions)
+  const options = node.options as FolderWriterNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<FolderWriterNodeOptions>) => {
-    setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
         ...node,
         options: {
-          ...state,
+          ...options,
           ...newOptions,
         },
       },
@@ -38,7 +36,7 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
         <Label>Path to folder</Label>
         <Input
           placeholder="Path/to/folder"
-          value={state.path}
+          value={options.path}
           onChange={(e) => {
             changeValue({ path: e.target.value })
           }}
@@ -52,7 +50,7 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
               format: value as WriterNodeFormat,
             })
           }}
-          value={state.format}
+          value={options.format}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue />

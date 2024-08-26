@@ -1,5 +1,4 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NumberInput } from "../ui/number-input"
@@ -21,16 +20,15 @@ type SharpNodeOptions = z.infer<typeof sharpNodeOptionsSchema>
 export function SharpNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const node = nodes[id]
-  const [state, setState] = useSetState(node.options as SharpNodeOptions)
+  const options = node.options as SharpNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<SharpNodeOptions>) => {
-    setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
         ...node,
         options: {
-          ...state,
+          ...options,
           ...newOptions,
         },
       },
@@ -44,7 +42,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           max={255}
           step={1}
           labelText="In White"
-          value={state.low_input}
+          value={options.low_input}
           onChange={(value) => {
             changeValue({ low_input: Math.trunc(value) })
           }}
@@ -54,7 +52,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           max={255}
           step={1}
           labelText="In Black"
-          value={state.high_input}
+          value={options.high_input}
           onChange={(value) => {
             changeValue({ high_input: Math.trunc(value) })
           }}
@@ -64,7 +62,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           max={10}
           step={0.1}
           labelText="Gamma"
-          value={state.gamma}
+          value={options.gamma}
           onChange={(value) => {
             changeValue({ gamma: value })
           }}
@@ -74,7 +72,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           max={255}
           step={1}
           labelText="Diapason white"
-          value={state.diapason_white}
+          value={options.diapason_white}
           onChange={(value) => {
             changeValue({ diapason_white: Math.trunc(value) })
           }}
@@ -84,7 +82,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           max={255}
           step={1}
           labelText="Diapason black"
-          value={state.diapason_black}
+          value={options.diapason_black}
           onChange={(value) => {
             changeValue({ diapason_black: Math.trunc(value) })
           }}
@@ -92,7 +90,7 @@ export function SharpNodeBody({ id }: { id: number }) {
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox
-          checked={state.canny}
+          checked={options.canny}
           onCheckedChange={(value) => {
             changeValue({ canny: !!value })
           }}

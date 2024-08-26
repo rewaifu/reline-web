@@ -1,5 +1,4 @@
 import { z } from "zod"
-import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { CvtType, NodeActionType } from "~/types/enums"
@@ -15,16 +14,15 @@ type CvtColorNodeOptions = z.infer<typeof cvtColorNodeOptionsSchema>
 export function CvtColorNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const node = nodes[id]
-  const [state, setState] = useSetState(node.options as CvtColorNodeOptions)
+  const options = node.options as CvtColorNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<CvtColorNodeOptions>) => {
-    setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
         ...node,
         options: {
-          ...state,
+          ...options,
           ...newOptions,
         },
       },
@@ -39,7 +37,7 @@ export function CvtColorNodeBody({ id }: { id: number }) {
             cvt_type: value as CvtType,
           })
         }}
-        value={state.cvt_type}
+        value={options.cvt_type}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue />
