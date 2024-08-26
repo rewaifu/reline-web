@@ -1,5 +1,5 @@
-import { CvtType, type NodeType, ReaderNodeMode, TilerType, WriterNodeFormat } from "./types/enums"
-import type { GenericNodeOptions } from "./types/node"
+import { CvtType, NodeType, ReaderNodeMode, TilerType, WriterNodeFormat } from "./types/enums"
+import type { GenericNodeOptions, StackNode } from "./types/node"
 
 export const MODELS = [
   "1_DWTP_ds_span_p",
@@ -59,6 +59,7 @@ export const DEFAULT_MODEL = "4x_dwtp_ds_rplksr_delta"
 export const DEFAULT_TILE_SIZE = 800
 export const MODEL_PREFIX = "/content/models/"
 export const MODEL_POSTFIX = ".pth"
+export const STORAGE_KEY = 'nodes-data'
 
 export const DEFAULT_NODE_OPTIONS: {
   [key in NodeType]: GenericNodeOptions
@@ -98,3 +99,8 @@ export const DEFAULT_NODE_OPTIONS: {
     allow_cpu_upscale: false,
   },
 }
+
+export const DEFAULT_NODES: StackNode[] = [
+  { id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
+  { id: 1, name: NodeType.UPSCALE, options: DEFAULT_NODE_OPTIONS.upscale, collapsed: false },
+]

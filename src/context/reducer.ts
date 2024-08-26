@@ -1,7 +1,18 @@
+import { STORAGE_KEY } from "~/constants"
 import { NodeActionType } from "~/types/enums"
 import type { NodesAction, StackNode } from "~/types/node"
 
+const saveData = (nodes: StackNode[]) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes))
+}
+
 export const nodesReducer = (state: StackNode[], action: NodesAction): StackNode[] => {
+  const newState = processAction(state, action)
+  saveData(newState)
+  return newState
+}
+
+const processAction = (state: StackNode[], action: NodesAction): StackNode[] => {
   const { type, payload } = action
   switch (type) {
     case NodeActionType.CHANGE:
@@ -43,7 +54,7 @@ export const nodesReducer = (state: StackNode[], action: NodesAction): StackNode
         return node
       })
     case NodeActionType.IMPORT:
-      return [...payload as StackNode[]] 
+      return [...(payload as StackNode[])]
     default:
       return state
   }

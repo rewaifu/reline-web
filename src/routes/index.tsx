@@ -1,19 +1,20 @@
 import { useReducer } from "react"
 import { NodesContext, NodesDispatchContext } from "../context/contexts.ts"
-import type { StackNode } from "../types/node"
 import { CodeSection } from "~/components/code-section.tsx"
 import { NodesSection } from "~/components/nodes-section.tsx"
 import { nodesReducer } from "~/context/reducer.ts"
-import { DEFAULT_NODE_OPTIONS } from "~/constants.ts"
-import { NodeType } from "~/types/enums.ts"
+import { DEFAULT_NODES, STORAGE_KEY } from "~/constants.ts"
 
-const testData: StackNode[] = [
-  { id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
-  { id: 1, name: NodeType.UPSCALE, options: DEFAULT_NODE_OPTIONS.upscale, collapsed: false },
-]
+const getInitialData = () => {
+  const data = localStorage.getItem(STORAGE_KEY)
+  if (data) {
+    return JSON.parse(data)
+  }
+  return DEFAULT_NODES
+}
 
 export default function HomePage() {
-  const [nodes, dispatch] = useReducer(nodesReducer, testData)
+  const [nodes, dispatch] = useReducer(nodesReducer, getInitialData())
 
   return (
     <main className="p-5 grid grid-cols-2 gap-x-5">
