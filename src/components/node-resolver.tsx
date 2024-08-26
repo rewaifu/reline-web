@@ -1,13 +1,16 @@
-import { ArrowUp, ArrowDown, X, ChevronDown, ChevronRight } from "lucide-react"
+import { ArrowUp, ArrowDown, X, ChevronDown, ChevronRight, ChevronsUpDown, Check } from "lucide-react"
 import { type FC, useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { NodeActionType, NodeType } from "~/types/enums"
 import { Button } from "./shared/button"
 import { Card, CardHeader, CardContent } from "./shared/card"
-import { Combobox } from "./shared/combobox"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
 import { CvtColorNodeBody, FolderReaderNodeBody, FolderWriterNodeBody, LevelNodeBody, SharpNodeBody } from "./nodes"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./shared/collapsible"
+import { UpscaleNodeBody } from "./nodes/upscale-node"
+import { Popover, PopoverContent, PopoverTrigger } from "./shared/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./shared/command"
+import { cn } from "~/lib/utils"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   level: LevelNodeBody as FC<{ id: number }>,
@@ -15,6 +18,47 @@ const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   folder_writer: FolderWriterNodeBody as FC<{ id: number }>,
   cvt_color: CvtColorNodeBody as FC<{ id: number }>,
   sharp: SharpNodeBody as FC<{ id: number }>,
+  upscale: UpscaleNodeBody as FC<{ id: number }>,
+}
+
+function Combobox({ allValues, initialValue, onChange }: { allValues: string[]; initialValue: string; onChange: (value: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState(initialValue)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+          {value}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput placeholder="Search..." />
+          <CommandList>
+            <CommandEmpty>Nothing was found.</CommandEmpty>
+            <CommandGroup>
+              {allValues.map((_value) => (
+                <CommandItem
+                  key={_value}
+                  value={_value}
+                  onSelect={(currentValue) => {
+                    setValue(currentValue)
+                    onChange(currentValue)
+                    setOpen(false)
+                  }}
+                >
+                  <Check className={cn("mr-2 h-4 w-4", value === _value ? "opacity-100" : "opacity-0")} />
+                  {_value}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
 }
 
 export function NodeResolver({ id }: { id: number }) {

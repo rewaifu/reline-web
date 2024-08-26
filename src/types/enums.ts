@@ -23,6 +23,7 @@ export enum NodeType {
   FOLDER_WRITER = "folder_writer",
   SHARP = "sharp",
   CVT_COLOR = "cvt_color",
+  UPSCALE = 'upscale'
 }
 
 export enum CvtType {

@@ -8,8 +8,8 @@ import { DEFAULT_NODE_OPTIONS } from "~/constants.ts"
 import { NodeType } from "~/types/enums.ts"
 
 const testData: StackNode[] = [
-  { id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: false },
-  { id: 1, name: NodeType.FOLDER_READER, options: DEFAULT_NODE_OPTIONS.folder_reader, collapsed: true },
+  { id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
+  { id: 1, name: NodeType.UPSCALE, options: DEFAULT_NODE_OPTIONS.upscale, collapsed: false },
 ]
 
 export default function HomePage() {
