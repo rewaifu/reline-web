@@ -2,7 +2,7 @@ import { z } from "zod"
 import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NumberInput } from "../shared/number-input"
+import { NumberInput } from "../ui/number-input"
 import { NodeActionType} from "~/types/enums"
 
 const levelNodeOptionsSchema = z.object({

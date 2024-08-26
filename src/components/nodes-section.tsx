@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardContent } from "./shared/card"
+import { Card, CardHeader, CardContent } from "./ui/card"
 import { useContext } from "react"
 import { NodesContext } from "~/context/contexts"
 import { NodeResolver } from "./node-resolver"

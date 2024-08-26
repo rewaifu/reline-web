@@ -13,5 +13,5 @@ export interface GenericNodeOptions {
 
 export interface NodesAction {
   type: NodeActionType
-  payload: StackNode
+  payload: StackNode | StackNode[]
 }

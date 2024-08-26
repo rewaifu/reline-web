@@ -3,8 +3,8 @@ import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { CvtType, NodeActionType } from "~/types/enums"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
-import { Label } from "../shared/label"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Label } from "../ui/label"
 
 const cvtColorNodeOptionsSchema = z.object({
   cvt_type: z.nativeEnum(CvtType),

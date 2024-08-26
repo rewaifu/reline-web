@@ -3,16 +3,16 @@ import useSetState from "../../hooks/useSetState"
 import { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, TilerType } from "~/types/enums.ts"
-import { Label } from "../shared/label"
+import { Label } from "../ui/label"
 import { DEFAULT_MODEL, DEFAULT_TILE_SIZE, MODELS } from "~/constants"
-import { Popover, PopoverContent, PopoverTrigger } from "../shared/popover"
-import { Button } from "../shared/button"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Button } from "../ui/button"
 import { Check, ChevronsUpDown } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../shared/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { cn } from "~/lib/utils"
-import { Input } from "../shared/input"
-import { Checkbox } from "../shared/checkbox"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
+import { Input } from "../ui/input"
+import { Checkbox } from "../ui/checkbox"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 const upscaleOptionsSchema = z.object({
   is_own_model: z.boolean(),
@@ -69,9 +69,6 @@ export function UpscaleNodeBody({ id }: { id: number }) {
   const [state, setState] = useSetState(node.options as UpscaleNodeOptions)
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
-    if (newOptions.tiler !== TilerType.EXACT) {
-      newOptions.exact_tiler_size = undefined;
-    }
     setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
@@ -118,6 +115,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
               })
             } else {
               changeValue({
+                exact_tiler_size: undefined,
                 tiler: value as TilerType,
               })
             }

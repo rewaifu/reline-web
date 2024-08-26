@@ -3,10 +3,10 @@ import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, ReaderNodeMode } from "~/types/enums"
-import { Input } from "../shared/input"
-import { Checkbox } from "../shared/checkbox"
-import { Label } from "../shared/label"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
+import { Input } from "../ui/input"
+import { Checkbox } from "../ui/checkbox"
+import { Label } from "../ui/label"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 const folderReaderOptionsSchema = z.object({
   path: z.string(),

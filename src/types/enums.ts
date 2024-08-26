@@ -4,6 +4,7 @@ export enum NodeActionType {
   CHANGE = "CHANGE",
   MOVEUP = "MOVEUP",
   MOVEDOWN = "MOVEDOWN",
+  IMPORT = "IMPORT",
 }
 
 export enum ReaderNodeMode {

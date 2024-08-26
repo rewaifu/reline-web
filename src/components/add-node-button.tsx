@@ -1,11 +1,11 @@
 import { Plus } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/shared/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/shared/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "~/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
 import { NodeActionType, NodeType } from "~/types/enums"
 import { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
-import { Button } from "./shared/button"
+import { Button } from "./ui/button"
 
 export function AddNodeButton() {
   const [open, setOpen] = useState(false)

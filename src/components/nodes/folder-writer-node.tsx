@@ -3,9 +3,9 @@ import useSetState from "../../hooks/useSetState"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NodeActionType, WriterNodeFormat } from "~/types/enums.ts"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
-import { Input } from "../shared/input"
-import { Label } from "../shared/label"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 
 const folderWriterOptionsSchema = z.object({
   path: z.string(),
