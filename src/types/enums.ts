@@ -23,7 +23,7 @@ export enum NodeType {
   FOLDER_WRITER = "folder_writer",
   SHARP = "sharp",
   CVT_COLOR = "cvt_color",
-  UPSCALE = 'upscale'
+  UPSCALE = "upscale",
 }
 
 export enum CvtType {
@@ -31,4 +31,10 @@ export enum CvtType {
   RGB2Gray709 = "RGB2Gray709",
   RGB2Gray2020 = "RGB2Gray2020",
   Gray2RGB = "Gray2RGB",
+}
+
+export enum TilerType {
+  EXACT = "exact",
+  MAX = "max",
+  NO_TILING = "no_tiling",
 }

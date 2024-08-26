@@ -54,7 +54,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
               mode: value as ReaderNodeMode,
             })
           }}
-          defaultValue={ReaderNodeMode.DYNAMIC}
+          value={state.mode}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue />

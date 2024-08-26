@@ -52,7 +52,7 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
               format: value as WriterNodeFormat,
             })
           }}
-          defaultValue={WriterNodeFormat.PNG}
+          value={state.format}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue />

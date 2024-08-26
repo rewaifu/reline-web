@@ -2,9 +2,9 @@ import { z } from "zod"
 import useSetState from "../../hooks/useSetState"
 import { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType } from "~/types/enums.ts"
+import { NodeActionType, TilerType } from "~/types/enums.ts"
 import { Label } from "../shared/label"
-import { DEFAULT_MODEL, MODELS } from "~/constants"
+import { DEFAULT_MODEL, DEFAULT_TILE_SIZE, MODELS } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../shared/popover"
 import { Button } from "../shared/button"
 import { Check, ChevronsUpDown } from "lucide-react"
@@ -12,10 +12,14 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { cn } from "~/lib/utils"
 import { Input } from "../shared/input"
 import { Checkbox } from "../shared/checkbox"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../shared/select"
 
 const upscaleOptionsSchema = z.object({
-  model: z.string(),
   is_own_model: z.boolean(),
+  model: z.string(),
+  tiler: z.nativeEnum(TilerType),
+  exact_tiler_size: z.number(),
+  allow_cpu_upscale: z.boolean(),
 })
 
 type UpscaleNodeOptions = z.infer<typeof upscaleOptionsSchema>
@@ -65,6 +69,9 @@ export function UpscaleNodeBody({ id }: { id: number }) {
   const [state, setState] = useSetState(node.options as UpscaleNodeOptions)
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
+    if (newOptions.tiler !== TilerType.EXACT) {
+      newOptions.exact_tiler_size = undefined;
+    }
     setState(newOptions)
     dispatch({
       type: NodeActionType.CHANGE,
@@ -79,8 +86,8 @@ export function UpscaleNodeBody({ id }: { id: number }) {
   }
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col">
-        <Label className="mb-1">Model</Label>
+      <div className="flex flex-col gap-2">
+        <Label>Model</Label>
         {node.options.is_own_model ? (
           <Input
             placeholder="Path/to/model"
@@ -100,6 +107,55 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           />
         )}
       </div>
+      <div className="flex flex-col gap-2">
+        <Label>Tiler</Label>
+        <Select
+          onValueChange={(value) => {
+            if (value === TilerType.EXACT) {
+              changeValue({
+                exact_tiler_size: DEFAULT_TILE_SIZE,
+                tiler: value as TilerType,
+              })
+            } else {
+              changeValue({
+                tiler: value as TilerType,
+              })
+            }
+          }}
+          value={state.tiler}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.values(TilerType).map((type) => {
+                return (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      {state.tiler === TilerType.EXACT && (
+        <div className="flex flex-col gap-2">
+          <Label>Tile size</Label>
+          <Input
+            type="number"
+            className="w-[180px]"
+            step={100}
+            value={state.exact_tiler_size}
+            onChange={(e) => {
+              changeValue({
+                exact_tiler_size: Number.parseInt(e.target.value),
+              })
+            }}
+          />
+        </div>
+      )}
       <div className="flex items-center space-x-2">
         <Checkbox
           checked={state.is_own_model}
@@ -111,7 +167,16 @@ export function UpscaleNodeBody({ id }: { id: number }) {
             }
           }}
         />
-        <Label>Own model</Label>
+        <Label>own model</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          checked={state.allow_cpu_upscale}
+          onCheckedChange={(value) => {
+            changeValue({ allow_cpu_upscale: !!value })
+          }}
+        />
+        <Label>allow cpu upscale</Label>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { CvtType, type NodeType, ReaderNodeMode, WriterNodeFormat } from "./types/enums"
+import { CvtType, type NodeType, ReaderNodeMode, TilerType, WriterNodeFormat } from "./types/enums"
 import type { GenericNodeOptions } from "./types/node"
 
 export const MODELS = [
@@ -55,7 +55,8 @@ export const MODELS = [
   "4x_umzi_decompress_mosr",
 ]
 
-export const DEFAULT_MODEL = "4x_dwtp_ds_rplksr_delta";
+export const DEFAULT_MODEL = "4x_dwtp_ds_rplksr_delta"
+export const DEFAULT_TILE_SIZE = 800
 export const MODEL_PREFIX = "/content/models/"
 export const MODEL_POSTFIX = ".pth"
 
@@ -92,5 +93,8 @@ export const DEFAULT_NODE_OPTIONS: {
   upscale: {
     is_own_model: false,
     model: DEFAULT_MODEL,
+    tiler: TilerType.EXACT,
+    exact_tiler_size: DEFAULT_TILE_SIZE,
+    allow_cpu_upscale: false,
   },
 }

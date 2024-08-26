@@ -39,7 +39,7 @@ export function CvtColorNodeBody({ id }: { id: number }) {
             cvt_type: value as CvtType,
           })
         }}
-        defaultValue={CvtType.RGB2Gray}
+        value={state.cvt_type}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue />
