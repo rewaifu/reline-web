@@ -71,7 +71,7 @@ export const DEFAULT_NODE_OPTIONS: {
   [key in NodeType]: GenericNodeOptions
 } = {
   level: {
-    low_input: 10,
+    low_input: 0,
     high_input: 255,
     low_output: 0,
     high_output: 255,
