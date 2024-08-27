@@ -41,7 +41,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           min={0}
           max={255}
           step={1}
-          labelText="Low Input"
+          labelText="Low input"
           value={options.low_input}
           onChange={(value) => {
             changeValue({ low_input: Math.trunc(value) })
@@ -51,7 +51,7 @@ export function SharpNodeBody({ id }: { id: number }) {
           min={0}
           max={255}
           step={1}
-          labelText="High Input"
+          labelText="High input"
           value={options.high_input}
           onChange={(value) => {
             changeValue({ high_input: Math.trunc(value) })
