@@ -123,6 +123,6 @@ export const DEFAULT_NODES: StackNode[] = [
   { id: 2, type: NodeType.SHARP, options: DEFAULT_NODE_OPTIONS.sharp, collapsed: true },
   { id: 3, type: NodeType.SCREENTONE, options: DEFAULT_NODE_OPTIONS.screentone, collapsed: true },
   { id: 4, type: NodeType.RESIZE, options: DEFAULT_NODE_OPTIONS.resize, collapsed: true },
-  { id: 5, type: NodeType.RESIZE, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
+  { id: 5, type: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
   { id: 6, type: NodeType.FOLDER_WRITER, options: DEFAULT_NODE_OPTIONS.folder_writer, collapsed: true },
 ]
