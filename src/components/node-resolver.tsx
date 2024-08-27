@@ -68,7 +68,6 @@ function Combobox({ allValues, initialValue, onChange }: { allValues: string[]; 
 export function NodeResolver({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const data = nodes[id]
-  const [isCollapsed, setIsCollapsed] = useState(data.collapsed)
   const NodeBodyComponent = nodeBodyComponents[data.type]
   const dispatch = useContext(NodesDispatchContext)
   const onTypeChange = (value: string) => {
@@ -84,9 +83,8 @@ export function NodeResolver({ id }: { id: number }) {
   }
   return (
     <Collapsible
-      open={!isCollapsed}
+      open={!data.collapsed}
       onOpenChange={(isOpen) => {
-        setIsCollapsed(!isOpen)
         dispatch({
           type: NodeActionType.CHANGE,
           payload: {
@@ -101,7 +99,7 @@ export function NodeResolver({ id }: { id: number }) {
           <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange} />
           <CollapsibleTrigger asChild>
             <Button className="ml-3" variant="ghost" size="icon">
-              {isCollapsed ? <ChevronRight /> : <ChevronDown />}
+              {data.collapsed ? <ChevronRight /> : <ChevronDown />}
             </Button>
           </CollapsibleTrigger>
           <Button
