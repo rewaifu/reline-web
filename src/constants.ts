@@ -78,12 +78,12 @@ export const DEFAULT_NODE_OPTIONS: {
     gamma: 1,
   },
   folder_reader: {
-    path: "/content/MyDrive/raws",
+    path: "/content/drive/MyDrive/raws",
     recursive: true,
     mode: ReaderNodeMode.DYNAMIC,
   },
   folder_writer: {
-    path: "/content/MyDrive/raws/output",
+    path: "/content/drive/MyDrive/raws/output",
     format: WriterNodeFormat.PNG,
   },
   cvt_color: {
