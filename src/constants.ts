@@ -110,7 +110,7 @@ export const DEFAULT_NODE_OPTIONS: {
     filter: ResizeFilterType.CUBIC_MITCHELL,
     spread: true,
     spread_size: 2800,
-    gamma_correction: true,
+    gamma_correction: false,
   },
   screentone: {
     dot_size: 7,
