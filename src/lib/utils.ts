@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { MODEL_POSTFIX, MODEL_PREFIX } from "~/constants"
-import { NodeType } from "~/types/enums"
+import { NodeType, ResizeType } from "~/types/enums"
 import type { StackNode } from "~/types/node"
 
 export function cn(...inputs: ClassValue[]) {
@@ -60,8 +60,24 @@ export function nodesToString(nodes: StackNode[]): string {
   return JSON.stringify(result, null, 2)
 }
 
+function getResizeType(options: any) {
+  if (options.width && !options.height) {
+    return ResizeType.BY_WIDTH
+  }
+  if (!options.width && options.height) {
+    return ResizeType.BY_HEIGHT
+  }
+  if (options.width && options.height) {
+    return ResizeType.ABSOLUTE
+  }
+  if (options.percent) {
+    return ResizeType.PERCENT
+  }
+}
+
+
 export function stringToNodes(text: string) {
-  const pureNodes = JSON.parse(text) as (Partial<StackNode> | { type: "download"; options: { name: string } })[]
+  const pureNodes = JSON.parse(text) as (Partial<StackNode> | { type: "download"; options: { name: string } } | { type: "halftone"; options: { dot_size: number } })[]
   const res: StackNode[] = []
   let index = 0
   for (let i = 0; i < pureNodes.length; i += 1) {
@@ -90,6 +106,29 @@ export function stringToNodes(text: string) {
         options: {
           ...pureNode.options,
           is_own_model: true,
+        },
+        collapsed: true,
+      })
+      index += 1
+      continue
+    } else if (pureNode.type === NodeType.RESIZE) {
+      res.push({
+        type: NodeType.RESIZE,
+        id: index,
+        options: {
+          ...pureNode.options,
+          resize_type: getResizeType(pureNode.options)
+        },
+        collapsed: true,
+      })
+      index += 1
+      continue
+    } else if (pureNode.type === 'halftone') {
+      res.push({
+        type: NodeType.SCREENTONE,
+        id: index,
+        options: {
+          ...pureNode.options
         },
         collapsed: true,
       })
