@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command"
 import { cn } from "~/lib/utils"
 import { ResizeNodeBody } from "./nodes/resize-node"
+import { ScreentoneNodeBody } from "./nodes/screentone-node"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   level: LevelNodeBody as FC<{ id: number }>,
@@ -21,6 +22,7 @@ const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   sharp: SharpNodeBody as FC<{ id: number }>,
   upscale: UpscaleNodeBody as FC<{ id: number }>,
   resize: ResizeNodeBody as FC<{ id: number }>,
+  screentone: ScreentoneNodeBody as FC<{ id: number }>,
 }
 
 function Combobox({ allValues, initialValue, onChange }: { allValues: string[]; initialValue: string; onChange: (value: string) => void }) {
@@ -67,14 +69,14 @@ export function NodeResolver({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
   const data = nodes[id]
   const [isCollapsed, setIsCollapsed] = useState(data.collapsed)
-  const NodeBodyComponent = nodeBodyComponents[data.name]
+  const NodeBodyComponent = nodeBodyComponents[data.type]
   const dispatch = useContext(NodesDispatchContext)
   const onTypeChange = (value: string) => {
     dispatch({
       type: NodeActionType.CHANGE,
       payload: {
         id: data.id,
-        name: value as NodeType,
+        type: value as NodeType,
         collapsed: data.collapsed,
         options: DEFAULT_NODE_OPTIONS[value as NodeType],
       },
@@ -96,7 +98,7 @@ export function NodeResolver({ id }: { id: number }) {
     >
       <Card>
         <CardHeader className="flex flex-row">
-          <Combobox initialValue={data.name} allValues={Object.values(NodeType)} onChange={onTypeChange} />
+          <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange} />
           <CollapsibleTrigger asChild>
             <Button className="ml-3" variant="ghost" size="icon">
               {isCollapsed ? <ChevronRight /> : <ChevronDown />}

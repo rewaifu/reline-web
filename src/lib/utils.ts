@@ -13,12 +13,12 @@ export function nodesToString(nodes: StackNode[]): string {
   const result = []
   for (let i = 0; i < pureNodes.length; i += 1) {
     const pureNode = pureNodes[i]
-    if (pureNode.name === NodeType.UPSCALE) {
+    if (pureNode.type === NodeType.UPSCALE) {
       const { is_own_model, ...options } = pureNode.options
       if (!pureNode.options.is_own_model) {
         result.push(
           {
-            name: "download",
+            type: "download",
             options: {
               name: pureNode.options.model,
             },
@@ -39,13 +39,21 @@ export function nodesToString(nodes: StackNode[]): string {
           },
         })
       }
-    } else if (pureNode.name === NodeType.RESIZE) {
+    } else if (pureNode.type === NodeType.RESIZE) {
       const { resize_type, ...options } = pureNode.options
       result.push({
         ...pureNode,
         options: options,
       })
-    } else {
+    } else if (pureNode.type === NodeType.SCREENTONE) {
+      result.push({
+        type: 'halftone',
+        options: {
+          ...pureNode.options
+        }
+      })
+    }
+    else {
       result.push(pureNode)
     }
   }
@@ -53,17 +61,17 @@ export function nodesToString(nodes: StackNode[]): string {
 }
 
 export function stringToNodes(text: string) {
-  const pureNodes = JSON.parse(text) as (Partial<StackNode> | { name: "download"; options: { name: string } })[]
+  const pureNodes = JSON.parse(text) as (Partial<StackNode> | { type: "download"; options: { name: string } })[]
   const res: StackNode[] = []
   let index = 0
   for (let i = 0; i < pureNodes.length; i += 1) {
     const pureNode = pureNodes[i]
-    if (pureNode.name === "download") {
+    if (pureNode.type === "download") {
       const scaleNode = pureNodes[i + 1]
       const model = pureNode.options.name
       res.push({
         id: index,
-        name: NodeType.UPSCALE,
+        type: NodeType.UPSCALE,
         options: {
           ...(scaleNode as StackNode).options,
           model: model,
@@ -75,10 +83,10 @@ export function stringToNodes(text: string) {
       index += 1
       continue
     }
-    if (pureNode.name === NodeType.UPSCALE) {
+    if (pureNode.type === NodeType.UPSCALE) {
       res.push({
         id: index,
-        name: NodeType.UPSCALE,
+        type: NodeType.UPSCALE,
         options: {
           ...pureNode.options,
           is_own_model: true,

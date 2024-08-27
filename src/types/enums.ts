@@ -26,6 +26,7 @@ export enum NodeType {
   CVT_COLOR = "cvt_color",
   UPSCALE = "upscale",
   RESIZE = "resize",
+  SCREENTONE = "screentone",
 }
 
 export enum CvtType {

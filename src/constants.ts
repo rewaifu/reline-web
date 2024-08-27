@@ -78,24 +78,24 @@ export const DEFAULT_NODE_OPTIONS: {
     gamma: 1,
   },
   folder_reader: {
-    path: "content/MyDrive/raws",
+    path: "/content/MyDrive/raws",
     recursive: true,
-    mode: ReaderNodeMode.RGB,
+    mode: ReaderNodeMode.DYNAMIC,
   },
   folder_writer: {
-    path: "content/MyDrive/raws/output",
+    path: "/content/MyDrive/raws/output",
     format: WriterNodeFormat.PNG,
   },
   cvt_color: {
     cvt_type: CvtType.RGB2Gray,
   },
   sharp: {
-    low_input: 0,
-    high_input: 255,
+    low_input: 3,
+    high_input: 250,
     gamma: 1,
-    diapason_white: -1,
+    diapason_white: 2,
     diapason_black: -1,
-    canny: false,
+    canny: true,
   },
   upscale: {
     is_own_model: false,
@@ -112,9 +112,15 @@ export const DEFAULT_NODE_OPTIONS: {
     spread_size: 2800,
     gamma_correction: true,
   },
+  screentone: {
+    dot_size: 7,
+  },
 }
 
 export const DEFAULT_NODES: StackNode[] = [
-  { id: 0, name: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
-  { id: 1, name: NodeType.UPSCALE, options: DEFAULT_NODE_OPTIONS.upscale, collapsed: false },
+  { id: 0, type: NodeType.FOLDER_READER, options: DEFAULT_NODE_OPTIONS.folder_reader, collapsed: true },
+  { id: 1, type: NodeType.UPSCALE, options: DEFAULT_NODE_OPTIONS.upscale, collapsed: true },
+  { id: 2, type: NodeType.SHARP, options: DEFAULT_NODE_OPTIONS.sharp, collapsed: true },
+  { id: 3, type: NodeType.SCREENTONE, options: DEFAULT_NODE_OPTIONS.screentone, collapsed: true },
+  { id: 4, type: NodeType.FOLDER_WRITER, options: DEFAULT_NODE_OPTIONS.folder_writer, collapsed: true },
 ]
