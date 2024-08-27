@@ -1,0 +1,59 @@
+import { z } from "zod"
+import { useContext } from "react"
+import { NodesContext, NodesDispatchContext } from "../../context/contexts"
+import { CvtType, NodeActionType } from "~/types/enums"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Label } from "../ui/label"
+
+const cvtColorNodeOptionsSchema = z.object({
+  cvt_type: z.nativeEnum(CvtType),
+})
+
+type CvtColorNodeOptions = z.infer<typeof cvtColorNodeOptionsSchema>
+
+export function CvtColorNodeBody({ id }: { id: number }) {
+  const nodes = useContext(NodesContext)
+  const node = nodes[id]
+  const options = node.options as CvtColorNodeOptions
+  const dispatch = useContext(NodesDispatchContext)
+  const changeValue = (newOptions: Partial<CvtColorNodeOptions>) => {
+    dispatch({
+      type: NodeActionType.CHANGE,
+      payload: {
+        ...node,
+        options: {
+          ...options,
+          ...newOptions,
+        },
+      },
+    })
+  }
+  return (
+    <div>
+      <Label>Cvt Type</Label>
+      <Select
+        onValueChange={(value) => {
+          changeValue({
+            cvt_type: value as CvtType,
+          })
+        }}
+        value={options.cvt_type}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {Object.values(CvtType).map((type) => {
+              return (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              )
+            })}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}

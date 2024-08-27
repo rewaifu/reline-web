@@ -1,44 +1,29 @@
-import type { ReactNode, FC } from "react"
-import type {GenericNodeOptions, StackNode} from "../types/node"
-import { LevelNodeBody } from "../components/nodes/level-node.tsx"
+import { useReducer } from "react"
+import { NodesContext, NodesDispatchContext } from "../context/contexts.ts"
+import { CodeSection } from "~/components/code-section.tsx"
+import { NodesSection } from "~/components/nodes-section.tsx"
+import { nodesReducer } from "~/context/reducer.ts"
+import { DEFAULT_NODES, STORAGE_KEY } from "~/constants.ts"
 
-function SectionComponent({ children, ...props }: { children: ReactNode }) {
-  return (
-    <section className="bg-[#202020] rounded p-4" {...props}>
-      {children}
-    </section>
-  )
+const getInitialData = () => {
+  const data = localStorage.getItem(STORAGE_KEY)
+  if (data) {
+    return JSON.parse(data)
+  }
+  return DEFAULT_NODES
 }
-
-const nodeBodyComponents: { [key: string]: FC<{ initialValue: GenericNodeOptions }> } = {
-  level: LevelNodeBody as FC<{ initialValue: GenericNodeOptions }>,
-}
-
-function NodeResolver({ data }: { data: StackNode }) {
-  const NodeBodyComponent = nodeBodyComponents[data.name]
-
-  return (
-    <div>
-      <span>{data.name}</span>
-      <div>
-        <NodeBodyComponent initialValue={data.options}/>
-      </div>
-    </div>
-  )
-}
-
-// todo: we're need global state for store nodes
-const nodesData: StackNode[] = [{ name: "level", options: { low_input: 10 } }]
 
 export default function HomePage() {
+  const [nodes, dispatch] = useReducer(nodesReducer, getInitialData())
+
   return (
     <main className="p-5 grid grid-cols-2 gap-x-5">
-      <SectionComponent>
-        {nodesData.map((data, index) => (
-          <NodeResolver key={`${data.name}_${index}`} data={data} />
-        ))}
-      </SectionComponent>
-      <SectionComponent>Code</SectionComponent>
+      <NodesContext.Provider value={nodes}>
+        <NodesDispatchContext.Provider value={dispatch}>
+          <NodesSection />
+          <CodeSection />
+        </NodesDispatchContext.Provider>
+      </NodesContext.Provider>
     </main>
   )
 }
