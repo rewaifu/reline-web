@@ -57,7 +57,7 @@ export function nodesToString(nodes: StackNode[]): string {
       result.push(pureNode)
     }
   }
-  return JSON.stringify(result)
+  return JSON.stringify(result, null, 2)
 }
 
 export function stringToNodes(text: string) {
