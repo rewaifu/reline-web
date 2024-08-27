@@ -14,7 +14,7 @@ export function NodesSection() {
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {nodes.map((data, index) => (
-          <NodeResolver key={`${data.name}_${index}`} id={data.id} />
+          <NodeResolver key={`${data.type}_${index}`} id={data.id} />
         ))}
       </CardContent>
     </Card>

@@ -33,7 +33,7 @@ export function AddNodeButton() {
                       type: NodeActionType.ADD,
                       payload: {
                         id: nodes.length,
-                        name: currentValue as NodeType,
+                        type: currentValue as NodeType,
                         options: DEFAULT_NODE_OPTIONS[currentValue as NodeType],
                         collapsed: false,
                       },
