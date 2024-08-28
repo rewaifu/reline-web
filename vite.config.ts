@@ -9,10 +9,7 @@ export default defineConfig({
     tsconfigPaths(),
     unfonts({
       fontsource: {
-        families: [
-            'Geist Sans',
-            'Geist Mono',
-        ]
+        families: ["Geist Sans", "Geist Mono"],
       },
     }),
   ],

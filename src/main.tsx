@@ -1,6 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import "./index.css"
+import "unfonts.css"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import HomePage from "./routes"
 import { Toaster } from "./components/ui/toaster"
