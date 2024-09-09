@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/geist-mono':
+        specifier: ^5.0.3
+        version: 5.0.3
+      '@fontsource/geist-sans':
+        specifier: ^5.0.3
+        version: 5.0.3
       express:
         specifier: ^4.19.2
         version: 4.19.2
@@ -412,6 +418,12 @@ packages:
 
   '@floating-ui/utils@0.2.7':
     resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
+
+  '@fontsource/geist-mono@5.0.3':
+    resolution: {integrity: sha512-ekY5FNiK7aMxan/c6lgVQa/rIwQ/AMEJZJWY7768jBrLVdkrCxfEfCe1ePpe7C3JnySy7c9R6HC4Xh4ksfjTaw==}
+
+  '@fontsource/geist-sans@5.0.3':
+    resolution: {integrity: sha512-oGwoSIqNPMvjtCwj1lZaEr47MeiG27XPhypwkF643u1TQduvwbm3V3hYB01JekeaT34SAGP4I1h+WCdRpJkcwA==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -2639,6 +2651,10 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.7': {}
+
+  '@fontsource/geist-mono@5.0.3': {}
+
+  '@fontsource/geist-sans@5.0.3': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:
