@@ -45,6 +45,7 @@ export const MODELS = [
   "4x_umzi_dehalfton_realplksr_v1",
   "4x_umzi_digital_art_rplksr_v1",
   "4x_umzi_digital_art_span_v1",
+  "4x_umzi_digital_art_mosr",
   "4x_wtp_ms_atdl_v1",
   "4x_wtp_ms_beta_atdl",
   "4x_wtp_ms_plksr_v1",
