@@ -1,4 +1,4 @@
-import { CvtType, NodeType, ReaderNodeMode, ResizeFilterType, ResizeType, TilerType, WriterNodeFormat } from "./types/enums"
+import { CannyType, CvtType, NodeType, ReaderNodeMode, ResizeFilterType, ResizeType, TilerType, WriterNodeFormat } from "./types/enums"
 import type { NodeOptions, StackNode } from "./types/node"
 
 export const DEFAULT_COLLAPSED = true
@@ -59,7 +59,7 @@ export const MODELS = [
   "4x_umzi_decompress_mosr",
 ]
 
-export const DEFAULT_MODEL = "4x_dwtp_ds_rplksr_delta"
+export const DEFAULT_MODEL = "4x_dwtp_ds_atdl3"
 export const MODEL_PREFIX = "/content/models/"
 export const MODEL_POSTFIX = ".pth"
 export const STORAGE_KEY = "nodes-data"
@@ -70,6 +70,8 @@ export const DEFAULT_SPREAD_SIZE = 2800
 export const DEFAULT_RESIZE_WIDTH = 2000
 export const DEFAULT_RESIZE_HEIGHT = 3200
 export const DEFAULT_RESIZE_PERCENT = 50
+
+export const DEFAULT_CANNY_TYPE = CannyType.NORMAL
 
 export const DEFAULT_NODE_OPTIONS: {
   [key in NodeType]: NodeOptions
@@ -100,6 +102,7 @@ export const DEFAULT_NODE_OPTIONS: {
     diapason_white: 2,
     diapason_black: -1,
     canny: true,
+    canny_type: DEFAULT_CANNY_TYPE,
   },
   upscale: {
     is_own_model: false,
@@ -113,7 +116,7 @@ export const DEFAULT_NODE_OPTIONS: {
     width: DEFAULT_RESIZE_WIDTH,
     filter: ResizeFilterType.CUBIC_MITCHELL,
     spread: true,
-    spread_size: 2800,
+    spread_size: DEFAULT_SPREAD_SIZE,
     gamma_correction: false,
   },
   screentone: {

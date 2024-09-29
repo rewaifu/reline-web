@@ -64,3 +64,8 @@ export enum ResizeFilterType {
   LAGRANGE = "lagrange",
   GAUSS = "gauss",
 }
+
+export enum CannyType {
+  NORMAL = "normal",
+  INVERT = "invert"
+}
