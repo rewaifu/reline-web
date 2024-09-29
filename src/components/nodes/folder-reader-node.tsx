@@ -1,19 +1,12 @@
-import { z } from "zod"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType, ReaderNodeMode } from "~/types/enums"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts"
+import { ReaderNodeMode } from "~/types/enums"
 import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { Label } from "../ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-
-const folderReaderOptionsSchema = z.object({
-  path: z.string(),
-  mode: z.nativeEnum(ReaderNodeMode),
-  recursive: z.boolean(),
-})
-
-type FolderReaderNodeOptions = z.infer<typeof folderReaderOptionsSchema>
+import { NodesActionType } from "~/types/actions.ts"
+import type { FolderReaderNodeOptions } from "~/types/options"
 
 export function FolderReaderNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -22,7 +15,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<FolderReaderNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {
@@ -40,12 +33,12 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
           placeholder="Path/to/folder"
           value={options.path}
           onChange={(e) => {
-            changeValue({ path: e.target.value })
+            changeValue({path: e.target.value})
           }}
         />
       </div>
       <div className="flex flex-col space-y-2">
-      <Label>Mode</Label>
+        <Label>Mode</Label>
         <Select
           onValueChange={(value) => {
             changeValue({
@@ -55,7 +48,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
           value={options.mode}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue />
+            <SelectValue/>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -74,10 +67,19 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
         <Checkbox
           checked={options.recursive}
           onCheckedChange={(value) => {
-            changeValue({ recursive: !!value })
+            changeValue({recursive: !!value})
           }}
         />
         <Label>recursive</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          checked={options.unarchive}
+          onCheckedChange={(value) => {
+            changeValue({unarchive: !!value})
+          }}
+        />
+        <Label>unarchive</Label>
       </div>
     </div>
   )

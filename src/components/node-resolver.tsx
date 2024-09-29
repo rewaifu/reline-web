@@ -1,7 +1,7 @@
 import { ArrowUp, ArrowDown, X, ChevronDown, ChevronRight, ChevronsUpDown, Check } from "lucide-react"
 import { type FC, useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
-import { NodeActionType, NodeType } from "~/types/enums"
+import { NodeType } from "~/types/enums"
 import { Button } from "./ui/button"
 import { Card, CardHeader, CardContent } from "./ui/card"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
@@ -13,6 +13,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { cn } from "~/lib/utils"
 import { ResizeNodeBody } from "./nodes/resize-node"
 import { ScreentoneNodeBody } from "./nodes/screentone-node"
+import { NodesActionType } from "~/types/actions.ts"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   level: LevelNodeBody as FC<{ id: number }>,
@@ -72,7 +73,7 @@ export function NodeResolver({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const onTypeChange = (value: string) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         id: data.id,
         type: value as NodeType,
@@ -86,7 +87,7 @@ export function NodeResolver({ id }: { id: number }) {
       open={!data.collapsed}
       onOpenChange={(isOpen) => {
         dispatch({
-          type: NodeActionType.CHANGE,
+          type: NodesActionType.CHANGE,
           payload: {
             ...data,
             collapsed: !isOpen,
@@ -109,8 +110,11 @@ export function NodeResolver({ id }: { id: number }) {
             className="ml-auto"
             onClick={() => {
               dispatch({
-                type: NodeActionType.MOVEUP,
-                payload: data,
+                type: NodesActionType.MOVE,
+                payload: {
+                  from: data.id,
+                  to: data.id - 1,
+                },
               })
             }}
           >
@@ -122,8 +126,11 @@ export function NodeResolver({ id }: { id: number }) {
             disabled={data.id === nodes.length - 1}
             onClick={() => {
               dispatch({
-                type: NodeActionType.MOVEDOWN,
-                payload: data,
+                type: NodesActionType.MOVE,
+                payload: {
+                  from: data.id,
+                  to: data.id + 1,
+                },
               })
             }}
           >
@@ -134,8 +141,8 @@ export function NodeResolver({ id }: { id: number }) {
             size="icon"
             onClick={() => {
               dispatch({
-                type: NodeActionType.DELETE,
-                payload: data,
+                type: NodesActionType.DELETE,
+                payload: data.id,
               })
             }}
           >

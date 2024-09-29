@@ -1,12 +1,3 @@
-export enum NodeActionType {
-  ADD = "ADD",
-  DELETE = "DELETE",
-  CHANGE = "CHANGE",
-  MOVEUP = "MOVEUP",
-  MOVEDOWN = "MOVEDOWN",
-  IMPORT = "IMPORT",
-}
-
 export enum ReaderNodeMode {
   RGB = "rgb",
   GRAY = "gray",
@@ -27,6 +18,19 @@ export enum NodeType {
   UPSCALE = "upscale",
   RESIZE = "resize",
   SCREENTONE = "screentone",
+}
+
+export enum PureNodeType {
+  LEVEL = "level",
+  FOLDER_READER = "folder_reader",
+  FOLDER_WRITER = "folder_writer",
+  SHARP = "sharp",
+  CVT_COLOR = "cvt_color",
+  UPSCALE = "upscale",
+  RESIZE = "resize",
+  HALFTONE = "halftone",
+  DOWNLOAD = "download",
+  UNARCHIVE = "unarchive",
 }
 
 export enum CvtType {
@@ -60,4 +64,9 @@ export enum ResizeFilterType {
   LANCZOS = "lanczos",
   LAGRANGE = "lagrange",
   GAUSS = "gauss",
+}
+
+export enum CannyType {
+  NORMAL = "normal",
+  INVERT = "invert",
 }

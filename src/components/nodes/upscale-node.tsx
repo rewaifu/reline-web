@@ -1,9 +1,8 @@
-import { z } from "zod"
 import { useContext, useState } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType, TilerType } from "~/types/enums.ts"
+import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { TilerType } from "~/types/enums.ts"
 import { Label } from "../ui/label"
-import { DEFAULT_MODEL, DEFAULT_TILE_SIZE, MODELS } from "~/constants"
+import { DEFAULT_MODEL, DEFAULT_TILE_SIZE } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Button } from "../ui/button"
 import { Check, ChevronsUpDown } from "lucide-react"
@@ -12,20 +11,12 @@ import { cn } from "~/lib/utils"
 import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-
-const upscaleOptionsSchema = z.object({
-  is_own_model: z.boolean(),
-  model: z.string(),
-  tiler: z.nativeEnum(TilerType),
-  exact_tiler_size: z.number(),
-  allow_cpu_upscale: z.boolean(),
-})
-
-type UpscaleNodeOptions = z.infer<typeof upscaleOptionsSchema>
+import type { UpscaleNodeOptions } from "~/types/options"
+import { NodesActionType } from "~/types/actions.ts"
 
 function Combobox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false)
-
+  const models = useContext(ModelsContext)
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -40,7 +31,7 @@ function Combobox({ value, onChange }: { value: string; onChange: (value: string
           <CommandList>
             <CommandEmpty>Nothing was found.</CommandEmpty>
             <CommandGroup>
-              {Object.values(MODELS).map((model) => (
+              {Object.values(models).map((model) => (
                 <CommandItem
                   key={model}
                   value={model}
@@ -66,9 +57,10 @@ export function UpscaleNodeBody({ id }: { id: number }) {
   const node = nodes[id]
   const options = node.options as UpscaleNodeOptions
   const dispatch = useContext(NodesDispatchContext)
+  const models = useContext(ModelsContext)
   const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {
@@ -156,7 +148,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           checked={options.is_own_model}
           onCheckedChange={(value) => {
             if (!value) {
-              changeValue({ model: MODELS.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: !!value })
+              changeValue({ model: models.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: value })
             } else if (value) {
               changeValue({ model: "", is_own_model: !!value })
             }

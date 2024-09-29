@@ -1,15 +1,9 @@
-import { z } from "zod"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType } from "~/types/enums.ts"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
-
-const screentoneOptionsSchema = z.object({
-  dot_size: z.number(),
-})
-
-type ScreentoneNodeOptions = z.infer<typeof screentoneOptionsSchema>
+import type { ScreentoneNodeOptions } from "~/types/options"
+import { NodesActionType } from "~/types/actions.ts"
 
 export function ScreentoneNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -18,7 +12,7 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<ScreentoneNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {
@@ -39,7 +33,7 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
           value={options.dot_size}
           onChange={(e) => {
             changeValue({
-                dot_size: Number.parseInt(e.target.value),
+              dot_size: Number.parseInt(e.target.value),
             })
           }}
         />

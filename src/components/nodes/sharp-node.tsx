@@ -1,21 +1,13 @@
-import { z } from "zod"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
 import { NumberInput } from "../ui/number-input"
-import { NodeActionType } from "~/types/enums"
 import { Checkbox } from "../ui/checkbox"
 import { Label } from "../ui/label"
-
-const sharpNodeOptionsSchema = z.object({
-  low_input: z.number().min(0).max(255),
-  high_input: z.number().min(0).max(255),
-  gamma: z.number(z.number().min(0).max(10)),
-  diapason_white: z.number(z.number().min(0).max(255)),
-  diapason_black: z.number(z.number().min(0).max(255)),
-  canny: z.boolean(),
-})
-
-type SharpNodeOptions = z.infer<typeof sharpNodeOptionsSchema>
+import { NodesActionType } from "~/types/actions.ts"
+import type { SharpNodeOptions } from "~/types/options"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select.tsx"
+import { CannyType } from "~/types/enums.ts"
+import { DEFAULT_CANNY_TYPE } from "~/constants.ts"
 
 export function SharpNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -24,7 +16,7 @@ export function SharpNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<SharpNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {
@@ -92,11 +84,39 @@ export function SharpNodeBody({ id }: { id: number }) {
         <Checkbox
           checked={options.canny}
           onCheckedChange={(value) => {
-            changeValue({ canny: !!value })
+            changeValue({ canny: !!value, canny_type: value ? DEFAULT_CANNY_TYPE : undefined })
           }}
         />
         <Label>canny</Label>
       </div>
+      {options.canny && (
+        <div className="flex flex-col gap-2">
+          <Label>Canny Type</Label>
+          <Select
+            onValueChange={(value) => {
+              changeValue({
+                canny_type: value as CannyType,
+              })
+            }}
+            value={options.canny_type}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {Object.values(CannyType).map((type) => {
+                  return (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  )
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
     </div>
   )
 }

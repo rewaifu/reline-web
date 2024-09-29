@@ -1,18 +1,8 @@
-import { z } from "zod"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NumberInput } from "../ui/number-input"
-import { NodeActionType} from "~/types/enums"
-
-const levelNodeOptionsSchema = z.object({
-  low_input: z.number().min(0).max(255),
-  high_input: z.number().min(0).max(255),
-  low_output: z.number(z.number().min(0).max(255)),
-  high_output: z.number(z.number().min(0).max(255)),
-  gamma: z.number(z.number().min(0).max(10)),
-})
-
-type LevelNodeOptions = z.infer<typeof levelNodeOptionsSchema>
+import type { LevelNodeOptions } from "~/types/options"
+import { NodesActionType } from "~/types/actions.ts"
 
 export function LevelNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -21,7 +11,7 @@ export function LevelNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<LevelNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {
