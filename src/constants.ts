@@ -87,6 +87,7 @@ export const DEFAULT_NODE_OPTIONS: {
     path: "/content/drive/MyDrive/raws",
     recursive: true,
     mode: ReaderNodeMode.DYNAMIC,
+    unarchive: false,
   },
   folder_writer: {
     path: "/content/drive/MyDrive/raws/output",

@@ -9,6 +9,7 @@ import type {
   PureLevelNodeOptions,
   PureResizeOptions,
   PureSharpNodeOptions,
+  PureUnarchiveNodeOptions,
   PureUpscaleNodeOptions,
 } from "~/types/options"
 
@@ -43,6 +44,7 @@ export type PureNodeOptions =
   | PureSharpNodeOptions
   | PureDownloadNodeOptions
   | PureUpscaleNodeOptions
+  | PureUnarchiveNodeOptions
 
 export interface PureNode {
   type: PureNodeType

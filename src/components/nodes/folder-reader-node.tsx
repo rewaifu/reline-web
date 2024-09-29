@@ -33,7 +33,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
           placeholder="Path/to/folder"
           value={options.path}
           onChange={(e) => {
-            changeValue({ path: e.target.value })
+            changeValue({path: e.target.value})
           }}
         />
       </div>
@@ -48,7 +48,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
           value={options.mode}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue />
+            <SelectValue/>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -67,10 +67,19 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
         <Checkbox
           checked={options.recursive}
           onCheckedChange={(value) => {
-            changeValue({ recursive: !!value })
+            changeValue({recursive: !!value})
           }}
         />
         <Label>recursive</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          checked={options.unarchive}
+          onCheckedChange={(value) => {
+            changeValue({unarchive: !!value})
+          }}
+        />
+        <Label>unarchive</Label>
       </div>
     </div>
   )

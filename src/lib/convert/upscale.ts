@@ -10,9 +10,7 @@ export const convertUpscaleToPure: ConvertToPureFunction = (nodes, index) => {
   if (is_own_model) {
     result.push({
       type: PureNodeType.UPSCALE,
-      options: {
-        ...options,
-      },
+      options,
     })
   } else {
     result.push(

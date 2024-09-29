@@ -30,6 +30,7 @@ export enum PureNodeType {
   RESIZE = "resize",
   HALFTONE = "halftone",
   DOWNLOAD = "download",
+  UNARCHIVE = "unarchive",
 }
 
 export enum CvtType {
@@ -67,5 +68,5 @@ export enum ResizeFilterType {
 
 export enum CannyType {
   NORMAL = "normal",
-  INVERT = "invert"
+  INVERT = "invert",
 }

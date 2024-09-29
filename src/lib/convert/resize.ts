@@ -10,7 +10,7 @@ export const convertResizeToPure: ConvertToPureFunction = (nodes, index) => {
     [
       {
         type: PureNodeType.RESIZE,
-        options: options,
+        options,
       },
     ],
     index + 1,

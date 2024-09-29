@@ -5,6 +5,8 @@ import { convertResizeToPure, convertResizeToStack } from "~/lib/convert/resize.
 import { convertUpscaleToPure, convertUpscaleToStack } from "~/lib/convert/upscale.ts"
 import { convertDownloadToStack } from "~/lib/convert/download.ts"
 import { DEFAULT_COLLAPSED } from "~/constants.ts"
+import { convertFolderReaderToPure, convertFolderReaderToStack } from "~/lib/convert/folder_reader.ts"
+import { convertUnarchiveToStack } from "~/lib/convert/unarchive.ts"
 
 export type ConvertToPureFunction = (nodes: StackNode[], index: number) => [PureNode[], number]
 export type ConvertToStackFunction = (nodes: PureNode[], index: number) => [StackNode[], number]
@@ -42,7 +44,7 @@ const convertToPureMapper: ToPureConvertMapper = {
   [NodeType.RESIZE]: convertResizeToPure,
   [NodeType.SCREENTONE]: convertScreentoneToPure,
   [NodeType.CVT_COLOR]: convertEqualsToPure,
-  [NodeType.FOLDER_READER]: convertEqualsToPure,
+  [NodeType.FOLDER_READER]: convertFolderReaderToPure,
   [NodeType.FOLDER_WRITER]: convertEqualsToPure,
   [NodeType.LEVEL]: convertEqualsToPure,
   [NodeType.SHARP]: convertEqualsToPure,
@@ -53,10 +55,11 @@ const convertToStackMapper: ToStackConvertMapper = {
   [PureNodeType.RESIZE]: convertResizeToStack,
   [PureNodeType.HALFTONE]: convertHalftoneToStack,
   [PureNodeType.CVT_COLOR]: convertEqualsToStack,
-  [PureNodeType.FOLDER_READER]: convertEqualsToStack,
+  [PureNodeType.FOLDER_READER]: convertFolderReaderToStack,
   [PureNodeType.FOLDER_WRITER]: convertEqualsToStack,
   [PureNodeType.LEVEL]: convertEqualsToStack,
   [PureNodeType.SHARP]: convertEqualsToStack,
+  [PureNodeType.UNARCHIVE]: convertUnarchiveToStack,
 }
 
 export const convertToPure = (nodes: StackNode[]) => {

@@ -8,7 +8,7 @@ export { sharpNodeOptionsSchema } from "./sharp"
 export { upscaleOptionsSchema } from "./upscale"
 
 export type { PureCvtColorNodeOptions, CvtColorNodeOptions } from "./cvt-color"
-export type { PureFolderReaderNodeOptions, FolderReaderNodeOptions } from "./folder-reader"
+export type { PureFolderReaderNodeOptions, FolderReaderNodeOptions, PureUnarchiveNodeOptions } from "./folder-reader"
 export type { PureFolderWriterNodeOptions, FolderWriterNodeOptions } from "./folder-writer"
 export type { PureHalftoneNodeOptions, ScreentoneNodeOptions } from "./halftone"
 export type { PureLevelNodeOptions, LevelNodeOptions } from "./level"

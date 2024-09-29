@@ -7,6 +7,7 @@ export interface PureUpscaleNodeOptions {
   exact_tiler_size: number
   allow_cpu_upscale: boolean
 }
+
 export interface PureDownloadNodeOptions {
   name: string
 }
