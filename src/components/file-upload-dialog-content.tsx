@@ -1,3 +1,4 @@
+import type { ChangeEvent } from "react"
 import { useState } from "react"
 import { Button } from "./ui/button"
 import { DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
@@ -16,7 +17,7 @@ export function FileUploadDialogContent({ onImport }: { onImport: (text: string)
         <Input
           id="file-config"
           type="file"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (e.target.files) {
               const file = e.target.files[0]
               file.text().then((text) => {
@@ -28,9 +29,14 @@ export function FileUploadDialogContent({ onImport }: { onImport: (text: string)
       </div>
       <DialogFooter className="sm:justify-end">
         <DialogClose asChild>
-          <Button type="button" variant="outline" disabled={text === ""} onClick={() => {
-            onImport(text);
-          }}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={text === ""}
+            onClick={() => {
+              onImport(text)
+            }}
+          >
             Import
           </Button>
         </DialogClose>

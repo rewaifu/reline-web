@@ -7,7 +7,7 @@ import { useToast } from "./ui/use-toast"
 import { nodesToString, stringToNodes } from "~/lib/utils"
 import { Dialog, DialogTrigger } from "./ui/dialog"
 import { FileUploadDialogContent } from "./file-upload-dialog-content"
-import { NodeActionType } from "~/types/enums"
+import { NodesActionType } from "~/types/actions.ts"
 
 export function CodeSection() {
   const nodes = useContext(NodesContext)
@@ -28,7 +28,7 @@ export function CodeSection() {
             <FileUploadDialogContent
               onImport={(text) => {
                 dispatch({
-                  type: NodeActionType.IMPORT,
+                  type: NodesActionType.IMPORT,
                   payload: stringToNodes(text),
                 })
               }}

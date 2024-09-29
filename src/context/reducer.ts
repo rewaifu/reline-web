@@ -1,6 +1,6 @@
 import { STORAGE_KEY } from "~/constants"
-import { NodeActionType } from "~/types/enums"
-import type { NodesAction, StackNode } from "~/types/node"
+import { type NodesAction, NodesActionType } from "~/types/actions"
+import type { StackNode } from "~/types/node"
 
 const saveData = (nodes: StackNode[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes))
@@ -15,46 +15,29 @@ export const nodesReducer = (state: StackNode[], action: NodesAction): StackNode
 const processAction = (state: StackNode[], action: NodesAction): StackNode[] => {
   const { type, payload } = action
   switch (type) {
-    case NodeActionType.CHANGE:
-      return state.map((node) => (node.id === (payload as StackNode).id ? (payload as StackNode) : node))
-    case NodeActionType.ADD:
-      return [...state, payload as StackNode]
-    case NodeActionType.DELETE:
-      return state.filter((node) => node.id !== (payload as StackNode).id).map((node, index) => ({ ...node, id: index }))
-    case NodeActionType.MOVEDOWN:
-      return state.map((node, index) => {
-        if (index === (payload as StackNode).id + 1) {
-          return {
-            ...(payload as StackNode),
-            id: index,
-          }
+    case NodesActionType.CHANGE:
+      return state.map((node) => (node.id === payload.id ? payload : node))
+    case NodesActionType.ADD:
+      return [...state, payload]
+    case NodesActionType.DELETE:
+      return state.filter((node) => node.id !== payload).map((node, index) => ({ ...node, id: index }))
+    case NodesActionType.MOVE: {
+      const newArray = []
+      for (let i = 0; i < state.length; i += 1) {
+        if (i === payload.from) {
+          newArray.push(state[payload.to])
+          continue
         }
-        if (index === (payload as StackNode).id) {
-          return {
-            ...state[index + 1],
-            id: (payload as StackNode).id,
-          }
+        if (i === payload.to) {
+          newArray.push(state[payload.from])
+          continue
         }
-        return node
-      })
-    case NodeActionType.MOVEUP:
-      return state.map((node, index) => {
-        if (index === (payload as StackNode).id - 1) {
-          return {
-            ...(payload as StackNode),
-            id: index,
-          }
-        }
-        if (index === (payload as StackNode).id) {
-          return {
-            ...state[index - 1],
-            id: (payload as StackNode).id,
-          }
-        }
-        return node
-      })
-    case NodeActionType.IMPORT:
-      return payload as StackNode[]
+        newArray.push(state[i])
+      }
+      return newArray
+    }
+    case NodesActionType.IMPORT:
+      return payload
     default:
       return state
   }

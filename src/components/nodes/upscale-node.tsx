@@ -1,7 +1,6 @@
-import { z } from "zod"
 import { useContext, useState } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType, TilerType } from "~/types/enums.ts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { TilerType } from "~/types/enums.ts"
 import { Label } from "../ui/label"
 import { DEFAULT_MODEL, DEFAULT_TILE_SIZE, MODELS } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -12,16 +11,8 @@ import { cn } from "~/lib/utils"
 import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-
-const upscaleOptionsSchema = z.object({
-  is_own_model: z.boolean(),
-  model: z.string(),
-  tiler: z.nativeEnum(TilerType),
-  exact_tiler_size: z.number(),
-  allow_cpu_upscale: z.boolean(),
-})
-
-type UpscaleNodeOptions = z.infer<typeof upscaleOptionsSchema>
+import type { UpscaleNodeOptions } from "~/types/options"
+import { NodesActionType } from "~/types/actions.ts"
 
 function Combobox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false)
@@ -68,7 +59,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {

@@ -1,146 +1,17 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { MODEL_POSTFIX, MODEL_PREFIX } from "~/constants"
-import { NodeType, ResizeType } from "~/types/enums"
-import type { StackNode } from "~/types/node"
+import type { StackNode } from "~/types/node.ts"
+import { convertToPure, convertToStack } from "~/lib/convert"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function nodesToString(nodes: StackNode[]): string {
-  const pureNodes = nodes.map(({ id, collapsed, ...keepAttrs }) => keepAttrs)
-  const result = []
-  for (let i = 0; i < pureNodes.length; i += 1) {
-    const pureNode = pureNodes[i]
-    if (pureNode.type === NodeType.UPSCALE) {
-      const { is_own_model, ...options } = pureNode.options
-      if (!pureNode.options.is_own_model) {
-        result.push(
-          {
-            type: "download",
-            options: {
-              name: pureNode.options.model,
-            },
-          },
-          {
-            ...pureNode,
-            options: {
-              ...options,
-              model: MODEL_PREFIX + pureNode.options.model + MODEL_POSTFIX,
-            },
-          },
-        )
-      } else {
-        result.push({
-          ...pureNode,
-          options: {
-            ...options,
-          },
-        })
-      }
-    } else if (pureNode.type === NodeType.RESIZE) {
-      const { resize_type, ...options } = pureNode.options
-      result.push({
-        ...pureNode,
-        options: options,
-      })
-    } else if (pureNode.type === NodeType.SCREENTONE) {
-      result.push({
-        type: 'halftone',
-        options: {
-          ...pureNode.options
-        }
-      })
-    }
-    else {
-      result.push(pureNode)
-    }
-  }
-  return JSON.stringify(result, null, 2)
+export const nodesToString: (nodes: StackNode[]) => string = (nodes) => {
+  return JSON.stringify(convertToPure(nodes), null, 2)
 }
 
-function getResizeType(options: any) {
-  if (options.width && !options.height) {
-    return ResizeType.BY_WIDTH
-  }
-  if (!options.width && options.height) {
-    return ResizeType.BY_HEIGHT
-  }
-  if (options.width && options.height) {
-    return ResizeType.ABSOLUTE
-  }
-  if (options.percent) {
-    return ResizeType.PERCENT
-  }
-}
-
-
-export function stringToNodes(text: string) {
-  const pureNodes = JSON.parse(text) as (Partial<StackNode> | { type: "download"; options: { name: string } } | { type: "halftone"; options: { dot_size: number } })[]
-  const res: StackNode[] = []
-  let index = 0
-  for (let i = 0; i < pureNodes.length; i += 1) {
-    const pureNode = pureNodes[i]
-    if (pureNode.type === "download") {
-      const scaleNode = pureNodes[i + 1]
-      const model = pureNode.options.name
-      res.push({
-        id: index,
-        type: NodeType.UPSCALE,
-        options: {
-          ...(scaleNode as StackNode).options,
-          model: model,
-          is_own_model: false,
-        },
-        collapsed: true,
-      })
-      i += 1
-      index += 1
-      continue
-    }
-    if (pureNode.type === NodeType.UPSCALE) {
-      res.push({
-        id: index,
-        type: NodeType.UPSCALE,
-        options: {
-          ...pureNode.options,
-          is_own_model: true,
-        },
-        collapsed: true,
-      })
-      index += 1
-      continue
-    } else if (pureNode.type === NodeType.RESIZE) {
-      res.push({
-        type: NodeType.RESIZE,
-        id: index,
-        options: {
-          ...pureNode.options,
-          resize_type: getResizeType(pureNode.options)
-        },
-        collapsed: true,
-      })
-      index += 1
-      continue
-    } else if (pureNode.type === 'halftone') {
-      res.push({
-        type: NodeType.SCREENTONE,
-        id: index,
-        options: {
-          ...pureNode.options
-        },
-        collapsed: true,
-      })
-      index += 1
-      continue
-    }
-    res.push({
-      ...(pureNode as StackNode),
-      id: index,
-      collapsed: true,
-    })
-    index += 1
-  }
-  return res
+export const stringToNodes: (text: string) => StackNode[] = (text) => {
+  const nodes = JSON.parse(text)
+  return convertToStack(nodes)
 }

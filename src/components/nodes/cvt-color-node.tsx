@@ -1,15 +1,10 @@
-import { z } from "zod"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { CvtType, NodeActionType } from "~/types/enums"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { CvtType } from "~/types/enums"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Label } from "../ui/label"
-
-const cvtColorNodeOptionsSchema = z.object({
-  cvt_type: z.nativeEnum(CvtType),
-})
-
-type CvtColorNodeOptions = z.infer<typeof cvtColorNodeOptionsSchema>
+import { NodesActionType } from "~/types/actions.ts"
+import type { CvtColorNodeOptions } from "~/types/options"
 
 export function CvtColorNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -18,7 +13,7 @@ export function CvtColorNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<CvtColorNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {

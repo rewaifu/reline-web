@@ -1,21 +1,10 @@
-import { z } from "zod"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NumberInput } from "../ui/number-input"
-import { NodeActionType } from "~/types/enums"
 import { Checkbox } from "../ui/checkbox"
 import { Label } from "../ui/label"
-
-const sharpNodeOptionsSchema = z.object({
-  low_input: z.number().min(0).max(255),
-  high_input: z.number().min(0).max(255),
-  gamma: z.number(z.number().min(0).max(10)),
-  diapason_white: z.number(z.number().min(0).max(255)),
-  diapason_black: z.number(z.number().min(0).max(255)),
-  canny: z.boolean(),
-})
-
-type SharpNodeOptions = z.infer<typeof sharpNodeOptionsSchema>
+import { NodesActionType } from "~/types/actions.ts"
+import type { SharpNodeOptions } from "~/types/options"
 
 export function SharpNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -24,7 +13,7 @@ export function SharpNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<SharpNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {

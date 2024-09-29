@@ -1,17 +1,11 @@
-import { z } from "zod"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType, WriterNodeFormat } from "~/types/enums.ts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { WriterNodeFormat } from "~/types/enums.ts"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-
-const folderWriterOptionsSchema = z.object({
-  path: z.string(),
-  format: z.nativeEnum(WriterNodeFormat),
-})
-
-type FolderWriterNodeOptions = z.infer<typeof folderWriterOptionsSchema>
+import type { FolderWriterNodeOptions } from "~/types/options"
+import { NodesActionType } from "~/types/actions.ts"
 
 export function FolderWriterNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -20,7 +14,7 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<FolderWriterNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {

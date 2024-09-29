@@ -1,5 +1,7 @@
 import { CvtType, NodeType, ReaderNodeMode, ResizeFilterType, ResizeType, TilerType, WriterNodeFormat } from "./types/enums"
-import type { GenericNodeOptions, StackNode } from "./types/node"
+import type { NodeOptions, StackNode } from "./types/node"
+
+export const DEFAULT_COLLAPSED = true
 
 export const MODELS = [
   "1_DWTP_ds_span_p",
@@ -69,7 +71,7 @@ export const DEFAULT_RESIZE_HEIGHT = 3200
 export const DEFAULT_RESIZE_PERCENT = 50
 
 export const DEFAULT_NODE_OPTIONS: {
-  [key in NodeType]: GenericNodeOptions
+  [key in NodeType]: NodeOptions
 } = {
   level: {
     low_input: 0,

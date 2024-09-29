@@ -1,11 +1,12 @@
 import { Plus } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "~/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
-import { NodeActionType, NodeType } from "~/types/enums"
+import { NodeType } from "~/types/enums"
 import { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
 import { Button } from "./ui/button"
+import { NodesActionType } from "~/types/actions.ts"
 
 export function AddNodeButton() {
   const [open, setOpen] = useState(false)
@@ -30,7 +31,7 @@ export function AddNodeButton() {
                   value={value}
                   onSelect={(currentValue) => {
                     dispatch({
-                      type: NodeActionType.ADD,
+                      type: NodesActionType.ADD,
                       payload: {
                         id: nodes.length,
                         type: currentValue as NodeType,

@@ -1,25 +1,13 @@
-import { z } from "zod"
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
-import { NodeActionType, ResizeFilterType, ResizeType } from "~/types/enums.ts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { ResizeFilterType, ResizeType } from "~/types/enums.ts"
 import { Label } from "../ui/label"
 import { DEFAULT_RESIZE_HEIGHT, DEFAULT_RESIZE_PERCENT, DEFAULT_RESIZE_WIDTH, DEFAULT_SPREAD_SIZE } from "~/constants"
 import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-
-const resizeOptionsSchema = z.object({
-  resize_type: z.nativeEnum(ResizeType),
-  width: z.number().optional(),
-  height: z.number().optional(),
-  percent: z.number().optional(),
-  filter: z.nativeEnum(ResizeFilterType),
-  gamma_correction: z.boolean(),
-  spread: z.boolean(),
-  spread_size: z.number().optional(),
-})
-
-type ResizeNodeOptions = z.infer<typeof resizeOptionsSchema>
+import type { ResizeNodeOptions } from "~/types/options"
+import { NodesActionType } from "~/types/actions.ts"
 
 const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: Partial<ResizeNodeOptions>) => void) => {
   return (
@@ -71,7 +59,7 @@ export function ResizeNodeBody({ id }: { id: number }) {
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<ResizeNodeOptions>) => {
     dispatch({
-      type: NodeActionType.CHANGE,
+      type: NodesActionType.CHANGE,
       payload: {
         ...node,
         options: {
