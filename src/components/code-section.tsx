@@ -54,9 +54,7 @@ export function CodeSection() {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="w-full">
-          <pre>{nodesToString(nodes)}</pre>
-        </p>
+        <pre>{nodesToString(nodes)}</pre>
       </CardContent>
     </Card>
   )

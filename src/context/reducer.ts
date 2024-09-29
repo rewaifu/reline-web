@@ -25,11 +25,11 @@ const processAction = (state: StackNode[], action: NodesAction): StackNode[] => 
       const newArray = []
       for (let i = 0; i < state.length; i += 1) {
         if (i === payload.from) {
-          newArray.push(state[payload.to])
+          newArray.push({...state[payload.to], id: i})
           continue
         }
         if (i === payload.to) {
-          newArray.push(state[payload.from])
+          newArray.push({...state[payload.from], id: i})
           continue
         }
         newArray.push(state[i])

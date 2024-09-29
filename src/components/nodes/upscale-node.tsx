@@ -1,8 +1,8 @@
 import { useContext, useState } from "react"
-import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
 import { TilerType } from "~/types/enums.ts"
 import { Label } from "../ui/label"
-import { DEFAULT_MODEL, DEFAULT_TILE_SIZE, MODELS } from "~/constants"
+import { DEFAULT_MODEL, DEFAULT_TILE_SIZE } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Button } from "../ui/button"
 import { Check, ChevronsUpDown } from "lucide-react"
@@ -16,7 +16,7 @@ import { NodesActionType } from "~/types/actions.ts"
 
 function Combobox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false)
-
+  const models = useContext(ModelsContext)
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -31,7 +31,7 @@ function Combobox({ value, onChange }: { value: string; onChange: (value: string
           <CommandList>
             <CommandEmpty>Nothing was found.</CommandEmpty>
             <CommandGroup>
-              {Object.values(MODELS).map((model) => (
+              {Object.values(models).map((model) => (
                 <CommandItem
                   key={model}
                   value={model}
@@ -57,6 +57,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
   const node = nodes[id]
   const options = node.options as UpscaleNodeOptions
   const dispatch = useContext(NodesDispatchContext)
+  const models = useContext(ModelsContext)
   const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
     dispatch({
       type: NodesActionType.CHANGE,
@@ -147,7 +148,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           checked={options.is_own_model}
           onCheckedChange={(value) => {
             if (!value) {
-              changeValue({ model: MODELS.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: !!value })
+              changeValue({ model: models.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: value })
             } else if (value) {
               changeValue({ model: "", is_own_model: !!value })
             }
