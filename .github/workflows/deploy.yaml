@@ -28,7 +28,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ secrets.REGISTRY }}/rewaifu/configurator
+            ${{ secrets.REGISTRY_URL }}/rewaifu/configurator
           tags: |
             type=ref,event=tag
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
