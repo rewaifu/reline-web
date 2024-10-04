@@ -1,4 +1,14 @@
-import { CannyType, CvtType, NodeType, ReaderNodeMode, ResizeFilterType, ResizeType, TilerType, WriterNodeFormat } from "./types/enums"
+import {
+  CannyType,
+  CvtType,
+  DotType,
+  NodeType,
+  ReaderNodeMode,
+  ResizeFilterType,
+  ResizeType,
+  TilerType,
+  WriterNodeFormat
+} from "./types/enums"
 import type { NodeOptions, StackNode } from "./types/node"
 
 export const DEFAULT_COLLAPSED = true
@@ -71,6 +81,10 @@ export const DEFAULT_RESIZE_WIDTH = 2000
 export const DEFAULT_RESIZE_HEIGHT = 3200
 export const DEFAULT_RESIZE_PERCENT = 50
 
+export const DEFAULT_HALFTONE_ANGLE = 0
+export const DEFAULT_HALFTONE_DOT_TYPE = DotType.CIRCLE
+export const DEFAULT_HALFTONE_DOT_SIZE = 7
+
 export const DEFAULT_CANNY_TYPE = CannyType.NORMAL
 
 export const DEFAULT_NODE_OPTIONS: {
@@ -121,7 +135,9 @@ export const DEFAULT_NODE_OPTIONS: {
     gamma_correction: false,
   },
   screentone: {
-    dot_size: 7,
+    dot_size: DEFAULT_HALFTONE_DOT_SIZE,
+    angle: DEFAULT_HALFTONE_ANGLE,
+    dot_type: DEFAULT_HALFTONE_DOT_TYPE,
   },
 }
 

@@ -1,9 +1,12 @@
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "../../context/contexts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import type { ScreentoneNodeOptions } from "~/types/options"
 import { NodesActionType } from "~/types/actions.ts"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select.tsx"
+import { DotType } from "~/types/enums.ts"
+import { NumberInput } from "~/components/ui/number-input.tsx"
 
 export function ScreentoneNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)
@@ -23,7 +26,45 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
     })
   }
   return (
-    <div>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-2">
+        <Label>dot type</Label>
+        <Select
+          onValueChange={(value) => {
+            changeValue({
+              dot_type: value as DotType,
+            })
+          }}
+          value={options.dot_type}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.values(DotType).map((type) => {
+                return (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <NumberInput
+          min={0}
+          max={360}
+          step={1}
+          labelText="angle"
+          value={options.angle}
+          onChange={(value) => {
+            changeValue({ angle: Math.trunc(value) })
+          }}
+        />
+      </div>
       <div className="flex flex-col gap-2">
         <Label>dot size</Label>
         <Input
