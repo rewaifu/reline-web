@@ -70,3 +70,11 @@ export enum CannyType {
   NORMAL = "normal",
   INVERT = "invert",
 }
+
+export enum DotType {
+  CIRCLE = "circle",
+  LINE = "line",
+  INVERT = "cross",
+  ELLIPSE = "ellipse",
+  INVLINE = "invline",
+}
