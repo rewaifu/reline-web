@@ -28,9 +28,14 @@ export function FileUploadDialogContent({ onImport }: { onImport: (text: string)
       </div>
       <DialogFooter className="sm:justify-end">
         <DialogClose asChild>
-          <Button type="button" variant="outline" disabled={text === ""} onClick={() => {
-            onImport(text);
-          }}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={text === ""}
+            onClick={() => {
+              onImport(text)
+            }}
+          >
             Import
           </Button>
         </DialogClose>

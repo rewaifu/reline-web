@@ -47,13 +47,12 @@ export function nodesToString(nodes: StackNode[]): string {
       })
     } else if (pureNode.type === NodeType.SCREENTONE) {
       result.push({
-        type: 'halftone',
+        type: "halftone",
         options: {
-          ...pureNode.options
-        }
+          ...pureNode.options,
+        },
       })
-    }
-    else {
+    } else {
       result.push(pureNode)
     }
   }
@@ -75,9 +74,12 @@ function getResizeType(options: any) {
   }
 }
 
-
 export function stringToNodes(text: string) {
-  const pureNodes = JSON.parse(text) as (Partial<StackNode> | { type: "download"; options: { name: string } } | { type: "halftone"; options: { dot_size: number } })[]
+  const pureNodes = JSON.parse(text) as (
+    | Partial<StackNode>
+    | { type: "download"; options: { name: string } }
+    | { type: "halftone"; options: { dot_size: number } }
+  )[]
   const res: StackNode[] = []
   let index = 0
   for (let i = 0; i < pureNodes.length; i += 1) {
@@ -111,24 +113,24 @@ export function stringToNodes(text: string) {
       })
       index += 1
       continue
-    } else if (pureNode.type === NodeType.RESIZE) {
+    }if (pureNode.type === NodeType.RESIZE) {
       res.push({
         type: NodeType.RESIZE,
         id: index,
         options: {
           ...pureNode.options,
-          resize_type: getResizeType(pureNode.options)
+          resize_type: getResizeType(pureNode.options),
         },
         collapsed: true,
       })
       index += 1
       continue
-    } else if (pureNode.type === 'halftone') {
+    }if (pureNode.type === "halftone") {
       res.push({
         type: NodeType.SCREENTONE,
         id: index,
         options: {
-          ...pureNode.options
+          ...pureNode.options,
         },
         collapsed: true,
       })

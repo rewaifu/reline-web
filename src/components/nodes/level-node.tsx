@@ -2,7 +2,7 @@ import { z } from "zod"
 import { useContext } from "react"
 import { NodesContext, NodesDispatchContext } from "../../context/contexts"
 import { NumberInput } from "../ui/number-input"
-import { NodeActionType} from "~/types/enums"
+import { NodeActionType } from "~/types/enums"
 
 const levelNodeOptionsSchema = z.object({
   low_input: z.number().min(0).max(255),

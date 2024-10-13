@@ -39,7 +39,7 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
           value={options.dot_size}
           onChange={(e) => {
             changeValue({
-                dot_size: Number.parseInt(e.target.value),
+              dot_size: Number.parseInt(e.target.value),
             })
           }}
         />

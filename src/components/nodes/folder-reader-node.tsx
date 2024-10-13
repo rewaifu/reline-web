@@ -45,7 +45,7 @@ export function FolderReaderNodeBody({ id }: { id: number }) {
         />
       </div>
       <div className="flex flex-col space-y-2">
-      <Label>Mode</Label>
+        <Label>Mode</Label>
         <Select
           onValueChange={(value) => {
             changeValue({
