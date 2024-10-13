@@ -1,23 +1,26 @@
 {
-  "name": "reline",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "start": "node serve.js",
+    "build": "remix vite:build",
+    "dev": "remix vite:dev",
+    "start": "remix-serve ./build/server/index.js",
+    "typecheck": "tsc",
     "lint": "biome lint --write --unsafe .",
     "format": "biome format --write --no-errors-on-unmatched .",
-    "biome": "pnpm format && pnpm lint",
-    "preview": "vite preview"
+    "biome": "pnpm format && pnpm lint"
   },
   "dependencies": {
+    "@remix-run/node": "^2.13.1",
+    "@remix-run/react": "^2.13.1",
+    "@remix-run/serve": "^2.13.1",
+    "isbot": "^4.1.0",
     "@fontsource/geist-mono": "^5.0.3",
     "@fontsource/geist-sans": "^5.0.3",
     "express": "^4.19.2"
   },
   "devDependencies": {
+    "@remix-run/dev": "^2.13.1",
     "@biomejs/biome": "1.8.3",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -50,5 +53,5 @@
     "vite-tsconfig-paths": "^4.3.2",
     "zod": "^3.23.8"
   },
-  "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
+  "packageManager": "pnpm@9.10.0"
 }

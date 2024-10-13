@@ -113,7 +113,8 @@ export function stringToNodes(text: string) {
       })
       index += 1
       continue
-    }if (pureNode.type === NodeType.RESIZE) {
+    }
+    if (pureNode.type === NodeType.RESIZE) {
       res.push({
         type: NodeType.RESIZE,
         id: index,
@@ -125,7 +126,8 @@ export function stringToNodes(text: string) {
       })
       index += 1
       continue
-    }if (pureNode.type === "halftone") {
+    }
+    if (pureNode.type === "halftone") {
       res.push({
         type: NodeType.SCREENTONE,
         id: index,
