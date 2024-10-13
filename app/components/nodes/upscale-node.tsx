@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
-import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
-import { TilerType } from "~/types/enums.ts"
+import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts"
+import { TilerType } from "~/types/enums"
 import { Label } from "../ui/label"
 import { DEFAULT_MODEL, DEFAULT_TILE_SIZE } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -12,7 +12,7 @@ import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import type { UpscaleNodeOptions } from "~/types/options"
-import { NodesActionType } from "~/types/actions.ts"
+import { NodesActionType } from "~/types/actions"
 
 function Combobox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false)

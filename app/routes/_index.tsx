@@ -1,11 +1,22 @@
 import { useReducer } from "react"
-import { NodesContext, NodesDispatchContext } from "~/context/contexts"
+import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { CodeSection } from "~/components/code-section"
 import { NodesSection } from "~/components/nodes-section"
 import { nodesReducer } from "~/context/reducer"
-import { DEFAULT_NODES, STORAGE_KEY } from "~/constants"
+import { DEFAULT_NODES, MODELS, MODELS_URL, STORAGE_KEY } from "~/constants"
+import type { ModelFile } from "~/types/api"
+import { useLoaderData } from "@remix-run/react"
+
+export const loader = async () => {
+  const modelsList = await fetch(MODELS_URL)
+    .then(async (res) => ((await res.json()) as ModelFile[]).map((model) => model.filename.split(".tar")[0]))
+    .catch(() => MODELS)
+  return { models: modelsList }
+}
 
 export default function HomePage() {
+  const loaderData = useLoaderData<typeof loader>()
+
   const getInitialData = () => {
     if (typeof window === "undefined") {
       return DEFAULT_NODES
@@ -24,8 +35,10 @@ export default function HomePage() {
     <main className="p-5 grid grid-cols-2 gap-x-5">
       <NodesContext.Provider value={nodes}>
         <NodesDispatchContext.Provider value={dispatch}>
-          <NodesSection />
-          <CodeSection />
+          <ModelsContext.Provider value={loaderData.models}>
+            <NodesSection />
+            <CodeSection />
+          </ModelsContext.Provider>
         </NodesDispatchContext.Provider>
       </NodesContext.Provider>
     </main>

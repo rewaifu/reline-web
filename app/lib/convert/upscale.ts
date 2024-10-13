@@ -1,7 +1,7 @@
 import type {ConvertToPureFunction, ConvertToStackFunction} from "~/lib/convert/index.ts"
 import type {PureUpscaleNodeOptions, UpscaleNodeOptions} from "~/types/options"
-import { NodeType, PureNodeType } from "~/types/enums.ts"
-import {DEFAULT_COLLAPSED, MODEL_POSTFIX, MODEL_PREFIX} from "~/constants.ts"
+import { NodeType, PureNodeType } from "~/types/enums"
+import {DEFAULT_COLLAPSED, MODEL_POSTFIX, MODEL_PREFIX} from "~/constants"
 
 export const convertUpscaleToPure: ConvertToPureFunction = (nodes, index) => {
   const result = []
