@@ -1,13 +1,13 @@
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
-import { ResizeFilterType, ResizeType } from "~/types/enums.ts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts"
+import { ResizeFilterType, ResizeType } from "~/types/enums"
 import { Label } from "../ui/label"
 import { DEFAULT_RESIZE_HEIGHT, DEFAULT_RESIZE_PERCENT, DEFAULT_RESIZE_WIDTH, DEFAULT_SPREAD_SIZE } from "~/constants"
 import { Input } from "../ui/input"
 import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import type { ResizeNodeOptions } from "~/types/options"
-import { NodesActionType } from "~/types/actions.ts"
+import { NodesActionType } from "~/types/actions"
 
 const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: Partial<ResizeNodeOptions>) => void) => {
   return (
@@ -16,7 +16,10 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
         <div className="flex flex-col gap-2">
           <Label>width</Label>
           <Input
+            type="number"
             className="w-[180px]"
+            step={1}
+            min={1}
             value={options.width}
             onChange={(e) => {
               changeValue({ width: Number.parseInt(e.target.value) })
@@ -28,10 +31,13 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
         <div className="flex flex-col gap-2">
           <Label>height</Label>
           <Input
+            type="number"
             className="w-[180px]"
+            step={1}
+            min={1}
             value={options.height}
             onChange={(e) => {
-              changeValue({ height: Number.parseInt(e.target.value) })
+              changeValue({ height: Number.parseInt(e.target.value)})
             }}
           />
         </div>
@@ -40,10 +46,13 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
         <div className="flex flex-col gap-2">
           <Label>percent</Label>
           <Input
+            type="number"
             className="w-[180px]"
+            step={0.1}
+            min={0}
             value={options.percent}
             onChange={(e) => {
-              changeValue({ percent: Number.parseInt(e.target.value) })
+              changeValue({ percent: Number.parseFloat(e.target.value) })
             }}
           />
         </div>
