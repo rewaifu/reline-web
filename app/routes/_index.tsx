@@ -3,9 +3,10 @@ import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/con
 import { CodeSection } from "~/components/code-section"
 import { NodesSection } from "~/components/nodes-section"
 import { nodesReducer } from "~/context/reducer"
-import { DEFAULT_NODES, MODELS, MODELS_URL, STORAGE_KEY } from "~/constants"
+import { DEFAULT_NODES, STORAGE_KEY } from "~/constants"
 import type { ModelFile } from "~/types/api"
 import { useLoaderData } from "@remix-run/react"
+import { MODELS, MODELS_URL } from "~/constants.server"
 
 export const loader = async () => {
   const modelsList = await fetch(MODELS_URL)
