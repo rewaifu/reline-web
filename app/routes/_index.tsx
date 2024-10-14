@@ -7,12 +7,20 @@ import { DEFAULT_NODES, STORAGE_KEY } from "~/constants"
 import type { ModelFile } from "~/types/api"
 import { useLoaderData } from "@remix-run/react"
 import { MODELS, MODELS_URL } from "~/constants.server"
+import type { LoaderFunction, MetaFunction } from "@remix-run/node"
 
-export const loader = async () => {
+export const loader: LoaderFunction = async () => {
   const modelsList = await fetch(MODELS_URL)
     .then(async (res) => ((await res.json()) as ModelFile[]).map((model) => model.filename.split(".tar")[0]))
     .catch(() => MODELS)
   return { models: modelsList }
+}
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Reline Configurator" },
+    { name: "description", content: "Construct config for Colab or Reline package" },
+  ]
 }
 
 export default function HomePage() {
