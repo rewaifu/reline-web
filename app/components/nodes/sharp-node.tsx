@@ -1,13 +1,13 @@
 import { useContext } from "react"
-import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
+import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { NumberInput } from "../ui/number-input"
 import { Checkbox } from "../ui/checkbox"
 import { Label } from "../ui/label"
-import { NodesActionType } from "~/types/actions.ts"
+import { NodesActionType } from "~/types/actions"
 import type { SharpNodeOptions } from "~/types/options"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select.tsx"
-import { CannyType } from "~/types/enums.ts"
-import { DEFAULT_CANNY_TYPE } from "~/constants.ts"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
+import { CannyType } from "~/types/enums"
+import { DEFAULT_CANNY_TYPE } from "~/constants"
 
 export function SharpNodeBody({ id }: { id: number }) {
   const nodes = useContext(NodesContext)

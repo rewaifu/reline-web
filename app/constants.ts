@@ -12,7 +12,6 @@ import {
 import type { NodeOptions, StackNode } from "./types/node"
 
 export const DEFAULT_COLLAPSED = true
-export const MODELS_URL = "https://mdb.yor.ovh/v1/files"
 
 export const MODELS = [
   "1_DWTP_ds_span_p",
