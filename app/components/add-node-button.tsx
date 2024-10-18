@@ -6,7 +6,7 @@ import { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
 import { Button } from "./ui/button"
-import { NodesActionType } from "~/types/actions.ts"
+import { NodesActionType } from "~/types/actions"
 
 export function AddNodeButton() {
   const [open, setOpen] = useState(false)

@@ -1,13 +1,11 @@
-import { Card, CardHeader, CardContent } from "./ui/card"
-import { useContext, useState } from "react"
+import React, { useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
-import { Button } from "./ui/button"
 import { Check, Copy, FileUp } from "lucide-react"
-import { useToast } from "./ui/use-toast"
 import { nodesToString, stringToNodes } from "~/lib/utils"
-import { Dialog, DialogTrigger } from "./ui/dialog"
-import { FileUploadDialogContent } from "./file-upload-dialog-content"
-import { NodesActionType } from "~/types/actions.ts"
+import { useToast } from "~/components/ui/use-toast"
+import { Card, CardHeader, Dialog, DialogTrigger, Button, CardContent } from "~/components/ui"
+import { FileUploadDialogContent } from "~/components/file-upload-dialog-content"
+import { NodesActionType } from "~/types/actions"
 
 export function CodeSection() {
   const nodes = useContext(NodesContext)
@@ -17,12 +15,12 @@ export function CodeSection() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center">
-        <div>Code</div>
+        <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">Code</h2>
         <div className="flex flex-row gap-2 ml-auto">
           <Dialog>
             <DialogTrigger asChild>
               <Button size="icon" variant="ghost">
-                <FileUp />
+                <FileUp/>
               </Button>
             </DialogTrigger>
             <FileUploadDialogContent
@@ -49,7 +47,7 @@ export function CodeSection() {
               })
             }}
           >
-            {isCopied ? <Check /> : <Copy />}
+            {isCopied ? <Check/> : <Copy/>}
           </Button>
         </div>
       </CardHeader>
