@@ -20,7 +20,7 @@ export function CodeSection() {
           <Dialog>
             <DialogTrigger asChild>
               <Button size="icon" variant="ghost">
-                <FileUp/>
+                <FileUp />
               </Button>
             </DialogTrigger>
             <FileUploadDialogContent
@@ -47,7 +47,7 @@ export function CodeSection() {
               })
             }}
           >
-            {isCopied ? <Check/> : <Copy/>}
+            {isCopied ? <Check /> : <Copy />}
           </Button>
         </div>
       </CardHeader>

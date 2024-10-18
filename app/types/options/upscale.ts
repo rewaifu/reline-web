@@ -16,4 +16,4 @@ export const UpscaleOptionsSchema = z.object({
 
 export type UpscaleNodeOptions = z.infer<typeof UpscaleOptionsSchema>
 
-export type PureUpscaleNodeOptions = Omit<UpscaleNodeOptions, 'is_own_model'>
+export type PureUpscaleNodeOptions = Omit<UpscaleNodeOptions, "is_own_model">

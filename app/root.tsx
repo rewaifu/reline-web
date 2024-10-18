@@ -5,7 +5,7 @@ import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node"
 import type { ReactNode } from "react"
 import { Button } from "~/components/ui/button"
 import clsx from "clsx"
-import {PreventFlashOnWrongTheme, type Theme, ThemeProvider, useTheme} from "remix-themes"
+import { PreventFlashOnWrongTheme, type Theme, ThemeProvider, useTheme } from "remix-themes"
 import { themeSessionResolver } from "~/sessions.server"
 
 export const links: LinksFunction = () => {

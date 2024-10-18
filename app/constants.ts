@@ -1,13 +1,14 @@
 import {
   CannyType,
   CvtType,
-  DotType, DType,
+  DotType,
+  DType,
   NodeType,
   ReaderNodeMode,
   ResizeFilterType,
   ResizeType,
   TilerType,
-  WriterNodeFormat
+  WriterNodeFormat,
 } from "./types/enums"
 import type { NodeOptions, StackNode } from "./types/node"
 

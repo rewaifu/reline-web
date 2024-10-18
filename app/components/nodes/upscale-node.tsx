@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts"
-import {DType, TilerType} from "~/types/enums"
+import { DType, TilerType } from "~/types/enums"
 import { Label } from "../ui/label"
 import { DEFAULT_MODEL, DEFAULT_TILE_SIZE } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -20,7 +20,7 @@ function Combobox({ value, onChange }: { value: string; onChange: (value: string
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+        <Button variant="outline" aria-role="combobox" aria-expanded={open} className="w-full justify-between">
           {value}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -80,7 +80,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
             placeholder="Path/to/model"
             value={options.model}
             onChange={(e) => {
-              changeValue({model: e.target.value})
+              changeValue({ model: e.target.value })
             }}
           />
         ) : (
@@ -114,7 +114,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           value={options.tiler}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue/>
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -149,12 +149,9 @@ export function UpscaleNodeBody({ id }: { id: number }) {
 
       <div className="flex flex-col gap-2">
         <Label>DType</Label>
-        <Select
-          onValueChange={(value: DType) => changeValue({dtype: value})}
-          value={options.dtype}
-        >
+        <Select onValueChange={(value: DType) => changeValue({ dtype: value })} value={options.dtype}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue/>
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -175,9 +172,9 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           checked={options.is_own_model}
           onCheckedChange={(value) => {
             if (!value) {
-              changeValue({model: models.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: value})
+              changeValue({ model: models.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: value })
             } else if (value) {
-              changeValue({model: "", is_own_model: !!value})
+              changeValue({ model: "", is_own_model: !!value })
             }
           }}
         />
@@ -188,7 +185,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
         <Checkbox
           checked={options.allow_cpu_upscale}
           onCheckedChange={(value) => {
-            changeValue({allow_cpu_upscale: !!value})
+            changeValue({ allow_cpu_upscale: !!value })
           }}
         />
         <Label>allow cpu upscale</Label>

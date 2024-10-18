@@ -31,7 +31,7 @@ function Combobox({ allValues, initialValue, onChange }: { allValues: string[]; 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+        <Button variant="outline" aria-role="combobox" aria-expanded={open} className="w-[200px] justify-between">
           {value}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

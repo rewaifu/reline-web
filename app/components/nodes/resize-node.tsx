@@ -37,7 +37,7 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
             min={1}
             value={options.height}
             onChange={(e) => {
-              changeValue({ height: Number.parseInt(e.target.value)})
+              changeValue({ height: Number.parseInt(e.target.value) })
             }}
           />
         </div>
