@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts"
-import { TilerType } from "~/types/enums"
+import { DType, TilerType } from "~/types/enums"
 import { Label } from "../ui/label"
 import { DEFAULT_MODEL, DEFAULT_TILE_SIZE } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -20,7 +20,7 @@ function Combobox({ value, onChange }: { value: string; onChange: (value: string
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+        <Button variant="outline" aria-role="combobox" aria-expanded={open} className="w-full justify-between">
           {value}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -70,6 +70,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
       },
     })
   }
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
@@ -93,6 +94,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           />
         )}
       </div>
+
       <div className="flex flex-col gap-2">
         <Label>Tiler</Label>
         <Select
@@ -127,6 +129,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           </SelectContent>
         </Select>
       </div>
+
       {options.tiler === TilerType.EXACT && (
         <div className="flex flex-col gap-2">
           <Label>Tile size</Label>
@@ -143,6 +146,27 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           />
         </div>
       )}
+
+      <div className="flex flex-col gap-2">
+        <Label>DType</Label>
+        <Select onValueChange={(value: DType) => changeValue({ dtype: value })} value={options.dtype}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.values(DType).map((type) => {
+                return (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="flex items-center space-x-2">
         <Checkbox
           checked={options.is_own_model}
@@ -156,6 +180,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
         />
         <Label>own model</Label>
       </div>
+
       <div className="flex items-center space-x-2">
         <Checkbox
           checked={options.allow_cpu_upscale}

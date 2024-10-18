@@ -2,18 +2,16 @@ import { ArrowUp, ArrowDown, X, ChevronDown, ChevronRight, ChevronsUpDown, Check
 import { type FC, useContext, useState } from "react"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts"
 import { NodeType } from "~/types/enums"
-import { Button } from "./ui/button"
-import { Card, CardHeader, CardContent } from "./ui/card"
 import { DEFAULT_NODE_OPTIONS } from "~/constants"
 import { CvtColorNodeBody, FolderReaderNodeBody, FolderWriterNodeBody, LevelNodeBody, SharpNodeBody } from "./nodes"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
-import { UpscaleNodeBody } from "./nodes/upscale-node"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger, Button, Card, CardHeader, CardContent } from "~/components/ui"
+import { UpscaleNodeBody } from "~/components/nodes"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command"
 import { cn } from "~/lib/utils"
 import { ResizeNodeBody } from "./nodes/resize-node"
 import { ScreentoneNodeBody } from "./nodes/screentone-node"
-import { NodesActionType } from "~/types/actions.ts"
+import { NodesActionType } from "~/types/actions"
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
   level: LevelNodeBody as FC<{ id: number }>,
@@ -33,7 +31,7 @@ function Combobox({ allValues, initialValue, onChange }: { allValues: string[]; 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+        <Button variant="outline" aria-role="combobox" aria-expanded={open} className="w-[200px] justify-between">
           {value}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

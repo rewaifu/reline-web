@@ -1,9 +1,12 @@
-import { Link, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteError } from "@remix-run/react"
+import { Link, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useRouteError, useRouteLoaderData } from "@remix-run/react"
 import "./index.css"
 import { Toaster } from "~/components/ui/toaster"
-import type { LinksFunction } from "@remix-run/node"
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node"
 import type { ReactNode } from "react"
 import { Button } from "~/components/ui/button"
+import clsx from "clsx"
+import { PreventFlashOnWrongTheme, type Theme, ThemeProvider, useTheme } from "remix-themes"
+import { themeSessionResolver } from "~/sessions.server"
 
 export const links: LinksFunction = () => {
   return [
@@ -16,14 +19,23 @@ export const links: LinksFunction = () => {
   ]
 }
 
-export function Layout({ children }: { children: ReactNode }) {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { getTheme } = await themeSessionResolver(request)
+  return {
+    theme: getTheme(),
+  }
+}
+
+export function EntryLayout({ children, ssrTheme }: { children: ReactNode; ssrTheme?: Theme | null }) {
+  const [theme] = useTheme()
   return (
-    <html lang="en">
+    <html lang="en" className={clsx(theme)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script defer data-domain="configurator.yor.ovh" src="https://a.shd.llc/js/script.js" />
         <Meta />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(ssrTheme)} />
         <Links />
       </head>
       <body>
@@ -33,6 +45,18 @@ export function Layout({ children }: { children: ReactNode }) {
         <Toaster />
       </body>
     </html>
+  )
+}
+
+export function Layout({ children }: { children: ReactNode }) {
+  const data = useRouteLoaderData<typeof loader>("root")
+
+  return data ? (
+    <ThemeProvider specifiedTheme={data.theme} themeAction="/api/set-theme">
+      <EntryLayout ssrTheme={data.theme}>{children}</EntryLayout>
+    </ThemeProvider>
+  ) : (
+    <EntryLayout>{children}</EntryLayout>
   )
 }
 

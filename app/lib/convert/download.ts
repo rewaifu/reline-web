@@ -1,7 +1,7 @@
 import type { ConvertToStackFunction } from "~/lib/convert/index.ts"
 import type { PureDownloadNodeOptions, PureUpscaleNodeOptions } from "~/types/options"
-import { NodeType } from "~/types/enums.ts"
-import { DEFAULT_COLLAPSED } from "~/constants.ts"
+import { NodeType } from "~/types/enums"
+import { DEFAULT_COLLAPSED } from "~/constants"
 
 export const convertDownloadToStack: ConvertToStackFunction = (nodes, index) => {
   const node = nodes[index]

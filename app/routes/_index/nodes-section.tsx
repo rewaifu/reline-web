@@ -1,15 +1,15 @@
-import { Card, CardHeader, CardContent } from "./ui/card"
-import { useContext } from "react"
+import { Card, CardHeader, CardContent } from "~/components/ui"
+import React, { useContext } from "react"
 import { NodesContext } from "~/context/contexts"
-import { NodeResolver } from "./node-resolver"
-import { AddNodeButton } from "./add-node-button"
+import { NodeResolver } from "~/components/node-resolver"
+import { AddNodeButton } from "~/components/add-node-button"
 
 export function NodesSection() {
   const nodes = useContext(NodesContext)
   return (
     <Card>
       <CardHeader className="flex flex-row items-center">
-        <div>Nodes</div>
+        <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">Nodes</h2>
         <AddNodeButton />
       </CardHeader>
       <CardContent className="flex flex-col gap-3">

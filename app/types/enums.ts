@@ -78,3 +78,9 @@ export enum DotType {
   ELLIPSE = "ellipse",
   INVLINE = "invline",
 }
+
+export enum DType {
+  F32 = "F32",
+  F16 = "F16",
+  BF16 = "BF16",
+}
