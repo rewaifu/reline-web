@@ -1,7 +1,7 @@
 import {
   CannyType,
   CvtType,
-  DotType,
+  DotType, DType,
   NodeType,
   ReaderNodeMode,
   ResizeFilterType,
@@ -66,6 +66,7 @@ export const DEFAULT_NODE_OPTIONS: {
   upscale: {
     is_own_model: false,
     model: DEFAULT_MODEL,
+    dtype: DType.F32,
     tiler: TilerType.EXACT,
     exact_tiler_size: DEFAULT_TILE_SIZE,
     allow_cpu_upscale: false,

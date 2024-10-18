@@ -5,7 +5,7 @@ export { screentoneOptionsSchema } from "./halftone"
 export { levelNodeOptionsSchema } from "./level"
 export { resizeOptionsSchema } from "./resize"
 export { sharpNodeOptionsSchema } from "./sharp"
-export { upscaleOptionsSchema } from "./upscale"
+export { UpscaleOptionsSchema } from "./upscale"
 
 export type { PureCvtColorNodeOptions, CvtColorNodeOptions } from "./cvt-color"
 export type { PureFolderReaderNodeOptions, FolderReaderNodeOptions, PureUnarchiveNodeOptions } from "./folder-reader"

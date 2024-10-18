@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { ModelsContext, NodesContext, NodesDispatchContext } from "~/context/contexts"
-import { TilerType } from "~/types/enums"
+import {DType, TilerType} from "~/types/enums"
 import { Label } from "../ui/label"
 import { DEFAULT_MODEL, DEFAULT_TILE_SIZE } from "~/constants"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -70,6 +70,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
       },
     })
   }
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
@@ -79,7 +80,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
             placeholder="Path/to/model"
             value={options.model}
             onChange={(e) => {
-              changeValue({ model: e.target.value })
+              changeValue({model: e.target.value})
             }}
           />
         ) : (
@@ -93,6 +94,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           />
         )}
       </div>
+
       <div className="flex flex-col gap-2">
         <Label>Tiler</Label>
         <Select
@@ -112,7 +114,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           value={options.tiler}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue />
+            <SelectValue/>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -127,6 +129,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           </SelectContent>
         </Select>
       </div>
+
       {options.tiler === TilerType.EXACT && (
         <div className="flex flex-col gap-2">
           <Label>Tile size</Label>
@@ -143,24 +146,49 @@ export function UpscaleNodeBody({ id }: { id: number }) {
           />
         </div>
       )}
+
+      <div className="flex flex-col gap-2">
+        <Label>DType</Label>
+        <Select
+          onValueChange={(value: DType) => changeValue({dtype: value})}
+          value={options.dtype}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue/>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.values(DType).map((type) => {
+                return (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="flex items-center space-x-2">
         <Checkbox
           checked={options.is_own_model}
           onCheckedChange={(value) => {
             if (!value) {
-              changeValue({ model: models.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: value })
+              changeValue({model: models.includes(options.model) ? options.model : DEFAULT_MODEL, is_own_model: value})
             } else if (value) {
-              changeValue({ model: "", is_own_model: !!value })
+              changeValue({model: "", is_own_model: !!value})
             }
           }}
         />
         <Label>own model</Label>
       </div>
+
       <div className="flex items-center space-x-2">
         <Checkbox
           checked={options.allow_cpu_upscale}
           onCheckedChange={(value) => {
-            changeValue({ allow_cpu_upscale: !!value })
+            changeValue({allow_cpu_upscale: !!value})
           }}
         />
         <Label>allow cpu upscale</Label>
