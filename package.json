@@ -4,7 +4,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "remix vite:dev",
-    "start": "remix-serve ./build/server/index.js",
+    "start": "bunx remix-serve ./build/server/index.js",
     "typecheck": "tsc",
     "lint": "biome lint --write --unsafe .",
     "format": "biome format --write --no-errors-on-unmatched .",
@@ -55,5 +55,5 @@
     "vite": "^5.3.4",
     "vite-tsconfig-paths": "^4.3.2"
   },
-  "packageManager": "pnpm@9.10.0"
+  "packageManager": "pnpm@10.1.0+sha1.ab7948c89104fdd3fc88b5b391fa4b73fd800631"
 }

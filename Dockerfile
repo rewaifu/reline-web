@@ -1,19 +1,28 @@
-FROM node:20-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-COPY . /app
-WORKDIR /app
+FROM oven/bun:1-alpine AS base
+WORKDIR /usr/src/app
 
-FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lock /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
 
-FROM base AS build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run build
+RUN mkdir -p /temp/prod
+COPY package.json bun.lock /temp/prod/
+RUN cd /temp/prod && bun install --frozen-lockfile --production
 
-FROM base
-COPY --from=prod-deps /app/node_modules /app/node_modules
-COPY --from=build /app/build /app/build
-EXPOSE 3000
-CMD [ "pnpm", "start" ]
+FROM base AS prerelease
+COPY --from=install /temp/dev/node_modules node_modules
+COPY . .
+
+ENV NODE_ENV=production
+RUN bun run build
+
+FROM base AS release
+RUN apk add --no-cache gcompat libstdc++
+COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=prerelease /usr/src/app/build build
+COPY --from=prerelease /usr/src/app/package.json .
+
+USER bun
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "run", "start" ]

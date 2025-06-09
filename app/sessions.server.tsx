@@ -8,6 +8,7 @@ const sessionStorage = createCookieSessionStorage({
     httpOnly: true,
     sameSite: "lax",
     ...(process.env.NODE_ENV === "production" ? { domain: "configurator.yor.ovh", secure: true } : {}),
+    secrets: ['something']
   },
 })
 
