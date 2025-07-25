@@ -13,8 +13,7 @@ export const convertScreentoneToPure: ConvertToPureFunction = (nodes, index) => 
         options: {
           ...options,
           halftone_mode: ReaderNodeMode.GRAY,
-          ssaa_scale: options.ssaa_scale !== undefined ? options.ssaa_scale : "None",
-          ssaa_filter: options.ssaa_filter
+          ssaa_filter: options.ssaa_scale !== undefined ? options.ssaa_filter : undefined
         },
       },
     ],

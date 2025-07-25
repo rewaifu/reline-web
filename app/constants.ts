@@ -84,7 +84,7 @@ export const DEFAULT_NODE_OPTIONS: {
     dot_size: DEFAULT_HALFTONE_DOT_SIZE,
     angle: DEFAULT_HALFTONE_ANGLE,
     dot_type: DEFAULT_HALFTONE_DOT_TYPE,
-    ssaa_scale: "None",
+    ssaa_scale: undefined,
     ssaa_filter: ResizeFilterType.SHAMMING4,
   },
 }
