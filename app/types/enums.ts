@@ -96,3 +96,10 @@ export enum DType {
   F16 = "F16",
   BF16 = "BF16",
 }
+
+export enum HalftoneMode {
+  GRAY = "gray",
+  RGB = "rgb",
+  HSV = "hsv",
+  CMYK = "cmyk"
+}
