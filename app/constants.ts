@@ -2,7 +2,7 @@ import {
   CannyType,
   CvtType,
   DotType,
-  DType,
+  DType, HalftoneMode,
   NodeType,
   ReaderNodeMode,
   ResizeFilterType,
@@ -26,9 +26,11 @@ export const DEFAULT_RESIZE_WIDTH = 2000
 export const DEFAULT_RESIZE_HEIGHT = 3200
 export const DEFAULT_RESIZE_PERCENT = 0.5
 
+export const DEFAULT_HALFTONE_MODE = HalftoneMode.GRAY
 export const DEFAULT_HALFTONE_ANGLE = 0
 export const DEFAULT_HALFTONE_DOT_TYPE = DotType.CIRCLE
 export const DEFAULT_HALFTONE_DOT_SIZE = 7
+export const DEFAULT_HALFTONE_SSAA_FILTER = ResizeFilterType.SHAMMING4
 
 export const DEFAULT_CANNY_TYPE = CannyType.NORMAL
 
@@ -81,11 +83,12 @@ export const DEFAULT_NODE_OPTIONS: {
     gamma_correction: false,
   },
   screentone: {
+    halftone_mode: DEFAULT_HALFTONE_MODE,
     dot_size: DEFAULT_HALFTONE_DOT_SIZE,
     angle: DEFAULT_HALFTONE_ANGLE,
     dot_type: DEFAULT_HALFTONE_DOT_TYPE,
     ssaa_scale: undefined,
-    ssaa_filter: ResizeFilterType.SHAMMING4,
+    ssaa_filter: DEFAULT_HALFTONE_SSAA_FILTER,
   },
 }
 
