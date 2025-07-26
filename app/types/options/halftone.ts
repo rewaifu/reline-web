@@ -1,5 +1,5 @@
 import { z } from "zod"
-import {DotType, HalftoneMode, type ReaderNodeMode, ResizeFilterType} from "~/types/enums.ts"
+import {DotType, HalftoneMode, ResizeFilterType} from "~/types/enums.ts"
 
 // todo
 export interface PureHalftoneNodeOptions {

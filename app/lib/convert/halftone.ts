@@ -1,6 +1,6 @@
 import type { ConvertToPureFunction, ConvertToStackFunction } from "~/lib/convert/index.ts"
 import type { ScreentoneNodeOptions } from "~/types/options"
-import { NodeType, PureNodeType, ReaderNodeMode } from "~/types/enums.ts"
+import { NodeType, PureNodeType } from "~/types/enums.ts"
 import { DEFAULT_COLLAPSED } from "~/constants.ts"
 
 export const convertScreentoneToPure: ConvertToPureFunction = (nodes, index) => {
