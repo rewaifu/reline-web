@@ -33,7 +33,6 @@ export function EntryLayout({ children, ssrTheme }: { children: ReactNode; ssrTh
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script defer data-domain="configurator.yor.ovh" src="https://a.shd.llc/js/script.js" />
         <Meta />
         <PreventFlashOnWrongTheme ssrTheme={Boolean(ssrTheme)} />
         <Links />
