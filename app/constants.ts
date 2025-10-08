@@ -32,7 +32,7 @@ export const DEFAULT_HALFTONE_DOT_TYPE = DotType.CIRCLE
 export const DEFAULT_HALFTONE_DOT_SIZE = 7
 export const DEFAULT_HALFTONE_SSAA_FILTER = ResizeFilterType.SHAMMING4
 
-export const DEFAULT_CANNY_TYPE = CannyType.NORMAL
+export const DEFAULT_CANNY_TYPE = CannyType.UNSHARP
 
 export const DEFAULT_NODE_OPTIONS: {
   [key in NodeType]: NodeOptions
@@ -47,7 +47,7 @@ export const DEFAULT_NODE_OPTIONS: {
   folder_reader: {
     path: "/content/drive/MyDrive/raws",
     recursive: true,
-    mode: ReaderNodeMode.DYNAMIC,
+    mode: ReaderNodeMode.RGB,
     unarchive: false,
   },
   folder_writer: {

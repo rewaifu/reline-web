@@ -6,6 +6,7 @@ import { useToast } from "~/components/ui/use-toast"
 import { Card, CardHeader, Dialog, DialogTrigger, Button, CardContent } from "~/components/ui"
 import { FileUploadDialogContent } from "~/components/file-upload-dialog-content"
 import { NodesActionType } from "~/types/actions"
+import { migrateNodes } from "~/lib/config-migration";
 
 export function CodeSection() {
   const nodes = useContext(NodesContext)
@@ -24,12 +25,14 @@ export function CodeSection() {
               </Button>
             </DialogTrigger>
             <FileUploadDialogContent
-              onImport={(text) => {
-                dispatch({
-                  type: NodesActionType.IMPORT,
-                  payload: stringToNodes(text),
-                })
-              }}
+                onImport={(text) => {
+                    const parsedNodes = stringToNodes(text);
+                    const migratedNodes = migrateNodes(parsedNodes);
+                    dispatch({
+                        type: NodesActionType.IMPORT,
+                        payload: migratedNodes,
+                    });
+                }}
             />
           </Dialog>
           <Button

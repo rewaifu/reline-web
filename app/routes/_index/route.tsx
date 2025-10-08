@@ -9,6 +9,7 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/node"
 import { CodeSection } from "./code-section"
 import { NodesSection } from "./nodes-section"
 import { ModeToggle } from "~/components/mode-toggle"
+import { migrateNodes } from "~/lib/config-migration";
 
 export const loader: LoaderFunction = async () => {
   const modelsList = await fetch(MODELS_URL)
@@ -29,11 +30,17 @@ export default function HomePage() {
       return DEFAULT_NODES
     }
 
-    const data = localStorage.getItem(STORAGE_KEY)
-    if (data) {
-      return JSON.parse(data)
-    }
-    return DEFAULT_NODES
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (data) {
+          try {
+              const parsedNodes = JSON.parse(data);
+              return migrateNodes(parsedNodes);
+          } catch (error) {
+              console.error("Err parsing from storage:", error);
+              return DEFAULT_NODES;
+          }
+      }
+      return DEFAULT_NODES;
   }
 
   const [nodes, dispatch] = useReducer(nodesReducer, getInitialData())
