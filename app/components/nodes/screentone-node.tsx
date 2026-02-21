@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { DotType, HalftoneMode, ResizeFilterType } from "~/types/enums.ts"
 import { NumberInput } from "~/components/ui/number-input.tsx"
 import {DEFAULT_HALFTONE_SSAA_FILTER} from "~/constants";
+import { Combobox } from "~/components/ui/combobox"
+import {Checkbox} from "~/components/ui";
 
 export function ScreentoneNodeBody({ id }: { id: number }) {
     const nodes = useContext(NodesContext)
@@ -43,6 +45,12 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
     const ensureArray = <T,>(value: T | T[], length: number, fallback: T): T[] => {
         if (Array.isArray(value)) return value.length === length ? value : Array(length).fill(fallback)
         return Array(length).fill(value)
+    }
+
+    const getAutoDot = (dot: number): number | null => {
+        if (!options.ssaa_scale || options.ssaa_scale <= 1) return null
+        if (options.disable_auto_dot === true) return null
+        return Number((dot * options.ssaa_scale).toFixed(2))
     }
 
     const dotSizes = ensureArray(options.dot_size, channelCount, 6)
@@ -94,16 +102,26 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
                 />
 
                 <Label>Dot Size</Label>
-                <Input
-                    type="number"
-                    className="w-[180px]"
-                    step={1}
-                    value={dotSizes[i]}
-                    onChange={(e) => updateArrayField("dot_size", i, parseInt(e.target.value))}
-                />
+                <div className="flex items-center gap-2">
+                    <Input
+                        type="number"
+                        className="w-[100px]"
+                        step={1}
+                        min={0}
+                        value={dotSizes[i]}
+                        onChange={(e) => updateArrayField("dot_size", i, parseInt(e.target.value))}
+                    />
+                    {getAutoDot(dotSizes[i]) !== null && (
+                    <span className="text-sm text-muted-foreground">~{getAutoDot(dotSizes[i])}</span>
+                    )}
+                </div>
             </div>
         ))
     }
+    const filterOptions = Object.values(ResizeFilterType).map((type) => ({
+        value: type,
+        label: type,
+    }))
 
     return (
         <div className="flex flex-col gap-5">
@@ -195,17 +213,23 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
 
                     <div className="flex flex-col gap-2">
                         <Label>Dot Size</Label>
-                        <Input
-                            type="number"
-                            className="w-[180px]"
-                            step={1}
-                            value={options.dot_size as number}
-                            onChange={(e) => {
-                                changeValue({
-                                    dot_size: Number.parseInt(e.target.value),
-                                })
-                            }}
-                        />
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="number"
+                                className="w-[100px]"
+                                step="1"
+                                min="0"
+                                value={options.dot_size as number}
+                                onChange={(e) => {
+                                    changeValue({
+                                        dot_size: Number.parseInt(e.target.value),
+                                    })
+                                }}
+                            />
+                            {getAutoDot(options.dot_size as number) !== null && (
+                            <span className="text-sm text-muted-foreground">~{getAutoDot(options.dot_size as number)}</span>
+                            )}
+                        </div>
                     </div>
                 </>
             )}
@@ -216,40 +240,51 @@ export function ScreentoneNodeBody({ id }: { id: number }) {
                     type="number"
                     className="w-[180px]"
                     step="0.1"
+                    min="1"
                     placeholder="None"
                     value={options.ssaa_scale ?? ""}
-                    onChange={(e) => {
-                        const value = e.target.value
-                        changeValue({
-                            ssaa_scale: value === "" ? undefined : parseFloat(value),
-                        })
+                    onInput={(e) => {
+                        const raw = (e.target as HTMLInputElement).value
+
+                        if (raw === "") {
+                            changeValue({ ssaa_scale: undefined })
+                            return
+                        }
+
+                        const num = parseFloat(raw)
+                        if (num === 1 && !options.ssaa_scale) {
+                            changeValue({ ssaa_scale: 1.1 })
+                            return
+                        }
+                        if (num <= 1) {
+                            changeValue({ ssaa_scale: undefined })
+                            return
+                        }
+
+                        changeValue({ ssaa_scale: Number(num.toFixed(2)) })
                     }}
                 />
             </div>
 
             <div className="flex flex-col gap-2">
                 <Label>SSAA Filter</Label>
-                <Select
-                    onValueChange={(value) => {
-                        changeValue({
-                            ssaa_filter: value as ResizeFilterType,
-                        })
-                    }}
+                <Combobox
                     value={options.ssaa_filter}
-                >
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            {Object.values(ResizeFilterType).map((type) => (
-                                <SelectItem key={type} value={type}>
-                                    {type}
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                    onChange={(value) =>
+                        changeValue({ ssaa_filter: value as ResizeFilterType })
+                    }
+                    options={filterOptions}
+                    className="w-[180px]"
+                />
+            </div>
+            <div className="flex flex-row gap-2">
+                <Checkbox
+                    checked={options.disable_auto_dot === true}
+                    onCheckedChange={(value) => {
+                        changeValue({ disable_auto_dot: value === true? true: undefined })
+                    }}
+                />
+                <Label>Disable auto dot size adjustment for SSAA</Label>
             </div>
         </div>
     )
