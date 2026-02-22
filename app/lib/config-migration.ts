@@ -13,7 +13,7 @@ export function migrateNodes(nodes: StackNode[]): StackNode[] {
                     ...node,
                     options: {
                         ...options,
-                        filter: ResizeFilterType.CUBIC_MITCHELL,
+                        filter: ResizeFilterType.MITCHELL,
                     },
                 };
             }

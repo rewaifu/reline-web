@@ -1,8 +1,9 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "**/.server/**/*.ts", "**/.server/**/*.tsx", "**/.client/**/*.ts", "**/.client/**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@remix-run/node", "vite/client", "unplugin-fonts/client"],
+    "types": ["vite/client", "unplugin-fonts/client"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -19,6 +20,7 @@
       "~/*": ["./app/*"],
       "@/*": ["./app/*"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   }
 }

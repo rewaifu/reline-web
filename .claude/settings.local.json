@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"Remove-Item ''C:\\\\Users\\\\user\\\\Desktop\\\\reline-web\\\\app\\\\root.tsx'' -Force; Remove-Item ''C:\\\\Users\\\\user\\\\Desktop\\\\reline-web\\\\app\\\\sessions.server.tsx'' -Force; Remove-Item ''C:\\\\Users\\\\user\\\\Desktop\\\\reline-web\\\\app\\\\constants.server.ts'' -Force; Remove-Item ''C:\\\\Users\\\\user\\\\Desktop\\\\reline-web\\\\tailwind.config.ts'' -Force; Remove-Item ''C:\\\\Users\\\\user\\\\Desktop\\\\reline-web\\\\app\\\\routes'' -Recurse -Force; Write-Host ''Done''\")",
+      "Bash(powershell -Command:*)",
+      "Bash(cmd /c \"pnpm install\":*)",
+      "Bash(cmd /c \"pnpm install 2>&1\")",
+      "Bash(cmd /c \"cd /d C:\\\\Users\\\\user\\\\Desktop\\\\reline-web && pnpm install 2>&1\")",
+      "Bash(cmd /c \"cd /d C:\\\\Users\\\\user\\\\Desktop\\\\reline-web && bun install 2>&1\")",
+      "Bash(bun install:*)",
+      "Bash(bun run build:*)"
+    ]
+  }
+}
