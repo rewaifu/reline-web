@@ -5,7 +5,6 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import unfonts from "unplugin-fonts/vite"
 
 export default defineConfig({
-  base: process.env.GITHUB_PAGES ? "/reline-web/" : "/",
   plugins: [
     react(),
     tailwindcss(),
