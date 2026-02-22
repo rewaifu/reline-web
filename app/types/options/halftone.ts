@@ -16,6 +16,7 @@ export const screentoneOptionsSchema = z.object({
   dot_type: z.union([z.nativeEnum(DotType), z.array(z.nativeEnum(DotType))]),
   ssaa_scale: z.number().optional(),
   ssaa_filter: z.nativeEnum(ResizeFilterType).optional(),
+  disable_auto_dot: z.boolean().optional(),
 })
 
 export type ScreentoneNodeOptions = z.infer<typeof screentoneOptionsSchema>

@@ -77,7 +77,7 @@ export const DEFAULT_NODE_OPTIONS: {
   resize: {
     resize_type: ResizeType.BY_WIDTH,
     width: DEFAULT_RESIZE_WIDTH,
-    filter: ResizeFilterType.CUBIC_MITCHELL,
+    filter: ResizeFilterType.SHAMMING4,
     spread: true,
     spread_size: DEFAULT_SPREAD_SIZE,
     gamma_correction: false,

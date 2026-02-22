@@ -13,43 +13,23 @@ import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import type { UpscaleNodeOptions } from "~/types/options"
 import { NodesActionType } from "~/types/actions"
+import { Combobox, ComboboxOption } from "~/components/ui/combobox"
 
-function Combobox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
-  const [open, setOpen] = useState(false)
-  const models = useContext(ModelsContext)
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline" aria-role="combobox" aria-expanded={open} className="w-full justify-between">
-          {value}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput placeholder="Search..." />
-          <CommandList>
-            <CommandEmpty>Nothing was found.</CommandEmpty>
-            <CommandGroup>
-              {Object.values(models).map((model) => (
-                <CommandItem
-                  key={model}
-                  value={model}
-                  onSelect={() => {
-                    onChange(model)
-                    setOpen(false)
-                  }}
-                >
-                  <Check className={cn("mr-2 h-4 w-4", value === model ? "opacity-100" : "opacity-0")} />
-                  {model}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  )
+export function ModelsCombobox({
+                                   value,
+                                   onChange,
+                               }: {
+    value?: string
+    onChange: (value: string) => void
+}) {
+    const models = useContext(ModelsContext)
+
+    const options: ComboboxOption[] = Object.values(models).map((m) => ({
+        value: m,
+        label: m,
+    }))
+
+    return <Combobox value={value} onChange={onChange} options={options} />
 }
 
 export function UpscaleNodeBody({ id }: { id: number }) {
@@ -84,7 +64,7 @@ export function UpscaleNodeBody({ id }: { id: number }) {
             }}
           />
         ) : (
-          <Combobox
+          <ModelsCombobox
             value={options.model}
             onChange={(model) => {
               changeValue({
