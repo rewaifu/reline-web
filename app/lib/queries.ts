@@ -7,7 +7,7 @@ export const modelsQueryOptions = queryOptions({
   queryFn: async () => {
     const res = await fetch(MODELS_URL)
     const data = (await res.json()) as ModelFile[]
-    return data.map((model) => model.filename.split(".tar")[0])
+    return data.map((model) => model.name)
   },
   placeholderData: MODELS,
   staleTime: Number.POSITIVE_INFINITY,
