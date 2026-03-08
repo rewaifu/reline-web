@@ -5,12 +5,13 @@ import {
   DType, HalftoneMode,
   NodeType,
   ReaderNodeMode,
-  ResizeFilterType,
+  FilterType,
   ResizeType,
   TilerType,
   WriterNodeFormat,
 } from "./types/enums"
 import type { NodeOptions, StackNode } from "./types/node"
+import {IconBolt, IconFolderDown, IconFolderUp, IconGrain, IconArrowsDiagonal, IconChartArrows, IconBorderStyle2, IconPalette} from "@tabler/icons-react"
 
 export const MODELS_URL = "https://mdb.yor.ovh/v1/files"
 
@@ -83,7 +84,7 @@ export const DEFAULT_HALFTONE_MODE = HalftoneMode.GRAY
 export const DEFAULT_HALFTONE_ANGLE = 0
 export const DEFAULT_HALFTONE_DOT_TYPE = DotType.CIRCLE
 export const DEFAULT_HALFTONE_DOT_SIZE = 7
-export const DEFAULT_HALFTONE_SSAA_FILTER = ResizeFilterType.SHAMMING4
+export const DEFAULT_HALFTONE_SSAA_FILTER = FilterType.SHAMMING4
 
 export const DEFAULT_CANNY_TYPE = CannyType.UNSHARP
 
@@ -130,10 +131,9 @@ export const DEFAULT_NODE_OPTIONS: {
   resize: {
     resize_type: ResizeType.BY_WIDTH,
     width: DEFAULT_RESIZE_WIDTH,
-    filter: ResizeFilterType.SHAMMING4,
+    filter: FilterType.SHAMMING4,
     spread: true,
     spread_size: DEFAULT_SPREAD_SIZE,
-    gamma_correction: false,
   },
   screentone: {
     halftone_mode: DEFAULT_HALFTONE_MODE,
@@ -153,3 +153,15 @@ export const DEFAULT_NODES: StackNode[] = [
   { id: 5, type: NodeType.LEVEL, options: DEFAULT_NODE_OPTIONS.level, collapsed: true },
   { id: 6, type: NodeType.FOLDER_WRITER, options: DEFAULT_NODE_OPTIONS.folder_writer, collapsed: true },
 ]
+
+export const NODE_ICONS: Record<NodeType, React.ElementType> = {
+  [NodeType.LEVEL]: IconChartArrows,
+  [NodeType.FOLDER_READER]: IconFolderDown,
+  [NodeType.FOLDER_WRITER]: IconFolderUp,
+  [NodeType.SHARP]: IconBorderStyle2,
+  [NodeType.CVT_COLOR]: IconPalette,
+  [NodeType.UPSCALE]: IconBolt,
+  [NodeType.RESIZE]: IconArrowsDiagonal,
+  [NodeType.SCREENTONE]: IconGrain,
+};
+

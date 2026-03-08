@@ -1,5 +1,5 @@
 import { z } from "zod"
-import {DotType, HalftoneMode, ResizeFilterType} from "~/types/enums.ts"
+import {DotType, HalftoneMode, FilterType} from "~/types/enums.ts"
 
 // todo
 export interface PureHalftoneNodeOptions {
@@ -15,7 +15,7 @@ export const screentoneOptionsSchema = z.object({
   angle: z.union([z.number(), z.array(z.number())]),
   dot_type: z.union([z.nativeEnum(DotType), z.array(z.nativeEnum(DotType))]),
   ssaa_scale: z.number().optional(),
-  ssaa_filter: z.nativeEnum(ResizeFilterType).optional(),
+  ssaa_filter: z.nativeEnum(FilterType).optional(),
   disable_auto_dot: z.boolean().optional(),
 })
 

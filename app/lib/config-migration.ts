@@ -1,6 +1,6 @@
-import { NodeType, ResizeFilterType, ReaderNodeMode } from "~/types/enums";
+import { NodeType, FilterType, ReaderNodeMode, TilerType } from "~/types/enums";
 import type { StackNode } from "~/types/node";
-import {FolderReaderNodeOptions, ResizeNodeOptions} from "~/types/options";
+import {FolderReaderNodeOptions, ResizeNodeOptions, UpscaleNodeOptions} from "~/types/options";
 
 export function migrateNodes(nodes: StackNode[]): StackNode[] {
     return nodes.map((node) => {
@@ -8,12 +8,12 @@ export function migrateNodes(nodes: StackNode[]): StackNode[] {
             const options = node.options as ResizeNodeOptions;
             const filterValue = options.filter;
 
-            if (!Object.values(ResizeFilterType).includes(filterValue)) {
+            if (!Object.values(FilterType).includes(filterValue)) {
                 return {
                     ...node,
                     options: {
                         ...options,
-                        filter: ResizeFilterType.MITCHELL,
+                        filter: FilterType.SHAMMING4,
                     },
                 };
             }
@@ -28,6 +28,20 @@ export function migrateNodes(nodes: StackNode[]): StackNode[] {
                     options: {
                         ...options,
                         mode: ReaderNodeMode.RGB,
+                    },
+                };
+            }
+        }
+        if (node.type === NodeType.UPSCALE) {
+            const options = node.options as UpscaleNodeOptions;
+            const tilerValue = options.tiler;
+            if (!Object.values(TilerType).includes(tilerValue)) {
+                return {
+                    ...node,
+                    options: {
+                        ...options,
+                        tiler: TilerType.EXACT,
+                        exact_tiler_size: 512
                     },
                 };
             }

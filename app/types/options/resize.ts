@@ -1,12 +1,11 @@
 import { z } from "zod"
-import { ResizeFilterType, ResizeType } from "~/types/enums.ts"
+import { FilterType, ResizeType } from "~/types/enums.ts"
 
 export interface PureResizeOptions {
   width?: number
   height?: number
   percent?: number
-  filter: ResizeFilterType
-  gamma_correction: boolean
+  filter: FilterType
   spread: boolean
   spread_size?: number
 }
@@ -16,8 +15,7 @@ export const resizeOptionsSchema = z.object({
   width: z.number().optional(),
   height: z.number().optional(),
   percent: z.number().optional(),
-  filter: z.nativeEnum(ResizeFilterType),
-  gamma_correction: z.boolean(),
+  filter: z.nativeEnum(FilterType),
   spread: z.boolean(),
   spread_size: z.number().optional(),
 })

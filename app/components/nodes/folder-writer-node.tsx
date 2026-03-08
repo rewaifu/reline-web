@@ -6,8 +6,10 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import type { FolderWriterNodeOptions } from "~/types/options"
 import { NodesActionType } from "~/types/actions.ts"
+import {useTranslation} from "react-i18next"
 
 export function FolderWriterNodeBody({ id }: { id: number }) {
+  const {t} = useTranslation()
   const nodes = useContext(NodesContext)
   const node = nodes[id]
   const options = node.options as FolderWriterNodeOptions
@@ -26,17 +28,17 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
   }
   return (
     <div className="flex flex-col gap-5">
-      <div>
-        <Label>Path to folder</Label>
+      <div className="flex flex-col space-y-2">
+        <Label>{t('nodes.folder-writer.path')}</Label>
         <Input
-          placeholder="Path/to/folder"
+          placeholder={t('nodes.folder-writer.placeholder')}
           value={options.path}
           onChange={(e) => {
             changeValue({ path: e.target.value })
           }}
         />
       </div>
-      <div>
+      <div className="flex flex-col space-y-2">
         <Label>Format</Label>
         <Select
           onValueChange={(value) => {

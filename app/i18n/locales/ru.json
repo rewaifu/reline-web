@@ -1,0 +1,86 @@
+{
+  "nodes": {
+    "cvt": {
+      "cvt-type": "Цветовое пространство"
+    },
+    "folder-reader": {
+      "path": "Путь к папке",
+      "placeholder": "Путь/к/папке",
+      "mode": "Режим",
+      "recursive": "Рекурсивно",
+      "unarchive": "Разархивировать"
+    },
+    "folder-writer": {
+      "path": "Путь к папке",
+      "placeholder": "Путь/к/папке",
+      "format": "Формат"
+    },
+    "level":{
+      "low-input": "Нижний ввод",
+      "high-input": "Верхний ввод",
+      "low-output": "Ниний вывод",
+      "high-output": "Верхний вывод",
+      "gamma": "Гамма"
+    },
+    "resize": {
+      "filter": "Фильтр",
+      "resize-type": "Тип масштабирования",
+      "width": "Ширина (px)",
+      "height": "Высота (px)",
+      "percent": "Проценты",
+      "absolute": "Абсолютно",
+      "spread": "Разворот",
+      "spread-size": "Ширина разворота"
+    },
+    "screentone": {
+      "dot-type": "Тип Точки",
+      "channel": "Канал",
+      "dot-size": "Размер Точки",
+      "angle": "Угол",
+      "halftone-mode": "Режим полутона",
+      "ssaa-scale": "Коэффициент SSAA",
+      "ssaa-scale-placeholder": "Нет",
+      "ssaa-filter": "Фильтр SSAA",
+      "disable-auto-dot": "Отключить автоматический расчёт Точки для SSAA"
+    },
+    "sharp": {
+      "low-input": "Нижний вход",
+      "high-input": "Верхний вход",
+      "gamma": "Гамма",
+      "diapason-white": "Диапазон белого",
+      "diapason-black": "Диапазон чёрного",
+      "canny": "Кэнни",
+      "canny-type": "Тип Кэнни"
+    },
+    "upscale": {
+      "search": "Найти...",
+      "no-models-found": "Моделей не найдено.",
+      "model": "Модель",
+      "placeholder": "Путь/к/модели",
+      "tiler": "Деление на плитки",
+      "tile-size": "Размер плитки",
+      "dtype": "Тип числа с плавающей точкой",
+      "own-model": "Своя модель",
+      "allow-cpu-upscale": "Разрешить обработку на CPU"
+    }
+  },
+  "home-page": {
+    "title": "Конфигуратор",
+    "use-in": "Воспользоваться: ",
+    "collab": "Блокнот в Colab (онлайн)",
+    "need-help": "Нужна помощь?",
+    "nodes": "Узлы",
+    "code": "Код"
+  },
+  "tooltips": {
+    "import": "Импортировать конфиг",
+    "copy": "Копировать код",
+    "download": "Скачать JSON"
+  },
+  "toasts": {
+    "saved": "Файл сохранён!",
+    "dl-started": "Загрузка началась",
+    "copied": "Скопирован!"
+  }
+}
+
