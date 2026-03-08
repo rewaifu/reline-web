@@ -27,6 +27,7 @@ export function ModelsCombobox({
     value?: string
     onChange: (value: string) => void
 }) {
+    const {t} = useTranslation()
     const models = useContext(ModelsContext)
 
     return (
@@ -35,9 +36,9 @@ export function ModelsCombobox({
             value={value ?? null}
             onValueChange={(val) => val && onChange(val)}
         >
-            <ComboboxInput placeholder="Select model..." showTrigger />
+            <ComboboxInput placeholder={t('nodes.upscale.search')} showTrigger />
             <ComboboxContent>
-                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxEmpty>{t('nodes.upscale.no-models-found')}</ComboboxEmpty>
                 <ComboboxList>
                     {(model) => (
                         <ComboboxItem key={model} value={model}>
@@ -53,7 +54,10 @@ export function ModelsCombobox({
 export function UpscaleNodeBody({id}: { id: number }) {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
-    const node = nodes[id]
+    const node = nodes.find((item) => item.id === id)
+    if (!node) {
+        return null
+    }
     const options = node.options as UpscaleNodeOptions
     const dispatch = useContext(NodesDispatchContext)
     const models = useContext(ModelsContext)

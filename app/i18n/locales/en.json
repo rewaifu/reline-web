@@ -24,6 +24,8 @@
     },
     "resize": {
       "filter": "Filter",
+      "select-filter": "Select filter...",
+      "no-items-found": "No items found.",
       "resize-type": "Resize Type",
       "width": "Width (px)",
       "height": "Height (px)",
@@ -53,8 +55,8 @@
       "canny-type": "Canny Type"
     },
     "upscale": {
-      "search": "Search...",
-      "no-models-found": "No models found.",
+      "search": "Select model...",
+      "no-models-found": "No items found.",
       "model": "Model",
       "placeholder": "Path/to/model",
       "tiler": "Tiler",

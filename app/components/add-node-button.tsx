@@ -12,6 +12,7 @@ export function AddNodeButton() {
     const [open, setOpen] = useState(false)
     const dispatch = useContext(NodesDispatchContext)
     const nodes = useContext(NodesContext)
+    const nextNodeId = nodes.reduce((maxId, node) => Math.max(maxId, node.id), -1) + 1
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -36,7 +37,7 @@ export function AddNodeButton() {
                                             dispatch({
                                                 type: NodesActionType.ADD,
                                                 payload: {
-                                                    id: nodes.length,
+                                                    id: nextNodeId,
                                                     type: currentValue as NodeType,
                                                     options: DEFAULT_NODE_OPTIONS[currentValue as NodeType],
                                                     collapsed: false,

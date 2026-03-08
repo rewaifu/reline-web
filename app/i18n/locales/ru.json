@@ -24,6 +24,8 @@
     },
     "resize": {
       "filter": "Фильтр",
+      "select-filter": "Выберите фильтр...",
+      "no-items-found": "Ничего не найдено.",
       "resize-type": "Тип масштабирования",
       "width": "Ширина (px)",
       "height": "Высота (px)",
@@ -53,8 +55,8 @@
       "canny-type": "Тип Кэнни"
     },
     "upscale": {
-      "search": "Найти...",
-      "no-models-found": "Моделей не найдено.",
+      "search": "Выберите модель...",
+      "no-models-found": "Ничего не найдено.",
       "model": "Модель",
       "placeholder": "Путь/к/модели",
       "tiler": "Деление на плитки",

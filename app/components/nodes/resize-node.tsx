@@ -75,7 +75,10 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
 export function ResizeNodeBody({id}: { id: number }) {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
-    const node = nodes[id]
+    const node = nodes.find((item) => item.id === id)
+    if (!node) {
+        return null
+    }
     const options = node.options as ResizeNodeOptions
     const dispatch = useContext(NodesDispatchContext)
     const filterOptions = Object.values(FilterType)
@@ -103,9 +106,9 @@ export function ResizeNodeBody({id}: { id: number }) {
                         changeValue({filter: value as FilterType})
                     }
                 >
-                    <ComboboxInput placeholder="Select filter..." showTrigger />
+                    <ComboboxInput placeholder={t('nodes.resize.select-filter')} showTrigger />
                     <ComboboxContent>
-                        <ComboboxEmpty>No items found.</ComboboxEmpty>
+                        <ComboboxEmpty>{t('nodes.resize.no-items-found')}</ComboboxEmpty>
                         <ComboboxList>
                             {(opt) => (
                                 <ComboboxItem key={opt} value={opt}>

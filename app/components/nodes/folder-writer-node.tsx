@@ -11,7 +11,10 @@ import {useTranslation} from "react-i18next"
 export function FolderWriterNodeBody({ id }: { id: number }) {
   const {t} = useTranslation()
   const nodes = useContext(NodesContext)
-  const node = nodes[id]
+  const node = nodes.find((item) => item.id === id)
+  if (!node) {
+    return null
+  }
   const options = node.options as FolderWriterNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<FolderWriterNodeOptions>) => {

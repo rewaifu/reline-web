@@ -24,12 +24,38 @@ function HomePage() {
     const {t} = useTranslation()
     const {data: models = MODELS} = useQuery(modelsQueryOptions)
 
+    const normalizeNodeIds = (nodes: typeof DEFAULT_NODES) => {
+        const usedIds = new Set<number>()
+        let nextId = 0
+
+        return nodes.map((node, index) => {
+            const fallbackId = index
+            const rawId = typeof node.id === "number" ? node.id : fallbackId
+            const candidate = Number.isNaN(rawId) ? fallbackId : rawId
+
+            if (!usedIds.has(candidate)) {
+                usedIds.add(candidate)
+                nextId = Math.max(nextId, candidate + 1)
+                return {...node, id: candidate}
+            }
+
+            while (usedIds.has(nextId)) {
+                nextId += 1
+            }
+
+            const normalized = {...node, id: nextId}
+            usedIds.add(nextId)
+            nextId += 1
+            return normalized
+        })
+    }
+
     const getInitialData = () => {
         const data = localStorage.getItem(STORAGE_KEY)
         if (data) {
             try {
                 const parsedNodes = JSON.parse(data)
-                return migrateNodes(parsedNodes)
+                return normalizeNodeIds(migrateNodes(parsedNodes))
             } catch (error) {
                 console.error("Err parsing from storage:", error)
                 return DEFAULT_NODES

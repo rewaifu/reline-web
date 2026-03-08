@@ -1,4 +1,4 @@
-import {IconArrowUp, IconArrowDown, IconX, IconChevronDown, IconChevronRight, IconSelector, IconCheck} from "@tabler/icons-react"
+import {IconArrowUp, IconArrowDown, IconX, IconChevronDown, IconChevronRight, IconSelector, IconCheck, IconGripVertical} from "@tabler/icons-react"
 import {type FC, useContext, useState} from "react"
 import {NodesContext, NodesDispatchContext} from "~/context/contexts"
 import {NodeType} from "~/types/enums"
@@ -20,6 +20,7 @@ import {cn} from "~/lib/utils"
 import {ResizeNodeBody} from "./nodes/resize-node"
 import {ScreentoneNodeBody} from "./nodes/screentone-node"
 import {NodesActionType} from "~/types/actions"
+import {useSortable} from "@dnd-kit/react/sortable";
 
 const nodeBodyComponents: { [key in NodeType]: FC<{ id: number }> } = {
     level: LevelNodeBody as FC<{ id: number }>,
@@ -38,8 +39,7 @@ function Combobox({allValues, initialValue, onChange}: {
     onChange: (value: string) => void
 }) {
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState(initialValue)
-    const SelectedIcon = NODE_ICONS[value as NodeType];
+    const SelectedIcon = NODE_ICONS[initialValue as NodeType];
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -48,7 +48,7 @@ function Combobox({allValues, initialValue, onChange}: {
                         className="w-[200px] justify-between">
                     <div className="flex items-center gap-2">
                         {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground" />}
-                        <span className="capitalize">{value.replace('_', ' ')}</span>
+                        <span className="capitalize">{initialValue.replace('_', ' ')}</span>
                     </div>
                     <IconSelector className="ml-2 h-6 w-6 shrink-0 opacity-50"/>
                 </Button>
@@ -66,7 +66,6 @@ function Combobox({allValues, initialValue, onChange}: {
                                         key={_value}
                                         value={_value}
                                         onSelect={(currentValue) => {
-                                            setValue(currentValue)
                                             onChange(currentValue)
                                             setOpen(false)
                                         }}
@@ -76,7 +75,7 @@ function Combobox({allValues, initialValue, onChange}: {
                                             {ItemIcon && <ItemIcon size={18} className="text-muted-foreground" />}
                                             <span className="capitalize">{_value.replace('_', ' ')}</span>
                                         </div>
-                                        <IconCheck className={cn("h-4 w-4", value === _value ? "opacity-100" : "opacity-0")}/>
+                                        <IconCheck className={cn("h-4 w-4", initialValue === _value ? "opacity-100" : "opacity-0")}/>
                                     </CommandItem>
                                 );
                             })}
@@ -88,11 +87,24 @@ function Combobox({allValues, initialValue, onChange}: {
     )
 }
 
-export function NodeResolver({id}: { id: number }) {
+export function NodeResolver({id, index}: { id: number; index: number }) {
     const nodes = useContext(NodesContext)
-    const data = nodes[id]
-    const NodeBodyComponent = nodeBodyComponents[data.type]
+    const data = nodes.find((node) => node.id === id)
     const dispatch = useContext(NodesDispatchContext)
+    if (!data) {
+        return null
+    }
+
+    const NodeBodyComponent = nodeBodyComponents[data.type]
+    const {ref, handleRef, isDragSource} = useSortable({
+        id: `node-${data.id}`,
+        data: {
+            nodeId: data.id,
+        },
+        index,
+        group: "nodes",
+        feedback: "default",
+    })
     const onTypeChange = (value: string) => {
         dispatch({
             type: NodesActionType.CHANGE,
@@ -105,82 +117,99 @@ export function NodeResolver({id}: { id: number }) {
         })
     }
     return (
-        <Collapsible
-            open={!data.collapsed}
-            onOpenChange={(isOpen) => {
-                dispatch({
-                    type: NodesActionType.CHANGE,
-                    payload: {
-                        ...data,
-                        collapsed: !isOpen,
-                    },
-                })
-            }}
+        <div
+            ref={ref}
+            className={cn(
+                "transition-opacity",
+                isDragSource && "opacity-70"
+            )}
         >
-            <Card>
-                <CardHeader className="flex flex-row">
-                    <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange}/>
-                    <CollapsibleTrigger asChild>
-                        <Button className="ml-3" variant="ghost" size="icon">
-                            {data.collapsed ? <IconChevronRight/> : <IconChevronDown/>}
+            <Collapsible
+                open={!data.collapsed}
+                onOpenChange={(isOpen) => {
+                    dispatch({
+                        type: NodesActionType.CHANGE,
+                        payload: {
+                            ...data,
+                            collapsed: !isOpen,
+                        },
+                    })
+                }}
+            >
+                <Card>
+                    <CardHeader className="flex flex-row">
+                        <Button
+                            ref={handleRef}
+                            className="mr-1 cursor-grab active:cursor-grabbing"
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Drag node"
+                        >
+                            <IconGripVertical/>
                         </Button>
-                    </CollapsibleTrigger>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={data.id === 0}
-                        className="ml-auto"
-                        onClick={() => {
-                            dispatch({
-                                type: NodesActionType.MOVE,
-                                payload: {
-                                    from: data.id,
-                                    to: data.id - 1,
-                                },
-                            })
-                        }}
-                    >
-                        <IconArrowUp/>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={data.id === nodes.length - 1}
-                        onClick={() => {
-                            dispatch({
-                                type: NodesActionType.MOVE,
-                                payload: {
-                                    from: data.id,
-                                    to: data.id + 1,
-                                },
-                            })
-                        }}
-                    >
-                        <IconArrowDown/>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                            dispatch({
-                                type: NodesActionType.DELETE,
-                                payload: data.id,
-                            })
-                        }}
-                    >
-                        <IconX/>
-                    </Button>
-                </CardHeader>
-                <CollapsibleContent>
-                    <CardContent>
-                        <Card>
-                            <CardContent className="px-5">
-                                <NodeBodyComponent id={id}/>
-                            </CardContent>
-                        </Card>
-                    </CardContent>
-                </CollapsibleContent>
-            </Card>
-        </Collapsible>
+                        <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange}/>
+                        <CollapsibleTrigger asChild>
+                            <Button className="ml-1" variant="ghost" size="icon">
+                                {data.collapsed ? <IconChevronRight/> : <IconChevronDown/>}
+                            </Button>
+                        </CollapsibleTrigger>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={index === 0}
+                            className="ml-auto"
+                            onClick={() => {
+                                dispatch({
+                                    type: NodesActionType.MOVE,
+                                    payload: {
+                                        from: index,
+                                        to: index - 1,
+                                    },
+                                })
+                            }}
+                        >
+                            <IconArrowUp/>
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={index === nodes.length - 1}
+                            onClick={() => {
+                                dispatch({
+                                    type: NodesActionType.MOVE,
+                                    payload: {
+                                        from: index,
+                                        to: index + 1,
+                                    },
+                                })
+                            }}
+                        >
+                            <IconArrowDown/>
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                                dispatch({
+                                    type: NodesActionType.DELETE,
+                                    payload: data.id,
+                                })
+                            }}
+                        >
+                            <IconX/>
+                        </Button>
+                    </CardHeader>
+                    <CollapsibleContent>
+                        <CardContent>
+                            <Card>
+                                <CardContent className="px-5">
+                                    <NodeBodyComponent id={id}/>
+                                </CardContent>
+                            </Card>
+                        </CardContent>
+                    </CollapsibleContent>
+                </Card>
+            </Collapsible>
+        </div>
     )
 }

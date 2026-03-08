@@ -1,14 +1,138 @@
 import {Card, CardHeader, CardContent} from "~/components/ui"
-import React, {useContext} from "react"
-import {NodesContext} from "~/context/contexts"
+import React, {useContext, useRef} from "react"
+import type {ComponentProps} from "react"
+import {NodesContext, NodesDispatchContext} from "~/context/contexts"
 import {NodeResolver} from "~/components/node-resolver"
 import {AddNodeButton} from "~/components/add-node-button"
 import {ScrollArea, ScrollBar} from "~/components/ui/scroll-area.tsx";
 import {useTranslation} from "react-i18next"
+import {DragDropProvider, useDroppable} from "@dnd-kit/react";
+import {isSortableOperation} from "@dnd-kit/react/sortable";
+import {cn} from "~/lib/utils";
+import {NodesActionType} from "~/types/actions";
+
+const EDGE_DROP_ZONE_START = "nodes-edge-start"
+const EDGE_DROP_ZONE_END = "nodes-edge-end"
+
+function EdgeDropZone({id}: { id: string }) {
+    const {ref} = useDroppable({
+        id,
+    })
+
+    return (
+        <div
+            ref={ref}
+            className={cn(
+                "absolute left-0 right-0 z-20 h-10",
+                id === EDGE_DROP_ZONE_START ? "top-0" : "bottom-0"
+            )}
+        />
+    )
+}
 
 export function NodesSection() {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
+    const dispatch = useContext(NodesDispatchContext)
+    const dragStartIndexRef = useRef<number | null>(null)
+    const lastOverIndexRef = useRef<number | null>(null)
+    const getSourceInitialIndex = (source: unknown): number | null => {
+        if (!source || typeof source !== "object") {
+            return null
+        }
+
+        const candidate = (source as {initialIndex?: unknown}).initialIndex
+        return typeof candidate === "number" && Number.isFinite(candidate) ? candidate : null
+    }
+
+    const onDragOver: NonNullable<ComponentProps<typeof DragDropProvider>["onDragOver"]> = (event) => {
+        if (event.operation.target?.id === EDGE_DROP_ZONE_START) {
+            lastOverIndexRef.current = 0
+            return
+        }
+
+        if (event.operation.target?.id === EDGE_DROP_ZONE_END) {
+            lastOverIndexRef.current = Math.max(nodes.length - 1, 0)
+            return
+        }
+
+        const overIndex = isSortableOperation(event.operation) ? event.operation.target?.index : undefined
+        if (overIndex !== undefined && overIndex >= 0) {
+            lastOverIndexRef.current = overIndex
+        }
+    }
+
+    const onDragStart: NonNullable<ComponentProps<typeof DragDropProvider>["onDragStart"]> = (event) => {
+        dragStartIndexRef.current = null
+        lastOverIndexRef.current = null
+
+        if (!event.operation.source) {
+            return
+        }
+
+        dragStartIndexRef.current = getSourceInitialIndex(event.operation.source)
+    }
+
+    const onDragEnd: NonNullable<ComponentProps<typeof DragDropProvider>["onDragEnd"]> = (event) => {
+        if (event.canceled) {
+            dragStartIndexRef.current = null
+            lastOverIndexRef.current = null
+            return
+        }
+
+        if (!event.operation.source) {
+            dragStartIndexRef.current = null
+            lastOverIndexRef.current = null
+            return
+        }
+
+        const sourceInitialIndex = getSourceInitialIndex(event.operation.source)
+        if (sourceInitialIndex === null && dragStartIndexRef.current === null) {
+            dragStartIndexRef.current = null
+            lastOverIndexRef.current = null
+            return
+        }
+
+        const from = dragStartIndexRef.current ?? sourceInitialIndex ?? -1
+        const toRaw =
+            event.operation.target?.id === EDGE_DROP_ZONE_START
+                ? 0
+                : event.operation.target?.id === EDGE_DROP_ZONE_END
+                    ? Math.max(nodes.length - 1, 0)
+                    : isSortableOperation(event.operation)
+                        ? event.operation.target?.index ?? lastOverIndexRef.current
+                        : lastOverIndexRef.current
+        const deltaY = event.operation.transform.y
+
+        let to: number
+        if (toRaw === null || toRaw === undefined) {
+            to = deltaY < 0 ? 0 : nodes.length - 1
+        } else {
+            to = Math.max(0, Math.min(toRaw, nodes.length - 1))
+        }
+
+        if (to === from && Math.abs(deltaY) > 24) {
+            to = deltaY < 0 ? 0 : nodes.length - 1
+        }
+
+        if (from < 0 || to < 0 || from === to) {
+            dragStartIndexRef.current = null
+            lastOverIndexRef.current = null
+            return
+        }
+
+        dispatch({
+            type: NodesActionType.MOVE,
+            payload: {
+                from,
+                to,
+            },
+        })
+
+        dragStartIndexRef.current = null
+        lastOverIndexRef.current = null
+    }
+
     return (
         <Card>
             <CardHeader className="flex flex-row items-center mx-2">
@@ -16,21 +140,25 @@ export function NodesSection() {
                 <AddNodeButton/>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden">
-                <ScrollArea className="relative rounded-xl border h-full bg-background overflow-hidden">
-                    <div className="flex flex-col min-h-full">
-                        <div className="pointer-events-none sticky top-0 z-10 h-8 w-full
-                        bg-gradient-to-b from-background via-background/30 to-transparent" />
-                        <div className="flex-1 flex flex-col gap-5 m-5 -my-2">
-                            {nodes.map((data, index) => (
-                                <NodeResolver key={`${data.type}_${index}`} id={data.id}/>
-                            ))}
+                <DragDropProvider onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+                    <ScrollArea className="relative rounded-xl border h-full bg-background overflow-hidden">
+                        <div className="flex flex-col min-h-full">
+                            <EdgeDropZone id={EDGE_DROP_ZONE_START} />
+                            <div className="pointer-events-none sticky top-0 z-10 h-8 w-full
+                            bg-gradient-to-b from-background via-background/30 to-transparent" />
+                            <div className="flex-1 flex flex-col gap-5 m-5 -my-2">
+                                {nodes.map((data, index) => (
+                                    <NodeResolver key={data.id} id={data.id} index={index}/>
+                                ))}
+                            </div>
+                            <EdgeDropZone id={EDGE_DROP_ZONE_END} />
+                            <div className="pointer-events-none sticky bottom-0 z-10 h-8 w-full
+                            bg-gradient-to-t from-background via-background/30 to-transparent"
+                            />
                         </div>
-                        <div className="pointer-events-none sticky bottom-0 z-10 h-8 w-full
-                        bg-gradient-to-t from-background via-background/30 to-transparent"
-                        />
-                    </div>
-                    <ScrollBar className="mr-1 my-2 pb-4 z-20"/>
-                </ScrollArea>
+                        <ScrollBar className="mr-1 my-2 pb-4 z-20"/>
+                    </ScrollArea>
+                </DragDropProvider>
             </CardContent>
         </Card>
     )
