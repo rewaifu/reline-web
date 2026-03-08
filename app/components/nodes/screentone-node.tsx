@@ -8,7 +8,14 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import {DotType, HalftoneMode, FilterType} from "~/types/enums.ts"
 import {NumberInput} from "~/components/ui/number-input.tsx"
 import {DEFAULT_HALFTONE_SSAA_FILTER} from "~/constants";
-import {Combobox} from "~/components/ui/custom-combobox"
+import {
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "~/components/ui/combobox"
 import {Checkbox} from "~/components/ui";
 import {useTranslation} from "react-i18next"
 import {Separator} from "~/components/ui/separator.tsx";
@@ -132,10 +139,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
             </div>
         ))
     }
-    const filterOptions = Object.values(FilterType).map((type) => ({
-        value: type,
-        label: type,
-    }))
+    const filterOptions = Object.values(FilterType)
 
     return (
         <div className="flex flex-col gap-5">
@@ -300,13 +304,24 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                     <div className="flex flex-col gap-2">
                         <Label>{t('nodes.screentone.ssaa-filter')}</Label>
                         <Combobox
-                            value={options.ssaa_filter}
-                            onChange={(value) =>
+                            items={filterOptions}
+                            value={options.ssaa_filter ?? null}
+                            onValueChange={(value) =>
                                 changeValue({ssaa_filter: value as FilterType})
                             }
-                            options={filterOptions}
-                            className="min-w-[180px]"
-                        />
+                        >
+                            <ComboboxInput placeholder="Select filter..." showTrigger />
+                            <ComboboxContent>
+                                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                                <ComboboxList>
+                                    {(opt) => (
+                                        <ComboboxItem key={opt} value={opt}>
+                                            {opt}
+                                        </ComboboxItem>
+                                    )}
+                                </ComboboxList>
+                            </ComboboxContent>
+                        </Combobox>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import {useContext, useState} from "react"
+import {useContext} from "react"
 import {ModelsContext, NodesContext, NodesDispatchContext} from "~/context/contexts"
 import {DType, TilerType} from "~/types/enums"
 import {Label} from "../ui/label"
@@ -8,7 +8,14 @@ import {Checkbox} from "../ui/checkbox"
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../ui/select"
 import type {UpscaleNodeOptions} from "~/types/options"
 import {NodesActionType} from "~/types/actions"
-import {Combobox, ComboboxOption} from "~/components/ui/custom-combobox"
+import {
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "~/components/ui/combobox"
 import {FieldGroup, FieldLabel, Field} from "~/components/ui/field.tsx"
 import {Separator} from "~/components/ui/separator.tsx"
 import {useTranslation} from "react-i18next"
@@ -22,12 +29,25 @@ export function ModelsCombobox({
 }) {
     const models = useContext(ModelsContext)
 
-    const options: ComboboxOption[] = Object.values(models).map((m) => ({
-        value: m,
-        label: m,
-    }))
-
-    return <Combobox value={value} onChange={onChange} options={options}/>
+    return (
+        <Combobox
+            items={models}
+            value={value ?? null}
+            onValueChange={(val) => val && onChange(val)}
+        >
+            <ComboboxInput placeholder="Select model..." showTrigger />
+            <ComboboxContent>
+                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxList>
+                    {(model) => (
+                        <ComboboxItem key={model} value={model}>
+                            {model}
+                        </ComboboxItem>
+                    )}
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+    )
 }
 
 export function UpscaleNodeBody({id}: { id: number }) {

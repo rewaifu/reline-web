@@ -8,7 +8,14 @@ import {Checkbox} from "../ui/checkbox"
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../ui/select"
 import type {ResizeNodeOptions} from "~/types/options"
 import {NodesActionType} from "~/types/actions"
-import {Combobox} from "~/components/ui/custom-combobox"
+import {
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "~/components/ui/combobox"
 import {FieldGroup, FieldLabel, Field} from "~/components/ui/field.tsx";
 import {useTranslation} from "react-i18next"
 
@@ -71,10 +78,7 @@ export function ResizeNodeBody({id}: { id: number }) {
     const node = nodes[id]
     const options = node.options as ResizeNodeOptions
     const dispatch = useContext(NodesDispatchContext)
-    const filterOptions = Object.values(FilterType).map((type) => ({
-        value: type,
-        label: type,
-    }))
+    const filterOptions = Object.values(FilterType)
     const changeValue = (newOptions: Partial<ResizeNodeOptions>) => {
         dispatch({
             type: NodesActionType.CHANGE,
@@ -93,13 +97,24 @@ export function ResizeNodeBody({id}: { id: number }) {
                 <Label>{t('nodes.resize.filter')}</Label>
 
                 <Combobox
-                    value={options.filter}
+                    items={filterOptions}
+                    value={options.filter ?? null}
                     onValueChange={(value) =>
                         changeValue({filter: value as FilterType})
                     }
-                    options={filterOptions}
-                    className="w-[180px]"
-                />
+                >
+                    <ComboboxInput placeholder="Select filter..." showTrigger />
+                    <ComboboxContent>
+                        <ComboboxEmpty>No items found.</ComboboxEmpty>
+                        <ComboboxList>
+                            {(opt) => (
+                                <ComboboxItem key={opt} value={opt}>
+                                    {opt}
+                                </ComboboxItem>
+                            )}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
             </div>
             <div className="flex flex-col gap-2">
                 <Label>{t('nodes.resize.resize-type')}</Label>

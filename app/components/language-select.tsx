@@ -10,7 +10,7 @@ export function LanguageSelect() {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon-lg" className="relative">
                     <IconLanguage/>
                 </Button>
