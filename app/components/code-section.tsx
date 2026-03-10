@@ -5,14 +5,17 @@ import {nodesToString, stringToNodes} from "~/lib/utils"
 import {toast} from "sonner"
 import {Card, CardHeader, Dialog, DialogTrigger, Button, CardContent} from "~/components/ui"
 import {FileUploadDialogContent} from "~/components/file-upload-dialog-content"
-import {NodesActionType} from "~/types/actions"
-import {migrateNodes} from "~/lib/config-migration"
 import {ScrollArea, ScrollBar} from "~/components/ui/scroll-area.tsx";
 import hljs from 'highlight.js/lib/core';
 import json from 'highlight.js/lib/languages/json';
 import 'highlight.js/styles/github-dark.css';
 import {Tooltip, TooltipTrigger, TooltipContent} from "~/components/ui/tooltip.tsx";
 import {useTranslation} from "react-i18next"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select"
+import {CONFIG_PRESETS, getPresetById} from "~/lib/config-presets"
+import {migrateNodes} from "~/lib/config-migration"
+import {NodesActionType} from "~/types/actions"
+import {Separator} from "~/components/ui/separator.tsx";
 
 hljs.registerLanguage('json', json);
 
@@ -21,7 +24,22 @@ export function CodeSection() {
     const nodes = useContext(NodesContext)
     const dispatch = useContext(NodesDispatchContext)
     const [isCopied, setIsCopied] = useState(false)
+    const [selectedPreset, setSelectedPreset] = useState<string>("default")
     const codeRef = useRef<HTMLElement>(null)
+
+    const handlePresetChange = (value: string | null) => {
+        if (!value) return
+        setSelectedPreset(value)
+        const preset = getPresetById(value)
+        if (preset) {
+            const migratedNodes = migrateNodes(preset.nodes)
+            dispatch({
+                type: NodesActionType.IMPORT,
+                payload: migratedNodes,
+            })
+            toast.success(t('toasts.preset-loaded', { name: preset.name }))
+        }
+    }
     useEffect(() => {
         if (codeRef.current) {
             codeRef.current.removeAttribute('data-highlighted');
@@ -33,6 +51,22 @@ export function CodeSection() {
             <CardHeader className="flex flex-row items-center mx-2">
                 <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">{t('home-page.code')}</h2>
                 <div className="flex flex-row gap-1 ml-auto">
+                    <div className="flex flex-row gap-3 items-center">
+                        <p>{t('config-presets.presets')}</p>
+                        <Select value={selectedPreset} onValueChange={handlePresetChange}>
+                            <SelectTrigger size="sm" className="min-w-40 text-s self-center">
+                                <SelectValue placeholder={t('config-presets.select')} />
+                            </SelectTrigger>
+                            <SelectContent align="start">
+                                {CONFIG_PRESETS.map((preset) => (
+                                    <SelectItem key={preset.id} value={preset.id}>
+                                        {preset.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Separator orientation="vertical" />
+                    </div>
                     <Dialog>
                         <Tooltip>
                             <TooltipTrigger>

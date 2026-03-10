@@ -82,7 +82,12 @@
   "toasts": {
     "saved": "Файл сохранён!",
     "dl-started": "Загрузка началась",
-    "copied": "Скопирован!"
+    "copied": "Скопирован!",
+    "preset-loaded": "Загружен пресет: {{name}}"
+  },
+  "config-presets": {
+    "presets": "Пресеты:",
+    "select": "Выберите..."
   }
 }
 

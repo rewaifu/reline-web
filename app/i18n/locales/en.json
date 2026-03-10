@@ -82,7 +82,12 @@
   "toasts": {
     "saved": "File saved!",
     "dl-started": "Downloading started",
-    "copied": "Copied!"
+    "copied": "Copied!",
+    "preset-loaded": "Loaded preset: {{name}}"
+  },
+  "config-presets": {
+    "presets": "Presets:",
+    "select": "Select..."
   }
 }
 
