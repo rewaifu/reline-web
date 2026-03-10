@@ -72,7 +72,7 @@ function HomePage() {
                 <div className="flex flex-row gap-1 items-center">
                     <EnhancrLogo/>
                     <div className="flex flex-row gap-2">
-                        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight select-none hover:tracking-normal trasition duration-150 active:font-normal"> <b><i>Reline</i></b> {t('home-page.title')}</h1>
+                        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight select-none hover:tracking-normal trasition duration-150 active:font-normal active:text-primary"> <b><i>Reline</i></b> {t('home-page.title')}</h1>
                         <h1 className="scroll-m-20 text-xs font-light tracking-tight self-end mb-1 -ml-1 hover:text-primary hover:tracking-widest hover:font-semibold hover:text-sm trasition duration-150 select-none"><i><a href="https://github.com/rewaifu">by rewaifu</a></i></h1>
                     </div>
                 </div>
