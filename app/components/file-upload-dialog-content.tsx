@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { Upload, FileJson, X, ClipboardPaste } from "lucide-react"
+import {toast} from "sonner";
 
 type FileUploadDialogContentProps = {
     onImport: (text: string) => void
@@ -27,14 +28,14 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
             setText(content)
             setFileName(source)
         } catch (err) {
-            alert("Invalid JSON.\nCheck your file/clipboard")
+            toast.error("Invalid JSON.\nCheck your file/clipboard")
         }
     }
 
     const handleFile = (file?: File) => {
         if (!file) return
         if (!file.name.toLowerCase().endsWith(".json")) {
-            alert("Only json file can be uploaded")
+            toast.error("Only json file can be uploaded")
             return
         }
 
@@ -44,7 +45,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
             .text()
             .then((content) => processContent(content, file.name))
             .catch(() => {
-                alert("Unable to read file")
+                toast.error("Unable to read file")
                 clearFile()
             })
     }
@@ -52,20 +53,20 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
     const handlePasteFromClipboard = async () => {
         try {
             if (!navigator.clipboard?.readText) {
-                alert("Clipboard is not supported in your browser")
+                toast.error("Clipboard is not supported in your browser")
                 return
             }
 
             const clipboardText = await navigator.clipboard.readText()
             if (!clipboardText.trim()) {
-                alert("Clipboard is empty")
+                toast.error("Clipboard is empty")
                 return
             }
 
             processContent(clipboardText)
         } catch (err: any) {
             console.error(err)
-            alert("Unable to read from clipboard.")
+            toast.error("Unable to read from clipboard.")
         }
     }
 
@@ -151,7 +152,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                                 <FileJson className="h-10 w-10 text-primary" />
                                 <div className="space-y-1">
                                     <p className="text-sm font-medium">{fileName}</p>
-                                    <p className="text-xs text-muted-foreground">Готов к импорту</p>
+                                    <p className="text-xs text-muted-foreground">Config loaded</p>
                                 </div>
                             </>
                         ) : (
@@ -159,10 +160,10 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                                 <Upload className="h-10 w-10 text-muted-foreground" />
                                 <div className="space-y-1">
                                     <p className="text-sm font-medium">
-                                        Drag .json here or click
+                                        Drag & drop <br/>or click here
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                        Only JSON supported
+                                        Supports: JSON
                                     </p>
                                 </div>
                             </>
@@ -195,7 +196,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                     Clear
                 </Button>
 
-                <DialogClose asChild>
+                <DialogClose render={
                     <Button
                         type="button"
                         disabled={text === ""}
@@ -203,7 +204,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                     >
                         Import
                     </Button>
-                </DialogClose>
+                } />
             </DialogFooter>
         </DialogContent>
     )

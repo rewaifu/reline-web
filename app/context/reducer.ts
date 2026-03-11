@@ -6,6 +6,28 @@ const saveData = (nodes: StackNode[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes))
 }
 
+const normalizeNodeIds = (nodes: StackNode[]) => {
+  const usedIds = new Set<number>()
+  let nextId = 0
+
+  return nodes.map((node) => {
+    if (!usedIds.has(node.id)) {
+      usedIds.add(node.id)
+      nextId = Math.max(nextId, node.id + 1)
+      return node
+    }
+
+    while (usedIds.has(nextId)) {
+      nextId += 1
+    }
+
+    const normalized = { ...node, id: nextId }
+    usedIds.add(nextId)
+    nextId += 1
+    return normalized
+  })
+}
+
 export const nodesReducer = (state: StackNode[], action: NodesAction): StackNode[] => {
   const newState = processAction(state, action)
   saveData(newState)
@@ -20,24 +42,26 @@ const processAction = (state: StackNode[], action: NodesAction): StackNode[] => 
     case NodesActionType.ADD:
       return [...state, payload]
     case NodesActionType.DELETE:
-      return state.filter((node) => node.id !== payload).map((node, index) => ({ ...node, id: index }))
+      return state.filter((node) => node.id !== payload)
     case NodesActionType.MOVE: {
-      const newArray = []
-      for (let i = 0; i < state.length; i += 1) {
-        if (i === payload.from) {
-          newArray.push({ ...state[payload.to], id: i })
-          continue
-        }
-        if (i === payload.to) {
-          newArray.push({ ...state[payload.from], id: i })
-          continue
-        }
-        newArray.push(state[i])
+      if (
+        payload.from < 0 ||
+        payload.from >= state.length ||
+        payload.to < 0 ||
+        payload.to >= state.length ||
+        payload.from === payload.to
+      ) {
+        return state
       }
+
+      const newArray = [...state]
+      const [movedNode] = newArray.splice(payload.from, 1)
+      newArray.splice(payload.to, 0, movedNode)
+
       return newArray
     }
     case NodesActionType.IMPORT:
-      return payload
+      return normalizeNodeIds(payload)
     default:
       return state
   }

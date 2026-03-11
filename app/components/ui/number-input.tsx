@@ -18,7 +18,8 @@ export function NumberInput({ min, max, step, labelText, value, onChange }: Numb
       <div className="flex flex-row">
         <Slider
           onValueChange={(newValue) => {
-            onChange(newValue[0])
+            const val = Array.isArray(newValue) ? newValue[0] : newValue
+            onChange(val)
           }}
           min={min}
           max={max}

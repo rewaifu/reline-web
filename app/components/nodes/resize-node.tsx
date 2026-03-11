@@ -1,6 +1,6 @@
 import {useContext} from "react"
 import {NodesContext, NodesDispatchContext} from "~/context/contexts"
-import {ResizeFilterType, ResizeType} from "~/types/enums"
+import {FilterType, ResizeType} from "~/types/enums"
 import {Label} from "../ui/label"
 import {DEFAULT_RESIZE_HEIGHT, DEFAULT_RESIZE_PERCENT, DEFAULT_RESIZE_WIDTH, DEFAULT_SPREAD_SIZE} from "~/constants"
 import {Input} from "../ui/input"
@@ -8,14 +8,24 @@ import {Checkbox} from "../ui/checkbox"
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../ui/select"
 import type {ResizeNodeOptions} from "~/types/options"
 import {NodesActionType} from "~/types/actions"
-import {Combobox} from "~/components/ui/combobox"
+import {
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "~/components/ui/combobox"
+import {FieldGroup, FieldLabel, Field} from "~/components/ui/field.tsx";
+import {useTranslation} from "react-i18next"
 
 const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: Partial<ResizeNodeOptions>) => void) => {
+    const {t} = useTranslation()
     return (
         <div className="flex flex-col gap-2">
             {(options.resize_type === ResizeType.BY_WIDTH || options.resize_type === ResizeType.ABSOLUTE) && (
                 <div className="flex flex-col gap-2">
-                    <Label>width</Label>
+                    <Label>{t('nodes.resize.width')}</Label>
                     <Input
                         type="number"
                         className="w-[180px]"
@@ -30,7 +40,7 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
             )}
             {(options.resize_type === ResizeType.BY_HEIGHT || options.resize_type === ResizeType.ABSOLUTE) && (
                 <div className="flex flex-col gap-2">
-                    <Label>height</Label>
+                    <Label>{t('nodes.resize.height')}</Label>
                     <Input
                         type="number"
                         className="w-[180px]"
@@ -45,7 +55,7 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
             )}
             {options.resize_type === ResizeType.PERCENT && (
                 <div className="flex flex-col gap-2">
-                    <Label>percent</Label>
+                    <Label>{t('nodes.resize.percent')}</Label>
                     <Input
                         type="number"
                         className="w-[180px]"
@@ -63,14 +73,15 @@ const renderSizeInput = (options: ResizeNodeOptions, changeValue: (newOptions: P
 }
 
 export function ResizeNodeBody({id}: { id: number }) {
+    const {t} = useTranslation()
     const nodes = useContext(NodesContext)
-    const node = nodes[id]
+    const node = nodes.find((item) => item.id === id)
+    if (!node) {
+        return null
+    }
     const options = node.options as ResizeNodeOptions
     const dispatch = useContext(NodesDispatchContext)
-    const filterOptions = Object.values(ResizeFilterType).map((type) => ({
-        value: type,
-        label: type,
-    }))
+    const filterOptions = Object.values(FilterType)
     const changeValue = (newOptions: Partial<ResizeNodeOptions>) => {
         dispatch({
             type: NodesActionType.CHANGE,
@@ -84,21 +95,32 @@ export function ResizeNodeBody({id}: { id: number }) {
         })
     }
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-                <Label>Filter</Label>
+                <Label>{t('nodes.resize.filter')}</Label>
 
                 <Combobox
-                    value={options.filter}
-                    onChange={(value) =>
-                        changeValue({filter: value as ResizeFilterType})
+                    items={filterOptions}
+                    value={options.filter ?? null}
+                    onValueChange={(value) =>
+                        changeValue({filter: value as FilterType})
                     }
-                    options={filterOptions}
-                    className="w-[180px]"
-                />
+                >
+                    <ComboboxInput placeholder={t('nodes.resize.select-filter')} showTrigger />
+                    <ComboboxContent>
+                        <ComboboxEmpty>{t('nodes.resize.no-items-found')}</ComboboxEmpty>
+                        <ComboboxList>
+                            {(opt) => (
+                                <ComboboxItem key={opt} value={opt}>
+                                    {opt}
+                                </ComboboxItem>
+                            )}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
             </div>
             <div className="flex flex-col gap-2">
-                <Label>Resize Type</Label>
+                <Label>{t('nodes.resize.resize-type')}</Label>
                 <Select
                     onValueChange={(value) => {
                         changeValue({
@@ -137,21 +159,24 @@ export function ResizeNodeBody({id}: { id: number }) {
                 </Select>
             </div>
             {renderSizeInput(options, changeValue)}
-            <div className="flex items-center space-x-2">
-                <Checkbox
-                    checked={options.spread}
-                    onCheckedChange={(value) => {
-                        changeValue({
-                            spread: !!value,
-                            spread_size: value ? DEFAULT_SPREAD_SIZE : undefined,
-                        })
-                    }}
-                />
-                <Label>spread</Label>
-            </div>
+            <FieldGroup className="w-25">
+                <Field orientation="horizontal">
+                    <Checkbox
+                        id="spread-check"
+                        checked={options.spread}
+                        onCheckedChange={(value) => {
+                            changeValue({
+                                spread: !!value,
+                                spread_size: value ? DEFAULT_SPREAD_SIZE : undefined,
+                            })
+                        }}
+                    />
+                    <FieldLabel htmlFor="spread-check">{t('nodes.resize.spread')}</FieldLabel>
+                </Field>
+            </FieldGroup>
             {options.spread && (
                 <div className="flex flex-col gap-2">
-                    <Label>Spread size</Label>
+                    <Label>{t('nodes.resize.spread-size')}</Label>
                     <Input
                         className="w-[180px]"
                         value={options.spread_size}
@@ -161,17 +186,6 @@ export function ResizeNodeBody({id}: { id: number }) {
                     />
                 </div>
             )}
-            <div className="flex items-center space-x-2">
-                <Checkbox
-                    checked={options.gamma_correction}
-                    onCheckedChange={(value) => {
-                        changeValue({
-                            gamma_correction: !!value,
-                        })
-                    }}
-                />
-                <Label>gamma correction</Label>
-            </div>
         </div>
     )
 }

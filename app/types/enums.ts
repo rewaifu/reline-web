@@ -9,14 +9,14 @@ export enum WriterNodeFormat {
 }
 
 export enum NodeType {
-  LEVEL = "level",
   FOLDER_READER = "folder_reader",
   FOLDER_WRITER = "folder_writer",
-  SHARP = "sharp",
-  CVT_COLOR = "cvt_color",
   UPSCALE = "upscale",
+  SHARP = "sharp",
   RESIZE = "resize",
   SCREENTONE = "screentone",
+  LEVEL = "level",
+  CVT_COLOR = "cvt_color",
 }
 
 export enum PureNodeType {
@@ -41,7 +41,6 @@ export enum CvtType {
 
 export enum TilerType {
   EXACT = "exact",
-  MAX = "max",
   NO_TILING = "no_tiling",
 }
 
@@ -52,7 +51,7 @@ export enum ResizeType {
   PERCENT = "percent",
 }
 
-export enum ResizeFilterType {
+export enum FilterType {
   NEAREST = "nearest",
   BOX = "box",
   SBOX4 = "sbox4",

@@ -5,10 +5,15 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Label } from "../ui/label"
 import { NodesActionType } from "~/types/actions.ts"
 import type { CvtColorNodeOptions } from "~/types/options"
+import {useTranslation} from "react-i18next"
 
 export function CvtColorNodeBody({ id }: { id: number }) {
+  const {t} = useTranslation()
   const nodes = useContext(NodesContext)
-  const node = nodes[id]
+  const node = nodes.find((item) => item.id === id)
+  if (!node) {
+    return null
+  }
   const options = node.options as CvtColorNodeOptions
   const dispatch = useContext(NodesDispatchContext)
   const changeValue = (newOptions: Partial<CvtColorNodeOptions>) => {
@@ -24,8 +29,8 @@ export function CvtColorNodeBody({ id }: { id: number }) {
     })
   }
   return (
-    <div>
-      <Label>Cvt Type</Label>
+    <div className="flex flex-col gap-2">
+      <Label>{t('nodes.cvt.cvt-type')}</Label>
       <Select
         onValueChange={(value) => {
           changeValue({
