@@ -8,8 +8,6 @@ import {FileUploadDialogContent} from "~/components/file-upload-dialog-content"
 import {ScrollArea, ScrollBar} from "~/components/ui/scroll-area.tsx";
 import hljs from 'highlight.js/lib/core';
 import json from 'highlight.js/lib/languages/json';
-import hljsGithubDarkCss from 'highlight.js/styles/panda-syntax-dark.css?inline';
-import hljsGithubCss from 'highlight.js/styles/panda-syntax-light.css?inline';
 import {Tooltip, TooltipTrigger, TooltipContent} from "~/components/ui/tooltip.tsx";
 import {useTranslation} from "react-i18next"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select"
@@ -17,7 +15,6 @@ import {CONFIG_PRESETS, getPresetById} from "~/lib/config-presets"
 import {migrateNodes} from "~/lib/config-migration"
 import {NodesActionType} from "~/types/actions"
 import {Separator} from "~/components/ui/separator.tsx";
-import {useTheme} from "next-themes"
 
 hljs.registerLanguage('json', json);
 
@@ -28,21 +25,6 @@ export function CodeSection() {
     const [isCopied, setIsCopied] = useState(false)
     const [selectedPreset, setSelectedPreset] = useState<string>("default")
     const codeRef = useRef<HTMLElement>(null)
-    const {theme} = useTheme()
-
-    useEffect(() => {
-        const isDark = theme === 'dark'
-        const styleId = 'hljs-theme-style'
-        let existingStyle = document.getElementById(styleId) as HTMLStyleElement | null
-        
-        if (!existingStyle) {
-            existingStyle = document.createElement('style')
-            existingStyle.id = styleId
-            document.head.appendChild(existingStyle)
-        }
-        
-        existingStyle.textContent = isDark ? hljsGithubDarkCss : hljsGithubCss
-    }, [theme])
 
     const handlePresetChange = (value: string | null) => {
         if (!value) return
@@ -63,14 +45,6 @@ export function CodeSection() {
             hljs.highlightElement(codeRef.current);
         }
     }, [nodes])
-
-    useEffect(() => {
-        if (codeRef.current) {
-            const isDark = theme === 'dark'
-            codeRef.current.classList.toggle('hljs-light', !isDark)
-            codeRef.current.classList.toggle('hljs-dark', isDark)
-        }
-    }, [theme])
     return (
         <Card>
             <CardHeader className="flex flex-row items-center mx-2">
@@ -186,7 +160,7 @@ export function CodeSection() {
                 <ScrollArea className="relative rounded-xl border h-full bg-background overflow-hidden">
                     <div className="m-4">
                         <pre>
-                            <code ref={codeRef} className="language-json !bg-transparent !p-0">
+                            <code ref={codeRef} className="language-json bg-transparent! p-0!">
                                 {nodesToString(nodes)}
                             </code>
                         </pre>

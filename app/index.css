@@ -3,6 +3,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
+@import "highlight.js/styles/panda-syntax-light.css";
+.dark {
+  @import "highlight.js/styles/panda-syntax-dark.css";
+}
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:where(.dark, .dark *));
