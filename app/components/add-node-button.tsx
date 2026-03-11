@@ -15,11 +15,9 @@ export function AddNodeButton() {
     const nextNodeId = nodes.reduce((maxId, node) => Math.max(maxId, node.id), -1) + 1
     return (
         <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button className="ml-auto " variant="ghost" size="icon" aria-expanded={open}>
+            <PopoverTrigger render={<Button className="ml-auto " variant="ghost" size="icon" aria-expanded={open}>
                     <IconPlus/>
-                </Button>
-            </PopoverTrigger>
+                </Button>} />
             <PopoverContent className="w-[200px] p-0">
                 <Command>
                     <CommandInput placeholder="Search..."/>

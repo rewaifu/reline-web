@@ -49,10 +49,10 @@ export function CodeSection() {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center mx-2">
-                <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">{t('home-page.code')}</h2>
-                <div className="flex flex-row gap-1 ml-auto">
-                    <div className="flex flex-row gap-3 items-center">
-                        <p>{t('config-presets.presets')}</p>
+                <h2 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">{t('home-page.code')}</h2>
+                <div className="flex flex-row gap-2 ml-auto">
+                    <div className="flex flex-row gap-4 items-center">
+                        <p className="select-none text-sm translate-x-1">{t('config-presets.presets')}</p>
                         <Select value={selectedPreset} onValueChange={handlePresetChange}>
                             <SelectTrigger size="sm" className="min-w-40 text-s self-center">
                                 <SelectValue placeholder={t('config-presets.select')} />
@@ -70,11 +70,9 @@ export function CodeSection() {
                     <Dialog>
                         <Tooltip>
                             <TooltipTrigger>
-                                <DialogTrigger asChild>
-                                    <Button size="icon" variant="ghost">
-                                        <IconFileUpload />
-                                    </Button>
-                                </DialogTrigger>
+                                <DialogTrigger render={<Button size="icon" variant="ghost">
+                                    <IconFileUpload />
+                                </Button>} />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>{t('tooltips.import')}</p>

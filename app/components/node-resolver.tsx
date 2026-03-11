@@ -43,7 +43,7 @@ function Combobox({allValues, initialValue, onChange}: {
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
+            <PopoverTrigger render={
                 <Button variant="outline" aria-role="combobox" aria-expanded={open}
                         className="w-[200px] justify-between">
                     <div className="flex items-center gap-2">
@@ -52,7 +52,7 @@ function Combobox({allValues, initialValue, onChange}: {
                     </div>
                     <IconSelector className="ml-2 h-6 w-6 shrink-0 opacity-50"/>
                 </Button>
-            </PopoverTrigger>
+            } />
             <PopoverContent className="w-[200px] p-0">
                 <Command>
                     <CommandInput placeholder="Search..."/>
@@ -136,7 +136,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                     })
                 }}
             >
-                <Card>
+                <Card className="rounded-xl">
                     <CardHeader className="flex flex-row">
                         <Button
                             ref={handleRef}
@@ -148,11 +148,11 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                             <IconGripVertical/>
                         </Button>
                         <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange}/>
-                        <CollapsibleTrigger asChild>
+                        <CollapsibleTrigger render={
                             <Button className="ml-1" variant="ghost" size="icon">
                                 {data.collapsed ? <IconChevronRight/> : <IconChevronDown/>}
                             </Button>
-                        </CollapsibleTrigger>
+                        } />
                         <Button
                             variant="ghost"
                             size="icon"

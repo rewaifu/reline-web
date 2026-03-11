@@ -99,7 +99,7 @@ function HomePage() {
             </div>
             <footer className="flex h-10 bg-card rounded-xl ring-1 ring-foreground/10 p-2 px-5 mb-5 mx-5 justify-between">
                 <div className="flex flex-row gap-2 items-center">
-                    <h1 className="text-sm font-semibold tracking-tight">{t('home-page.use-in')}</h1>
+                    <h1 className="text-sm font-semibold tracking-tight select-none">{t('home-page.use-in')}</h1>
                     <Button variant="outline" size="sm">
                         <CollabLogo/>
                         <div/>
@@ -115,7 +115,7 @@ function HomePage() {
                     </Button>
                 </div>
                 <div className="flex flex-row gap-2 items-center">
-                    <h1 className="scroll-m-20 text-sm font-semibold tracking-tight">{t('home-page.need-help')}</h1>
+                    <h1 className="scroll-m-20 text-sm font-semibold tracking-tight select-none">{t('home-page.need-help')}</h1>
                     <Button variant="outline" size="sm">
                         <IconBrandDiscordFilled/>
                         <a href="https://discord.gg/hEgdaVzTs9" target="_blank">RawkumaSR</a>

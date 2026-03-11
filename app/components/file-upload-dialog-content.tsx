@@ -196,7 +196,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                     Clear
                 </Button>
 
-                <DialogClose asChild>
+                <DialogClose render={
                     <Button
                         type="button"
                         disabled={text === ""}
@@ -204,7 +204,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                     >
                         Import
                     </Button>
-                </DialogClose>
+                } />
             </DialogFooter>
         </DialogContent>
     )

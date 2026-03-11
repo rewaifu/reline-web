@@ -63,7 +63,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
     const getAutoDot = (dot: number): number | null => {
         if (!options.ssaa_scale || options.ssaa_scale <= 1) return null
         if (options.disable_auto_dot === true) return null
-        return Number((dot * options.ssaa_scale).toFixed(2))
+        return Math.floor(dot * options.ssaa_scale)
     }
 
     const dotSizes = ensureArray(options.dot_size, channelCount, 6)
@@ -258,7 +258,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                                     }}
                                 />
                                 {getAutoDot(options.dot_size as number) !== null && (
-                                    <span className="text-sm text-muted-foreground text-right">~{getAutoDot(options.dot_size as number)}
+                                    <span className="text-sm text-muted-foreground text-right tabular-nums">~{getAutoDot(options.dot_size as number)}
 
                                     </span>
                                 )}
