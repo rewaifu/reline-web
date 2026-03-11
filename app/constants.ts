@@ -100,7 +100,7 @@ export const DEFAULT_NODE_OPTIONS: {
   },
   folder_reader: {
     path: "/content/drive/MyDrive/raws",
-    recursive: true,
+    recursive: false,
     mode: ReaderNodeMode.RGB,
     unarchive: false,
   },
@@ -109,11 +109,11 @@ export const DEFAULT_NODE_OPTIONS: {
     format: WriterNodeFormat.PNG,
   },
   cvt_color: {
-    cvt_type: CvtType.RGB2Gray,
+    cvt_type: CvtType.RGB2Gray2020,
   },
   sharp: {
-    low_input: 3,
-    high_input: 250,
+    low_input: 2,
+    high_input: 253,
     gamma: 1,
     diapason_white: 2,
     diapason_black: -1,
