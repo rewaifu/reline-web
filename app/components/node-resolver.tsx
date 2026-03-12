@@ -47,7 +47,7 @@ function Combobox({allValues, initialValue, onChange}: {
                 <Button variant="outline" aria-role="combobox" aria-expanded={open}
                         className="w-[200px] justify-between">
                     <div className="flex items-center gap-2">
-                        {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground" />}
+                        {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground dark:text-primary" />}
                         <span className="capitalize">{initialValue.replace('_', ' ')}</span>
                     </div>
                     <IconSelector className="ml-2 h-6 w-6 shrink-0 opacity-50"/>
@@ -70,8 +70,8 @@ function Combobox({allValues, initialValue, onChange}: {
                                         }}
                                         className="flex items-center gap-2 justify-between"
                                     >
-                                        <div className="flex flex-row gap-2">
-                                            {ItemIcon && <ItemIcon size={18} className="text-muted-foreground" />}
+                                        <div className="flex flex-row gap-2 items-center">
+                                            {ItemIcon && <ItemIcon size={18} className="text-muted-foreground dark:text-primary" />}
                                             <span className="capitalize">{_value.replace('_', ' ')}</span>
                                         </div>
                                         <IconCheck className={cn("h-4 w-4", initialValue === _value ? "opacity-100" : "opacity-0")}/>

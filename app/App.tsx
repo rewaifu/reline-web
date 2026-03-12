@@ -11,6 +11,7 @@ import {CodeSection} from "~/components/code-section"
 import {NodesSection} from "~/components/nodes-section"
 import {migrateNodes} from "~/lib/config-migration"
 import { EnhancrLogo } from "~/svg/enhancr-logo"
+import { KumaLogo } from "~/svg/kuma.tsx";
 import { TooltipProvider } from "./components/ui/tooltip"
 import { Button } from "./components/ui/button"
 import {CollabLogo} from "~/svg/collab.tsx";
@@ -69,8 +70,8 @@ function HomePage() {
     return (
         <main className="flex flex-col h-screen gap-4">
             <header className="flex justify-between h-15 bg-card rounded-xl ring-1 ring-foreground/10 p-2 px-4 mt-5 mx-5">
-                <div className="flex flex-row gap-1 items-center">
-                    <EnhancrLogo/>
+                <div className="flex flex-row gap-2 items-center">
+                    <KumaLogo/>
                     <div className="flex flex-row gap-2">
                         <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight select-none hover:tracking-normal trasition duration-150 active:font-normal active:text-primary"> <b><i>Reline</i></b> {t('home-page.title')}</h1>
                         <h1 className="scroll-m-20 text-xs font-light tracking-tight self-end mb-1 -ml-1 hover:text-primary hover:tracking-widest hover:font-semibold hover:text-sm trasition duration-150 select-none"><i><a href="https://github.com/rewaifu">by rewaifu</a></i></h1>
@@ -100,26 +101,34 @@ function HomePage() {
             <footer className="flex h-10 bg-card rounded-xl ring-1 ring-foreground/10 p-2 px-5 mb-5 mx-5 justify-between">
                 <div className="flex flex-row gap-2 items-center">
                     <h1 className="text-sm font-semibold tracking-tight select-none">{t('home-page.use-in')}</h1>
-                    <Button variant="outline" size="sm">
-                        <CollabLogo/>
-                        <div/>
-                        <a href="https://colab.research.google.com/drive/1-ijaR4Ld_CUkEMb-l2Cbf918TCQOp8D9" target="_blank">{t('home-page.collab')}</a>
-                    </Button>
-                    <Button variant="outline" size="sm">
-                        <IconBrandGithub/>
-                        <a href="https://github.com/rewaifu/reline_local" target="_blank">Reline Local</a>
-                    </Button>
-                    <Button variant="outline" size="sm">
-                        <IconBrandGithub/>
-                        <a href="https://github.com/breadyk/reline-local-GUI" target="_blank">Reline Local GUI</a>
-                    </Button>
+                    <a href="https://colab.research.google.com/drive/1-ijaR4Ld_CUkEMb-l2Cbf918TCQOp8D9" target="_blank">
+                        <Button variant="outline" size="sm">
+                            <CollabLogo/>
+                            <div/>
+                            {t('home-page.collab')}
+                        </Button>
+                    </a>
+                    <a href="https://github.com/rewaifu/reline_local" target="_blank">
+                        <Button variant="outline" size="sm">
+                            <IconBrandGithub/>
+                            Reline Local
+                        </Button>
+                    </a>
+                    <a href="https://github.com/breadyk/reline-local-GUI" target="_blank">
+                        <Button variant="outline" size="sm">
+                            <IconBrandGithub/>
+                            Reline Local GUI
+                        </Button>
+                    </a>
                 </div>
                 <div className="flex flex-row gap-2 items-center">
                     <h1 className="scroll-m-20 text-sm font-semibold tracking-tight select-none">{t('home-page.need-help')}</h1>
-                    <Button variant="outline" size="sm">
-                        <IconBrandDiscordFilled/>
-                        <a href="https://discord.gg/hEgdaVzTs9" target="_blank">RawkumaSR</a>
-                    </Button>
+                    <a href="https://discord.gg/hEgdaVzTs9" target="_blank">
+                        <Button variant="outline" size="sm">
+                            <IconBrandDiscordFilled/>
+                            RawkumaSR
+                        </Button>
+                    </a>
                 </div>
 
             </footer>
