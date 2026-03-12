@@ -42,7 +42,7 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
         />
       </div>
       <div className="flex flex-col space-y-2">
-        <Label>Format</Label>
+        <Label>t('nodes.folder-writer.format'</Label>
         <Select
           onValueChange={(value) => {
             changeValue({
