@@ -46,7 +46,7 @@ export function CodeSection() {
         }
     }, [nodes])
     return (
-        <Card>
+        <Card className="flex flex-col h-full min-h-0">
             <CardHeader className="flex flex-row items-center mx-2">
                 <h2 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">{t('home-page.code')}</h2>
                 <div className="flex flex-row gap-2 ml-auto">
@@ -153,10 +153,9 @@ export function CodeSection() {
                             <p>{t('tooltips.download')}</p>
                         </TooltipContent>
                     </Tooltip>
-
                 </div>
             </CardHeader>
-            <CardContent className="flex-1 overflow-hidden">
+            <CardContent className="flex-1 overflow-hidden min-h-0">
                 <ScrollArea className="relative rounded-xl border h-full bg-background overflow-hidden">
                     <div className="m-4">
                         <pre>

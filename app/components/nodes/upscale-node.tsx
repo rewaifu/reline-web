@@ -98,7 +98,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                 )}
             </div>
             <Separator/>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-4">
                 <div className="flex-1 flex flex-col gap-2">
                     <Label>{t('nodes.upscale.tiler')}</Label>
                     <Select
@@ -117,7 +117,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                         }}
                         value={options.tiler}
                     >
-                        <SelectTrigger className="w-full min-w-[180px]">
+                        <SelectTrigger className="w-full min-w-[80px]">
                             <SelectValue/>
                         </SelectTrigger>
                         <SelectContent>
@@ -139,7 +139,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                         <Label>{t('nodes.upscale.tile-size')}</Label>
                         <Input
                             type="number"
-                            className="w-full min-w-[180px]"
+                            className="w-full min-w-[80px]"
                             step={100}
                             value={options.exact_tiler_size}
                             onChange={(e) => {
@@ -154,7 +154,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                 <div className="flex-1 flex flex-col gap-2">
                     <Label>{t('nodes.upscale.dtype')}</Label>
                     <Select onValueChange={(value: DType | null) => changeValue({dtype: value!})} value={options.dtype}>
-                        <SelectTrigger className="w-full min-w-[180px]">
+                        <SelectTrigger className="w-full min-w-[80px]">
                             <SelectValue/>
                         </SelectTrigger>
                         <SelectContent>
