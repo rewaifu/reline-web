@@ -11,12 +11,14 @@ import {
 import { cn } from "@/lib/utils"
 import { Upload, FileJson, X, ClipboardPaste } from "lucide-react"
 import {toast} from "sonner";
+import {useTranslation} from "react-i18next"
 
 type FileUploadDialogContentProps = {
     onImport: (text: string) => void
 }
 
 export function FileUploadDialogContent({ onImport }: FileUploadDialogContentProps) {
+    const {t} = useTranslation()
     const [text, setText] = useState("")
     const [fileName, setFileName] = useState<string | null>(null)
     const [dragActive, setDragActive] = useState(false)
@@ -28,14 +30,14 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
             setText(content)
             setFileName(source)
         } catch (err) {
-            toast.error("Invalid JSON.\nCheck your file/clipboard")
+            toast.error(t('toasts.invalid-json'))
         }
     }
 
     const handleFile = (file?: File) => {
         if (!file) return
         if (!file.name.toLowerCase().endsWith(".json")) {
-            toast.error("Only json file can be uploaded")
+            toast.error(t('toasts.only-json'))
             return
         }
 
@@ -45,7 +47,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
             .text()
             .then((content) => processContent(content, file.name))
             .catch(() => {
-                toast.error("Unable to read file")
+                toast.error(t('toasts.unable-to-read'))
                 clearFile()
             })
     }
@@ -53,20 +55,20 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
     const handlePasteFromClipboard = async () => {
         try {
             if (!navigator.clipboard?.readText) {
-                toast.error("Clipboard is not supported in your browser")
+                toast.error(t('toasts.clipboard-not-supported'))
                 return
             }
 
             const clipboardText = await navigator.clipboard.readText()
             if (!clipboardText.trim()) {
-                toast.error("Clipboard is empty")
+                toast.error(t('toasts.clipboard-empty'))
                 return
             }
 
             processContent(clipboardText)
         } catch (err: any) {
             console.error(err)
-            toast.error("Unable to read from clipboard.")
+            toast.error('toasts.clipboard-read-failure')
         }
     }
 
@@ -105,7 +107,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
     return (
         <DialogContent className="sm:max-w-md">
             <DialogHeader>
-                <DialogTitle>Upload config</DialogTitle>
+                <DialogTitle>{t('upload-dialog.upload-config')}</DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4 py-2">
@@ -117,7 +119,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                         onClick={handlePasteFromClipboard}
                     >
                         <ClipboardPaste className="h-4 w-4" />
-                        Paste from clipboard
+                        {t('upload-dialog.paste')}
                     </Button>
                 </div>
 
@@ -152,7 +154,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                                 <FileJson className="h-10 w-10 text-primary" />
                                 <div className="space-y-1">
                                     <p className="text-sm font-medium">{fileName}</p>
-                                    <p className="text-xs text-muted-foreground">Config loaded</p>
+                                    <p className="text-xs text-muted-foreground">{t('upload-dialog.loaded')}</p>
                                 </div>
                             </>
                         ) : (
@@ -160,10 +162,10 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                                 <Upload className="h-10 w-10 text-muted-foreground" />
                                 <div className="space-y-1">
                                     <p className="text-sm font-medium">
-                                        Drag & drop <br/>or click here
+                                        {t('upload-dialog.dnd-1')} <br/>{t('upload-dialog.dnd-2')}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                        Supports: JSON
+                                        {t('upload-dialog.json')}
                                     </p>
                                 </div>
                             </>
@@ -193,7 +195,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                     onClick={clearFile}
                     disabled={!fileName}
                 >
-                    Clear
+                    {t('upload-dialog.clear')}
                 </Button>
 
                 <DialogClose render={
@@ -202,7 +204,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
                         disabled={text === ""}
                         onClick={() => text && onImport(text)}
                     >
-                        Import
+                        {t('upload-dialog.import')}
                     </Button>
                 } />
             </DialogFooter>
