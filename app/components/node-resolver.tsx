@@ -42,7 +42,7 @@ function Combobox({allValues, initialValue, onChange}: {
     const SelectedIcon = NODE_ICONS[initialValue as NodeType];
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} modal={true}>
             <PopoverTrigger render={
                 <Button variant="outline" aria-role="combobox" aria-expanded={open}
                         className="w-[170px] md:w-[200px] justify-between">

@@ -35,7 +35,11 @@ export function ModelsCombobox({
         <Combobox
             items={models}
             value={value ?? null}
-            onValueChange={(val) => val && onChange(val)}
+            onValueChange={(val) => {
+                if (typeof val === "string") {
+                    onChange(val)
+                }
+            }}
         >
             <ComboboxInput placeholder={t('nodes.upscale.search')} showTrigger />
             <ComboboxContent>
