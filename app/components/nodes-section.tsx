@@ -24,7 +24,7 @@ function EdgeDropZone({id}: { id: string }) {
         <div
             ref={ref}
             className={cn(
-                "absolute left-0 right-0 z-20 h-10",
+                "absolute left-0 right-0 z-20 h-10 pointer-events-none",
                 id === EDGE_DROP_ZONE_START ? "top-0" : "bottom-0"
             )}
         />
