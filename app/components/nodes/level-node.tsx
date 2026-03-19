@@ -31,7 +31,7 @@ export function LevelNodeBody({id}: { id: number }) {
         <div className="flex flex-col gap-4">
 
             {/* Low and High input container */}
-            <div className="flex flex-row gap-4 w-full">
+            <div className="flex flex-col md:flex-row gap-4 w-full">
                 <div className="flex-1">
                     <NumberInput
                         min={0}
@@ -76,7 +76,7 @@ export function LevelNodeBody({id}: { id: number }) {
             <Separator/>
 
             {/* Low and High Output container */}
-            <div className="flex flex-row gap-4 w-full">
+            <div className="flex flex-col md:flex-row gap-4 w-full">
                 <div className="flex-1">
                     <NumberInput
                         min={0}

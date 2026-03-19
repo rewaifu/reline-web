@@ -7,7 +7,7 @@ import {NodesActionType} from "~/types/actions.ts"
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select.tsx"
 import {DotType, HalftoneMode, FilterType} from "~/types/enums.ts"
 import {NumberInput} from "~/components/ui/number-input.tsx"
-import {DEFAULT_HALFTONE_SSAA_FILTER} from "~/constants";
+import {DEFAULT_CANNY_TYPE, DEFAULT_HALFTONE_SSAA_FILTER} from "~/constants";
 import {
     Combobox,
     ComboboxContent,
@@ -19,6 +19,7 @@ import {
 import {Checkbox} from "~/components/ui";
 import {useTranslation} from "react-i18next"
 import {Separator} from "~/components/ui/separator.tsx";
+import {Field, FieldGroup, FieldLabel} from "~/components/ui/field.tsx";
 
 export function ScreentoneNodeBody({id}: { id: number }) {
     const {t} = useTranslation()
@@ -86,7 +87,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
             <div key={i} className="border rounded-xl p-4 flex flex-col gap-4">
                 <Label className="self-center font-normal">{t('nodes.screentone.channel')} {i + 1}</Label>
                 <Separator />
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 flex flex-col gap-2">
                         <Label>{t('nodes.screentone.dot-type')}</Label>
                         <Select
@@ -199,7 +200,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
             {(mode === "rgb" || mode === "cmyk") ? (
                 renderDotOptionsArray()
             ) : (
-                <div className="flex flex-row gap-4 w-full items-center">
+                <div className="flex flex-col md:flex-row gap-4 w-full md:items-center">
                     <div className="flex-1">
                         <div className="flex flex-col gap-2">
                             <Label>{t('nodes.screentone.dot-type')}</Label>
@@ -269,7 +270,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
 
             )}
             <Separator/>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
                 <div className="w-[180px]">
                     <div className="flex flex-col gap-2">
                         <Label>{t('nodes.screentone.ssaa-scale')}</Label>
@@ -328,15 +329,18 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row gap-2">
-                <Checkbox
-                    checked={options.disable_auto_dot === true}
-                    onCheckedChange={(value) => {
-                        changeValue({disable_auto_dot: value === true ? true : undefined})
-                    }}
-                />
-                <Label>{t('nodes.screentone.disable-auto-dot')}</Label>
-            </div>
+            <FieldGroup>
+                <Field orientation="horizontal">
+                    <Checkbox
+                        id = "auto-dot-check"
+                        checked={options.disable_auto_dot === true}
+                        onCheckedChange={(value) => {
+                            changeValue({disable_auto_dot: value === true ? true : undefined})
+                        }}
+                    />
+                    <FieldLabel htmlFor="auto-dot-check">{t('nodes.screentone.disable-auto-dot')}</FieldLabel>
+                </Field>
+            </FieldGroup>
         </div>
     )
 }

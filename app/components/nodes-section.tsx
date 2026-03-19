@@ -6,10 +6,12 @@ import {NodeResolver} from "~/components/node-resolver"
 import {AddNodeButton} from "~/components/add-node-button"
 import {ScrollArea, ScrollBar} from "~/components/ui/scroll-area.tsx";
 import {useTranslation} from "react-i18next"
-import {DragDropProvider, useDroppable} from "@dnd-kit/react";
+import {DragDropProvider, useDroppable, PointerSensor, KeyboardSensor} from "@dnd-kit/react";
+import {PointerActivationConstraints} from "@dnd-kit/dom";
 import {isSortableOperation} from "@dnd-kit/react/sortable";
 import {cn} from "~/lib/utils";
 import {NodesActionType} from "~/types/actions";
+import {useMediaQuery} from "~/hooks/useMediaQuery";
 
 const EDGE_DROP_ZONE_START = "nodes-edge-start"
 const EDGE_DROP_ZONE_END = "nodes-edge-end"
@@ -23,7 +25,7 @@ function EdgeDropZone({id}: { id: string }) {
         <div
             ref={ref}
             className={cn(
-                "absolute left-0 right-0 z-20 h-10",
+                "absolute left-0 right-0 z-20 h-10 pointer-events-none",
                 id === EDGE_DROP_ZONE_START ? "top-0" : "bottom-0"
             )}
         />
@@ -34,6 +36,7 @@ export function NodesSection() {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
     const dispatch = useContext(NodesDispatchContext)
+    const isMobile = useMediaQuery("(max-width: 767px)")
     const dragStartIndexRef = useRef<number | null>(null)
     const lastOverIndexRef = useRef<number | null>(null)
     const getSourceInitialIndex = (source: unknown): number | null => {
@@ -134,19 +137,34 @@ export function NodesSection() {
     }
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center mx-2">
+        <Card className="pb-2 md:pb-4">
+            <CardHeader className="flex flex-row items-center mx-2 h-[25px] md:h-[32px]">
                 <h2 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">{t('home-page.nodes')}</h2>
                 <AddNodeButton/>
             </CardHeader>
-            <CardContent className="flex-1 overflow-hidden">
-                <DragDropProvider onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+            <CardContent className="flex-1 overflow-hidden px-2 md:px-4">
+                <DragDropProvider
+                    sensors={[
+                        PointerSensor.configure({
+                            activationConstraints: [
+                                new PointerActivationConstraints.Delay({
+                                    value: isMobile ? 200 : 0,
+                                    tolerance: isMobile ? 5 : 0,
+                                }),
+                            ],
+                        }),
+                        KeyboardSensor.configure(KeyboardSensor.defaults),
+                    ]}
+                    onDragStart={onDragStart}
+                    onDragOver={onDragOver}
+                    onDragEnd={onDragEnd}
+                >
                     <ScrollArea className="relative rounded-xl border h-full bg-background overflow-hidden">
                         <div className="flex flex-col min-h-full">
                             <EdgeDropZone id={EDGE_DROP_ZONE_START} />
                             <div className="pointer-events-none sticky top-0 z-10 h-7 w-full
                             bg-gradient-to-b from-background via-background/30 to-transparent" />
-                            <div className="flex-1 flex flex-col gap-5 m-5 -my-2">
+                            <div className="flex-1 flex flex-col gap-5 m-3 md:m-5 -my-3 md:-my-2">
                                 {nodes.map((data, index) => (
                                     <NodeResolver key={data.id} id={data.id} index={index}/>
                                 ))}
@@ -156,7 +174,7 @@ export function NodesSection() {
                             bg-gradient-to-t from-background via-background/30 to-transparent"
                             />
                         </div>
-                        <ScrollBar className="mr-1 my-2 pb-4 z-20"/>
+                        <ScrollBar className="mr-1 my-2 pb-4 z-20 hidden md:flex"/>
                     </ScrollArea>
                 </DragDropProvider>
             </CardContent>

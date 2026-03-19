@@ -63,7 +63,11 @@
       "tile-size": "Tile size",
       "dtype": "DType",
       "own-model": "Own model",
-      "allow-cpu-upscale": "Allow CPU upscale"
+      "allow-cpu-upscale": "Allow CPU upscale",
+      "enable-target-scale": "Custom scale factor",
+      "target-scale-size": "Scale factor",
+      "target-scale-warning": "Current scale factor exceeds model capabilities ({{modelScale}}x)",
+      "target-scale-unknown": "Scale factor not found, exceeding will cause an error"
     }
   },
   "home-page": {
@@ -83,11 +87,27 @@
     "saved": "File saved!",
     "dl-started": "Downloading started",
     "copied": "Copied!",
-    "preset-loaded": "Loaded preset: {{name}}"
+    "preset-loaded": "Loaded preset: {{name}}",
+    "invalid-json": "Invalid JSON. Check your file/clipboard",
+    "only-json": "Only json file can be uploaded",
+    "unable-to-read": "Unable to read file",
+    "clipboard-not-supported": "Clipboard is not supported in your browser",
+    "clipboard-empty": "Clipboard is empty",
+    "clipboard-read-failure": "Unable to read from clipboard"
   },
   "config-presets": {
     "presets": "Presets:",
     "select": "Select..."
+  },
+  "upload-dialog": {
+    "upload-config": "Upload config",
+    "paste": "Paste from clipboard",
+    "loaded": "Config loaded",
+    "dnd-1": "Drag & drop",
+    "dnd-2": "or click here",
+    "json": "Supports: JSON",
+    "clear": "Clear",
+    "import": "Import"
   }
 }
 

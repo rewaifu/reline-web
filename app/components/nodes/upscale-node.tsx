@@ -1,4 +1,4 @@
-import {useContext} from "react"
+import {useContext, useEffect, useMemo, useState} from "react"
 import {ModelsContext, NodesContext, NodesDispatchContext} from "~/context/contexts"
 import {DType, TilerType} from "~/types/enums"
 import {Label} from "../ui/label"
@@ -19,6 +19,7 @@ import {
 import {FieldGroup, FieldLabel, Field} from "~/components/ui/field.tsx"
 import {Separator} from "~/components/ui/separator.tsx"
 import {useTranslation} from "react-i18next"
+import {cn} from "~/lib/utils";
 
 export function ModelsCombobox({
                                    value,
@@ -34,7 +35,11 @@ export function ModelsCombobox({
         <Combobox
             items={models}
             value={value ?? null}
-            onValueChange={(val) => val && onChange(val)}
+            onValueChange={(val) => {
+                if (typeof val === "string") {
+                    onChange(val)
+                }
+            }}
         >
             <ComboboxInput placeholder={t('nodes.upscale.search')} showTrigger />
             <ComboboxContent>
@@ -51,6 +56,18 @@ export function ModelsCombobox({
     )
 }
 
+function extractModelScale(modelName: string): number | null {
+    let match = modelName.match(/(\d+)x/i)
+    if (match) {
+        return Number.parseInt(match[1], 10)
+    }
+    match = modelName.match(/x(\d+)/i)
+    if (match) {
+        return Number.parseInt(match[1], 10)
+    }
+    return null
+}
+
 export function UpscaleNodeBody({id}: { id: number }) {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
@@ -59,8 +76,14 @@ export function UpscaleNodeBody({id}: { id: number }) {
         return null
     }
     const options = node.options as UpscaleNodeOptions
+    const [target, setTarget] = useState(options.target_scale !== undefined)
     const dispatch = useContext(NodesDispatchContext)
     const models = useContext(ModelsContext)
+    
+    const modelScale = useMemo(() => extractModelScale(options.model), [options.model])
+    const showWarning = target && options.target_scale !== undefined && modelScale !== null && options.target_scale > modelScale
+    const showUnknownScaleWarning = target && options.target_scale !== undefined && modelScale === null && options.target_scale !== 1
+
     const changeValue = (newOptions: Partial<UpscaleNodeOptions>) => {
         dispatch({
             type: NodesActionType.CHANGE,
@@ -98,7 +121,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                 )}
             </div>
             <Separator/>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-4">
                 <div className="flex-1 flex flex-col gap-2">
                     <Label>{t('nodes.upscale.tiler')}</Label>
                     <Select
@@ -117,7 +140,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                         }}
                         value={options.tiler}
                     >
-                        <SelectTrigger className="w-full min-w-[180px]">
+                        <SelectTrigger className="w-full min-w-[80px]">
                             <SelectValue/>
                         </SelectTrigger>
                         <SelectContent>
@@ -139,7 +162,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                         <Label>{t('nodes.upscale.tile-size')}</Label>
                         <Input
                             type="number"
-                            className="w-full min-w-[180px]"
+                            className="w-full min-w-[80px]"
                             step={100}
                             value={options.exact_tiler_size}
                             onChange={(e) => {
@@ -154,7 +177,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                 <div className="flex-1 flex flex-col gap-2">
                     <Label>{t('nodes.upscale.dtype')}</Label>
                     <Select onValueChange={(value: DType | null) => changeValue({dtype: value!})} value={options.dtype}>
-                        <SelectTrigger className="w-full min-w-[180px]">
+                        <SelectTrigger className="w-full min-w-[80px]">
                             <SelectValue/>
                         </SelectTrigger>
                         <SelectContent>
@@ -171,6 +194,50 @@ export function UpscaleNodeBody({id}: { id: number }) {
                     </Select>
                 </div>
             </div>
+            <Separator/>
+            <FieldGroup>
+                <Field orientation="horizontal">
+                    <Checkbox
+                        id="target-scale-check"
+                        checked={target}
+                        onCheckedChange={(value) => {
+                            setTarget(!!value)
+                            if (!value) {
+                                changeValue({target_scale: undefined})
+                            } else {
+                                changeValue({target_scale: modelScale ?? 1})
+                            }
+                        }}
+                    />
+                    <FieldLabel htmlFor="target-scale-check">{t('nodes.upscale.enable-target-scale')}</FieldLabel>
+                </Field>
+            </FieldGroup>
+            {target && (
+                <div className="flex flex-col gap-2">
+                    <Label>{t('nodes.upscale.target-scale-size')}</Label>
+                    <Input
+                        type="number"
+                        className={cn("w-[180px]", showWarning && "border-destructive focus-visible:ring-destructive")}
+                        step={1}
+                        min={1}
+                        max={32}
+                        value={options.target_scale ?? 1}
+                        onChange={(e) => {
+                            changeValue({target_scale: Number.parseFloat(e.target.value)})
+                        }}
+                    />
+                    {showWarning && (
+                        <p className="text-sm text-destructive">
+                            {t('nodes.upscale.target-scale-warning', {modelScale})}
+                        </p>
+                    )}
+                    {showUnknownScaleWarning && (
+                        <p className="text-sm text-destructive">
+                            {t('nodes.upscale.target-scale-unknown')}
+                        </p>
+                    )}
+                </div>
+            )}
             <Separator/>
             <FieldGroup>
                 <Field orientation="horizontal">
@@ -204,6 +271,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                     <FieldLabel htmlFor="cpu-scale-check">{t('nodes.upscale.allow-cpu-upscale')}</FieldLabel>
                 </Field>
             </FieldGroup>
+
         </div>
     )
 }

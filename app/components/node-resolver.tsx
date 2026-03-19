@@ -42,18 +42,18 @@ function Combobox({allValues, initialValue, onChange}: {
     const SelectedIcon = NODE_ICONS[initialValue as NodeType];
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} modal={true}>
             <PopoverTrigger render={
                 <Button variant="outline" aria-role="combobox" aria-expanded={open}
-                        className="w-[200px] justify-between">
+                        className="w-[170px] md:w-[200px] justify-between">
                     <div className="flex items-center gap-2">
-                        {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground" />}
+                        {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground dark:text-primary" />}
                         <span className="capitalize">{initialValue.replace('_', ' ')}</span>
                     </div>
                     <IconSelector className="ml-2 h-6 w-6 shrink-0 opacity-50"/>
                 </Button>
             } />
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="w-[170px] md:w-[200px] p-0">
                 <Command>
                     <CommandList>
                         <CommandEmpty>Nothing was found.</CommandEmpty>
@@ -70,8 +70,8 @@ function Combobox({allValues, initialValue, onChange}: {
                                         }}
                                         className="flex items-center gap-2 justify-between"
                                     >
-                                        <div className="flex flex-row gap-2">
-                                            {ItemIcon && <ItemIcon size={18} className="text-muted-foreground" />}
+                                        <div className="flex flex-row gap-2 items-center">
+                                            {ItemIcon && <ItemIcon size={18} className="text-muted-foreground dark:text-primary" />}
                                             <span className="capitalize">{_value.replace('_', ' ')}</span>
                                         </div>
                                         <IconCheck className={cn("h-4 w-4", initialValue === _value ? "opacity-100" : "opacity-0")}/>
@@ -136,19 +136,20 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                 }}
             >
                 <Card className="rounded-xl">
-                    <CardHeader className="flex flex-row">
+                    <CardHeader className="flex flex-row px-2 md:px-4">
                         <Button
                             ref={handleRef}
-                            className="mr-1 cursor-grab active:cursor-grabbing"
+                            className="mr-0 md:mr-1 cursor-grab active:cursor-grabbing"
                             variant="ghost"
                             size="icon"
                             aria-label="Drag node"
+                            style={{ touchAction: 'none' }}
                         >
                             <IconGripVertical/>
                         </Button>
                         <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange}/>
                         <CollapsibleTrigger render={
-                            <Button className="ml-1" variant="ghost" size="icon">
+                            <Button className="ml-0 md:ml-1" variant="ghost" size="icon">
                                 {data.collapsed ? <IconChevronRight/> : <IconChevronDown/>}
                             </Button>
                         } />
@@ -156,7 +157,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                             variant="ghost"
                             size="icon"
                             disabled={index === 0}
-                            className="ml-auto"
+                            className="ml-auto hidden md:flex"
                             onClick={() => {
                                 dispatch({
                                     type: NodesActionType.MOVE,
@@ -172,6 +173,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                         <Button
                             variant="ghost"
                             size="icon"
+                            className="hidden md:flex"
                             disabled={index === nodes.length - 1}
                             onClick={() => {
                                 dispatch({
@@ -188,6 +190,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                         <Button
                             variant="ghost"
                             size="icon"
+                            className="ml-auto md:ml-0"
                             onClick={() => {
                                 dispatch({
                                     type: NodesActionType.DELETE,
@@ -199,7 +202,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                         </Button>
                     </CardHeader>
                     <CollapsibleContent>
-                        <CardContent>
+                        <CardContent className="px-3 md:px-4">
                             <Card>
                                 <CardContent className="px-5">
                                     <NodeBodyComponent id={id}/>
