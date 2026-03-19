@@ -11,6 +11,7 @@ import {PointerActivationConstraints} from "@dnd-kit/dom";
 import {isSortableOperation} from "@dnd-kit/react/sortable";
 import {cn} from "~/lib/utils";
 import {NodesActionType} from "~/types/actions";
+import {useMediaQuery} from "~/hooks/useMediaQuery";
 
 const EDGE_DROP_ZONE_START = "nodes-edge-start"
 const EDGE_DROP_ZONE_END = "nodes-edge-end"
@@ -35,6 +36,7 @@ export function NodesSection() {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
     const dispatch = useContext(NodesDispatchContext)
+    const isMobile = useMediaQuery("(max-width: 767px)")
     const dragStartIndexRef = useRef<number | null>(null)
     const lastOverIndexRef = useRef<number | null>(null)
     const getSourceInitialIndex = (source: unknown): number | null => {
@@ -146,8 +148,8 @@ export function NodesSection() {
                         PointerSensor.configure({
                             activationConstraints: [
                                 new PointerActivationConstraints.Delay({
-                                    value: 100,
-                                    tolerance: 5,
+                                    value: isMobile ? 200 : 0,
+                                    tolerance: isMobile ? 5 : 0,
                                 }),
                             ],
                         }),
