@@ -63,7 +63,11 @@
       "tile-size": "Tile size",
       "dtype": "DType",
       "own-model": "Own model",
-      "allow-cpu-upscale": "Allow CPU upscale"
+      "allow-cpu-upscale": "Allow CPU upscale",
+      "enable-target-scale": "Custom scale factor",
+      "target-scale-size": "Scale factor",
+      "target-scale-warning": "Current scale factor exceeds model capabilities ({{modelScale}}x)",
+      "target-scale-unknown": "Scale factor not found, exceeding will cause an error"
     }
   },
   "home-page": {

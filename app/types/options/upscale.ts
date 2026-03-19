@@ -12,6 +12,7 @@ export const UpscaleOptionsSchema = z.object({
   tiler: z.nativeEnum(TilerType),
   exact_tiler_size: z.number(),
   allow_cpu_upscale: z.boolean(),
+  target_scale: z.number().optional(),
 })
 
 export type UpscaleNodeOptions = z.infer<typeof UpscaleOptionsSchema>
