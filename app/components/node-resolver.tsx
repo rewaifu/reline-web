@@ -139,10 +139,11 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                     <CardHeader className="flex flex-row px-2 md:px-4">
                         <Button
                             ref={handleRef}
-                            className=" mr-0 md:mr-1 cursor-grab active:cursor-grabbing"
+                            className="mr-0 md:mr-1 cursor-grab active:cursor-grabbing"
                             variant="ghost"
                             size="icon"
                             aria-label="Drag node"
+                            style={{ touchAction: 'none' }}
                         >
                             <IconGripVertical/>
                         </Button>

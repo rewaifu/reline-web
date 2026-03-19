@@ -6,7 +6,8 @@ import {NodeResolver} from "~/components/node-resolver"
 import {AddNodeButton} from "~/components/add-node-button"
 import {ScrollArea, ScrollBar} from "~/components/ui/scroll-area.tsx";
 import {useTranslation} from "react-i18next"
-import {DragDropProvider, useDroppable} from "@dnd-kit/react";
+import {DragDropProvider, useDroppable, PointerSensor, KeyboardSensor} from "@dnd-kit/react";
+import {PointerActivationConstraints} from "@dnd-kit/dom";
 import {isSortableOperation} from "@dnd-kit/react/sortable";
 import {cn} from "~/lib/utils";
 import {NodesActionType} from "~/types/actions";
@@ -140,7 +141,22 @@ export function NodesSection() {
                 <AddNodeButton/>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden px-2 md:px-4">
-                <DragDropProvider onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+                <DragDropProvider
+                    sensors={[
+                        PointerSensor.configure({
+                            activationConstraints: [
+                                new PointerActivationConstraints.Delay({
+                                    value: 100,
+                                    tolerance: 5,
+                                }),
+                            ],
+                        }),
+                        KeyboardSensor.configure(KeyboardSensor.defaults),
+                    ]}
+                    onDragStart={onDragStart}
+                    onDragOver={onDragOver}
+                    onDragEnd={onDragEnd}
+                >
                     <ScrollArea className="relative rounded-xl border h-full bg-background overflow-hidden">
                         <div className="flex flex-col min-h-full">
                             <EdgeDropZone id={EDGE_DROP_ZONE_START} />
