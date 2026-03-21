@@ -54,14 +54,14 @@ export function FolderReaderNodeBody({id}: { id: number }) {
                     value={options.mode}
                 >
                     <SelectTrigger className="w-[180px]">
-                        <SelectValue/>
+                        <SelectValue>{t(`nodes.folder-reader.mode-options.${options.mode}`)}</SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             {Object.values(ReaderNodeMode).map((mode) => {
                                 return (
                                     <SelectItem key={mode} value={mode}>
-                                        {mode}
+                                        {t(`nodes.folder-reader.mode-options.${mode}`)}
                                     </SelectItem>
                                 )
                             })}

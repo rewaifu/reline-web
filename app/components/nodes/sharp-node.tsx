@@ -137,14 +137,14 @@ export function SharpNodeBody({id}: { id: number }) {
                         value={options.canny_type}
                     >
                         <SelectTrigger className="w-[180px]">
-                            <SelectValue/>
+                            <SelectValue>{t(`nodes.sharp.canny-type-options.${options.canny_type}`)}</SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 {Object.values(CannyType).map((type) => {
                                     return (
                                         <SelectItem key={type} value={type}>
-                                            {type}
+                                            {t(`nodes.sharp.canny-type-options.${type}`)}
                                         </SelectItem>
                                     )
                                 })}

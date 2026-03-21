@@ -7,6 +7,10 @@
       "path": "Path to folder",
       "placeholder": "Path/to/folder",
       "mode": "Mode",
+      "mode-options": {
+        "rgb": "RGB",
+        "gray": "Gray"
+      },
       "recursive": "Recursive",
       "unarchive": "Unarchive"
     },
@@ -27,6 +31,12 @@
       "select-filter": "Select filter...",
       "no-items-found": "No items found.",
       "resize-type": "Resize Type",
+      "resize-type-options": {
+        "width": "By width",
+        "height": "By height",
+        "absolute": "Absolute",
+        "percent": "By percent"
+      },
       "width": "Width (px)",
       "height": "Height (px)",
       "percent": "Percent",
@@ -36,10 +46,23 @@
     },
     "screentone": {
       "dot-type": "Dot Type",
+      "dot-type-options": {
+        "circle": "Circle",
+        "line": "Line",
+        "cross": "Cross",
+        "ellipse": "Ellipse",
+        "invline": "Inverted line"
+      },
       "channel": "Channel",
       "dot-size": "Dot Size",
       "angle": "Angle",
       "halftone-mode": "Halftone mode",
+      "halftone-mode-options": {
+        "gray": "Gray",
+        "rgb": "RGB",
+        "hsv": "HSV",
+        "cmyk": "CMYK"
+      },
       "ssaa-scale": "SSAA Scale",
       "ssaa-scale-placeholder": "None",
       "ssaa-filter": "SSAA Filter",
@@ -52,7 +75,12 @@
       "diapason-white": "Diapason white",
       "diapason-black": "Diapason black",
       "canny": "Canny",
-      "canny-type": "Canny Type"
+      "canny-type": "Canny Type",
+      "canny-type-options": {
+        "normal": "Normal",
+        "invert": "Invert",
+        "unsharp": "Unsharp"
+      }
     },
     "upscale": {
       "search": "Select model...",
@@ -60,6 +88,10 @@
       "model": "Model",
       "placeholder": "Path/to/model",
       "tiler": "Tiler",
+      "tiler-options": {
+        "exact": "Exact",
+        "no_tiling": "No tiling"
+      },
       "tile-size": "Tile size",
       "dtype": "DType",
       "own-model": "Own model",
@@ -68,6 +100,16 @@
       "target-scale-size": "Scale factor",
       "target-scale-warning": "Current scale factor exceeds model capabilities ({{modelScale}}x)",
       "target-scale-unknown": "Scale factor not found, exceeding will cause an error"
+    },
+    "node-type-options": {
+      "folder_reader": "Folder reader",
+      "folder_writer": "Folder writer",
+      "upscale": "Upscale",
+      "sharp": "Sharp",
+      "resize": "Resize",
+      "screentone": "Halftone",
+      "level": "Level",
+      "cvt_color": "Convert color"
     }
   },
   "home-page": {

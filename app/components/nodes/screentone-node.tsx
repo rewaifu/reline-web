@@ -95,13 +95,13 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                             value={dotTypes[i]}
                         >
                             <SelectTrigger className="w-full min-w-[180px]">
-                                <SelectValue/>
+                                <SelectValue>{t(`nodes.screentone.dot-type-options.${dotTypes[i]}`)}</SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
                                     {Object.values(DotType).map((type) => (
                                         <SelectItem key={type} value={type}>
-                                            {type}
+                                            {t(`nodes.screentone.dot-type-options.${type}`)}
                                         </SelectItem>
                                     ))}
                                 </SelectGroup>
@@ -182,13 +182,13 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                     value={options.halftone_mode}
                 >
                     <SelectTrigger className="w-[180px]">
-                        <SelectValue/>
+                        <SelectValue>{t(`nodes.screentone.halftone-mode-options.${options.halftone_mode}`)}</SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             {Object.values(HalftoneMode).map((type) => (
                                 <SelectItem key={type} value={type}>
-                                    {type}
+                                    {t(`nodes.screentone.halftone-mode-options.${type}`)}
                                 </SelectItem>
                             ))}
                         </SelectGroup>
@@ -213,13 +213,13 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                                 value={options.dot_type as DotType}
                             >
                                 <SelectTrigger className="min-w-[180px] w-full">
-                                    <SelectValue/>
+                                    <SelectValue>{t(`nodes.screentone.dot-type-options.${options.dot_type as DotType}`)}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
                                         {Object.values(DotType).map((type) => (
                                             <SelectItem key={type} value={type}>
-                                                {type}
+                                                {t(`nodes.screentone.dot-type-options.${type}`)}
                                             </SelectItem>
                                         ))}
                                     </SelectGroup>

@@ -141,14 +141,14 @@ export function UpscaleNodeBody({id}: { id: number }) {
                         value={options.tiler}
                     >
                         <SelectTrigger className="w-full min-w-[80px]">
-                            <SelectValue/>
+                            <SelectValue>{t(`nodes.upscale.tiler-options.${options.tiler}`)}</SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 {Object.values(TilerType).map((type) => {
                                     return (
                                         <SelectItem key={type} value={type}>
-                                            {type}
+                                            {t(`nodes.upscale.tiler-options.${type}`)}
                                         </SelectItem>
                                     )
                                 })}

@@ -143,14 +143,14 @@ export function ResizeNodeBody({id}: { id: number }) {
                     value={options.resize_type}
                 >
                     <SelectTrigger className="w-[180px]">
-                        <SelectValue/>
+                        <SelectValue>{t(`nodes.resize.resize-type-options.${options.resize_type}`)}</SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             {Object.values(ResizeType).map((type) => {
                                 return (
                                     <SelectItem key={type} value={type}>
-                                        {type}
+                                        {t(`nodes.resize.resize-type-options.${type}`)}
                                     </SelectItem>
                                 )
                             })}
