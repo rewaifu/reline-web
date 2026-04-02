@@ -47,7 +47,7 @@ function Combobox({allValues, initialValue, onChange}: {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger render={
                 <Button variant="outline" aria-role="combobox" aria-expanded={open}
-                        className="w-[170px] md:w-[200px] justify-between">
+                        className="w-[170px] md:w-[200px] justify-between hover:cursor-pointer">
                     <div className="flex items-center gap-2">
                         {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground dark:text-primary" />}
                         <span>{t(`nodes.node-type-options.${initialValue}`, {defaultValue: initialValue.replace('_', ' ')})}</span>
