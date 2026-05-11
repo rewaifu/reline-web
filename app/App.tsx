@@ -10,7 +10,6 @@ import {ModeToggle} from "~/components/mode-toggle"
 import {CodeSection} from "~/components/code-section"
 import {NodesSection} from "~/components/nodes-section"
 import {migrateNodes} from "~/lib/config-migration"
-import { EnhancrLogo } from "~/svg/enhancr-logo"
 import { KumaLogo } from "~/svg/kuma.tsx";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./components/ui/tooltip"
 import { Button } from "./components/ui/button"
@@ -246,20 +245,20 @@ function HomePage() {
             <footer className="flex h-10 bg-card rounded-xl ring-1 ring-foreground/10 p-2 md:px-5 mb-3 md:mb-5 mx-3 md:mx-5 justify-around md:justify-between mt-1 md:mt-0">
                 <div className="flex flex-row gap-2 items-center">
                     <h1 className="hidden md:flex text-sm font-semibold tracking-tight select-none">{t('home-page.use-in')}</h1>
-                    <a href="https://colab.research.google.com/drive/1-ijaR4Ld_CUkEMb-l2Cbf918TCQOp8D9" target="_blank">
+                    <a href="https://colab.research.google.com/drive/1-ijaR4Ld_CUkEMb-l2Cbf918TCQOp8D9" target="_blank" rel="noreferrer">
                         <Button variant="outline" size="sm">
                             <CollabLogo/>
                             <div/>
                             {colab}
                         </Button>
                     </a>
-                    <a href="https://github.com/rewaifu/reline_local" target="_blank" className="hidden md:flex">
+                    <a href="https://github.com/rewaifu/reline_local" target="_blank" className="hidden md:flex" rel="noreferrer">
                         <Button variant="outline" size="sm">
                             <IconBrandGithub/>
                             Reline Local
                         </Button>
                     </a>
-                    <a href="https://github.com/breadyk/reline-local-GUI" target="_blank" className="hidden md:flex">
+                    <a href="https://github.com/breadyk/reline-local-GUI" target="_blank" className="hidden md:flex" rel="noreferrer">
                         <Button variant="outline" size="sm">
                             <IconBrandGithub/>
                             Reline Local GUI
@@ -268,7 +267,7 @@ function HomePage() {
                 </div>
                 <div className="flex flex-row gap-2 items-center">
                     <h1 className="hidden md:flex scroll-m-20 text-sm font-semibold tracking-tight select-none">{t('home-page.need-help')}</h1>
-                    <a href="https://discord.gg/hEgdaVzTs9" target="_blank">
+                    <a href="https://discord.gg/hEgdaVzTs9" target="_blank" rel="noreferrer">
                         <Button variant="outline" size="sm">
                             <IconBrandDiscordFilled/>
                             RawkumaSR

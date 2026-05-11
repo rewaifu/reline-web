@@ -49,7 +49,7 @@ function Combobox({allValues, initialValue, onChange}: {
                 <Button variant="outline" aria-role="combobox" aria-expanded={open}
                         className="w-[170px] md:w-[200px] justify-between hover:cursor-pointer">
                     <div className="flex items-center gap-2">
-                        {SelectedIcon && <SelectedIcon size={18} className="text-muted-foreground dark:text-primary" />}
+                        {SelectedIcon && <SelectedIcon size={18} className="text-primary dark:text-primary" />}
                         <span>{t(`nodes.node-type-options.${initialValue}`, {defaultValue: initialValue.replace('_', ' ')})}</span>
                     </div>
                     <IconSelector className="ml-2 h-6 w-6 shrink-0 opacity-50"/>
@@ -147,7 +147,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                             aria-label="Drag node"
                             style={{ touchAction: 'none' }}
                         >
-                            <IconGripVertical/>
+                            <IconGripVertical />
                         </Button>
                         <Combobox initialValue={data.type} allValues={Object.values(NodeType)} onChange={onTypeChange}/>
                         <CollapsibleTrigger render={
@@ -170,7 +170,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                                 })
                             }}
                         >
-                            <IconArrowUp/>
+                            <IconArrowUp className="size-4"/>
                         </Button>
                         <Button
                             variant="ghost"
@@ -187,7 +187,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                                 })
                             }}
                         >
-                            <IconArrowDown/>
+                            <IconArrowDown className="size-4"/>
                         </Button>
                         <Button
                             variant="ghost"
@@ -200,7 +200,7 @@ export function NodeResolver({id, index}: { id: number; index: number }) {
                                 })
                             }}
                         >
-                            <IconX/>
+                            <IconX className="size-4"/>
                         </Button>
                     </CardHeader>
                     <CollapsibleContent>

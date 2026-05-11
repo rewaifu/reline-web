@@ -261,3 +261,71 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 }
+
+.docs-article {
+  @apply text-sm leading-7 text-foreground;
+}
+
+.docs-article h1 {
+  @apply scroll-m-20 text-3xl font-semibold tracking-tight;
+}
+
+.docs-article h2 {
+  @apply mt-8 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight;
+}
+
+.docs-article h3 {
+  @apply mt-6 scroll-m-20 text-lg font-semibold tracking-tight;
+}
+
+.docs-article p,
+.docs-article ul,
+.docs-article ol,
+.docs-article pre {
+  @apply mt-4;
+}
+
+.docs-article ul,
+.docs-article ol {
+  @apply ml-6 space-y-2;
+}
+
+.docs-article ul {
+  @apply list-disc;
+}
+
+.docs-article ol {
+  @apply list-decimal;
+}
+
+.docs-article li > p {
+  @apply mt-0;
+}
+
+.docs-article code {
+  @apply rounded-md bg-muted px-1.5 py-0.5 font-mono text-[0.9em];
+}
+
+.docs-article pre {
+  @apply overflow-x-auto rounded-xl border bg-card p-4;
+}
+
+.docs-article pre code {
+  @apply bg-transparent p-0 text-sm;
+}
+
+.docs-article img {
+  @apply max-w-full rounded-lg border;
+}
+
+.docs-article figure {
+  @apply my-5 w-full;
+}
+
+.docs-article figure img {
+  @apply w-full;
+}
+
+.docs-article figcaption {
+  @apply mt-2 text-center text-sm text-muted-foreground;
+}

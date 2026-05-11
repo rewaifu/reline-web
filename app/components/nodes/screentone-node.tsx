@@ -130,7 +130,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                                 step={1}
                                 min={0}
                                 value={dotSizes[i]}
-                                onChange={(e) => updateArrayField("dot_size", i, parseInt(e.target.value))}
+                                onChange={(e) => updateArrayField("dot_size", i, Number.parseInt(e.target.value))}
                             />
                             {getAutoDot(dotSizes[i]) !== null && (
                                 <span className="text-sm text-muted-foreground">~{getAutoDot(dotSizes[i])}</span>
@@ -289,7 +289,7 @@ export function ScreentoneNodeBody({id}: { id: number }) {
                                     return
                                 }
 
-                                const num = parseFloat(raw)
+                                const num = Number.parseFloat(raw)
                                 if (num === 1 && !options.ssaa_scale) {
                                     changeValue({ssaa_scale: 1.1})
                                     return

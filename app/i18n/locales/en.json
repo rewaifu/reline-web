@@ -150,6 +150,26 @@
     "json": "Supports: JSON",
     "clear": "Clear",
     "import": "Import"
+  },
+  "docs": {
+    "ui": {
+      "open_label":"Open documentation",
+      "title": "Documentation",
+      "close": "Закрыть"
+    },
+    "sections": {
+      "basics": "Basics",
+      "bw-scale": "B&W Upscale",
+      "color-scale": "Color Upscale",
+      "nodes": "Nodes"
+    },
+    "articles": {
+      "getting_started": "Introduction",
+      "common": "Common",
+      "ds": "ReScreentone",
+      "double": "Double Scale",
+      "ssaa": "SSAA Halftone"
+    }
   }
 }
 

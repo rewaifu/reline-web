@@ -15,6 +15,7 @@
     "@dnd-kit/dom": "^0.3.2",
     "@dnd-kit/react": "^0.3.2",
     "@fontsource-variable/inter": "^5.2.8",
+    "@mdx-js/rollup": "^3.1.1",
     "@tabler/icons-react": "^3.37.1",
     "@tanstack/react-query": "^5.0.0",
     "class-variance-authority": "^0.7.1",

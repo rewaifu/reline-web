@@ -12,7 +12,7 @@ export function LanguageSelect() {
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon-lg" className="relative">
-                    <IconLanguage/>
+                    <IconLanguage className="size-[1.2rem] -mb-[1px]" />
                 </Button>
             </DropdownMenuTrigger>
 

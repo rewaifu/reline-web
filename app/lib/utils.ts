@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { StackNode } from "~/types/node.ts";
+import type { StackNode } from "~/types/node.ts";
 import { convertToPure, convertToStack } from "~/lib/convert";
 
 export function cn(...inputs: ClassValue[]) {
