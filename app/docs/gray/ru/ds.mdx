@@ -1,1 +1,34 @@
-# DS RU
+# Переналожение скринтона
+
+## Как это работает?
+Для данной парадигмы используются модели с DS/Descreentone в названии. Самые ходовые в наши дни:
+* `4x_dwtp_ds_moesr_v2` — самая свежая из стабильных моделей, подходит для большинства случаев;
+* `4x_dwtp_ds_atdl3` — самая ходовая модель до архитектуры MOESR, выдаёт чуть более стабильные результаты с различными текстурами;
+* `4x_DWTP_DS_dat2_v3_2` — очень медленный старичок, славится своей возможностью воспринимать достаточно крупный скринтон.
+
+Сам базовый алгоритм выглядит следующим образом:
+
+<div className="flex flex-wrap items-center gap-1.5 my-3 justify-center">
+    <NodeRef type="upscale" />
+    <span className="text-muted-foreground text-sm font-medium">&rarr;</span>
+    <NodeRef type="sharp" />
+    <span className="text-muted-foreground text-sm font-medium">&rarr;</span>
+    <NodeRef type="screentone" />
+</div>
+
+Разберём по порядку.
+
+1. <NodeRef type="upscale" /> — при помощи DS-модели текстура скринтона преобразуется в сплошные оттенки серого;
+2. <NodeRef type="sharp" /> — правит артефакты после апскейла, а также делает линии более резкими для работы со следующим узлом;
+3. <NodeRef type="screentone" /> — перенакладывает скринтон при помощи детерминированного алгоритма.
+
+## Как настроить скринтон?
+Параметр <code><T k="nodes.screentone.dot-size"/></code> задаётся либо методом тыка, стараясь попасть в оригинал (если скринтон виден), либо по приблизительным значениям, основываясь на размере скана в пикселях в высоту:
+* меньше 1100 — 4 и меньше;
+* 1100-1500 — 5;
+* 1500-1900 — 6;
+* 1900-2000 — 7;
+* больше 2000 — 8 и выше.
+
+<p className="text-muted-foreground italic">※Значения интерполированы из <a href="https://teletype.in/@anicos/wtpupscale" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400  underline">cтатьи от AniChan</a></p>
+

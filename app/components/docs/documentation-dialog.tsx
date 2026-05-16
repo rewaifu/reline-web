@@ -87,7 +87,7 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
           <div className="flex min-h-0 flex-1">
             <aside className="hidden min-h-0 w-[300px] shrink-0 flex-col border-r bg-muted/20 md:flex">
               <ScrollArea className="min-h-0 flex-1">
-                <nav className="space-y-3 px-3 py-4">
+                <nav className="space-y-3 px-3 pr-5 py-4">
                   {DOCUMENTATION_SECTIONS.map((section) => {
                     const isOpen = openSections[section.id]
 
@@ -158,7 +158,7 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
                     )
                   })}
                 </nav>
-                <ScrollBar className="mr-1 my-2" />
+                <ScrollBar className="mr-1 my-2 pb-4" />
               </ScrollArea>
             </aside>
             <section className="min-h-0 flex-1 bg-background">

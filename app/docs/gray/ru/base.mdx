@@ -14,27 +14,3 @@
 ### 2. Переналожение скринтона
 Более комплексный алгоритм, подразумевающий под собой преобразование оригинального скринтона в оттенки серого, с последующим его переналожением.
 <br/>Подробнее в <ArticleRef slug="rescreentone" />
-<br/><br/>Как это работает?
-<br/>Для данной парадигмы используются модели с DS/Descreentone в названии. Самые ходовые в наши дни:
-* `4x_dwtp_ds_moesr_v2` — самая свежая из стабильных моделей, подходит для большинства случаев;
-* `4x_dwtp_ds_atdl3` — самая ходовая модель до архитектуры moesr, выдаёт чуть более стабильные результаты с различными текстурами;
-* `4x_DWTP_DS_dat2_v3_2` — очень медленный старичок, славится своей возможностью воспринимать достаточно крупный скринтон.
-
-Сам базовый алгоритм выглядит следующим образом:
-
-<div className="flex flex-wrap items-center gap-1.5 my-3">
-    <NodeRef type="upscale" />
-    <span className="text-muted-foreground text-sm font-medium">&rarr;</span>
-    <NodeRef type="sharp" />
-    <span className="text-muted-foreground text-sm font-medium">&rarr;</span>
-    <NodeRef type="screentone" />
-    <span className="text-muted-foreground text-sm font-medium">&rarr;</span>
-    <NodeRef type="resize" />
-</div>
-
-Разберём по порядку.
-
-## Что важно помнить
-
-- Порядок узлов влияет на итоговое изображение.
-- Любой узел можно перетащить выше или ниже.
