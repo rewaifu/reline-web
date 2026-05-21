@@ -1,4 +1,4 @@
-import {useContext, useEffect, useMemo, useState} from "react"
+import {useContext, useEffect, useMemo, useState, type Dispatch} from "react"
 import {ModelsContext, NodesContext, NodesDispatchContext} from "~/context/contexts"
 import {DType, TilerType} from "~/types/enums"
 import {Label} from "../ui/label"
@@ -7,7 +7,7 @@ import {Input} from "../ui/input"
 import {Checkbox} from "../ui/checkbox"
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../ui/select"
 import type {UpscaleNodeOptions} from "~/types/options"
-import {NodesActionType} from "~/types/actions"
+import {NodesActionType, type NodesAction} from "~/types/actions"
 import {
     Combobox,
     ComboboxContent,
@@ -68,7 +68,7 @@ function extractModelScale(modelName: string): number | null {
     return null
 }
 
-export function UpscaleNodeBody({id}: { id: number }) {
+export function UpscaleNodeBody({id, dispatch: dispatchProp, idSuffix}: { id: number; dispatch?: Dispatch<NodesAction>; idSuffix?: string }) {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
     const node = nodes.find((item) => item.id === id)
@@ -77,8 +77,10 @@ export function UpscaleNodeBody({id}: { id: number }) {
     }
     const options = node.options as UpscaleNodeOptions
     const [target, setTarget] = useState(options.target_scale !== undefined)
-    const dispatch = useContext(NodesDispatchContext)
+    const contextDispatch = useContext(NodesDispatchContext)
+    const dispatch = dispatchProp ?? contextDispatch
     const models = useContext(ModelsContext)
+    const sid = (baseId: string) => idSuffix ? `${baseId}-${idSuffix}` : `${baseId}-${id}`
     
     const modelScale = useMemo(() => extractModelScale(options.model), [options.model])
     const showWarning = target && options.target_scale !== undefined && modelScale !== null && options.target_scale > modelScale
@@ -198,7 +200,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
             <FieldGroup>
                 <Field orientation="horizontal">
                     <Checkbox
-                        id="target-scale-check"
+                        id={sid("target-scale-check")}
                         checked={target}
                         onCheckedChange={(value) => {
                             setTarget(!!value)
@@ -209,7 +211,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
                             }
                         }}
                     />
-                    <FieldLabel htmlFor="target-scale-check">{t('nodes.upscale.enable-target-scale')}</FieldLabel>
+                    <FieldLabel htmlFor={sid("target-scale-check")}>{t('nodes.upscale.enable-target-scale')}</FieldLabel>
                 </Field>
             </FieldGroup>
             {target && (
@@ -242,7 +244,7 @@ export function UpscaleNodeBody({id}: { id: number }) {
             <FieldGroup>
                 <Field orientation="horizontal">
                     <Checkbox
-                        id="own-model-check"
+                        id={sid("own-model-check")}
                         checked={options.is_own_model}
                         onCheckedChange={(value) => {
                             if (!value) {
@@ -255,20 +257,20 @@ export function UpscaleNodeBody({id}: { id: number }) {
                             }
                         }}
                     />
-                    <FieldLabel htmlFor="own-model-check">{t('nodes.upscale.own-model')}</FieldLabel>
+                    <FieldLabel htmlFor={sid("own-model-check")}>{t('nodes.upscale.own-model')}</FieldLabel>
                 </Field>
             </FieldGroup>
 
             <FieldGroup>
                 <Field orientation="horizontal">
                     <Checkbox
-                        id="cpu-scale-check"
+                        id={sid("cpu-scale-check")}
                         checked={options.allow_cpu_upscale}
                         onCheckedChange={(value) => {
                             changeValue({allow_cpu_upscale: !!value})
                         }}
                     />
-                    <FieldLabel htmlFor="cpu-scale-check">{t('nodes.upscale.allow-cpu-upscale')}</FieldLabel>
+                    <FieldLabel htmlFor={sid("cpu-scale-check")}>{t('nodes.upscale.allow-cpu-upscale')}</FieldLabel>
                 </Field>
             </FieldGroup>
 

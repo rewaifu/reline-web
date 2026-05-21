@@ -25,6 +25,7 @@ import { NodeRef } from "~/components/docs/node-ref.tsx";
 import { ArticleRef } from "~/components/docs/article-ref.tsx";
 import { T } from "~/components/docs/t-ref.tsx";
 import { DocImage } from "~/components/docs/doc-image.tsx";
+import { DemoNode } from "~/components/docs/demo-node.tsx";
 import { DocsNavigationContext } from "~/context/contexts.ts";
 
 type DocumentationDialogProps = {
@@ -166,7 +167,7 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
               <ScrollArea className="h-full">
                 <div className="mx-auto w-full max-w-3xl px-5 py-5 md:px-8 md:py-7">
                   <article className="docs-article">
-                    <ActiveArticleComponent components={{ NodeRef, ArticleRef, T, DocImage }} />
+                    <ActiveArticleComponent components={{ NodeRef, ArticleRef, T, DocImage, DemoNode }} />
                   </article>
                 </div>
                 <ScrollBar className="mr-1 my-2 pb-4" />

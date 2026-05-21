@@ -278,9 +278,12 @@
 }
 
 .docs-article p,
-.docs-article ul,
-.docs-article ol,
 .docs-article pre {
+  @apply mt-4;
+}
+
+.docs-article > ul,
+.docs-article > ol {
   @apply mt-4;
 }
 
@@ -295,6 +298,19 @@
 
 .docs-article ol {
   @apply list-decimal;
+}
+
+.docs-article li > ul,
+.docs-article li > ol {
+  @apply mt-1;
+}
+
+.docs-article ul ul {
+  list-style-type: circle;
+}
+
+.docs-article ul ul ul {
+  list-style-type: square;
 }
 
 .docs-article li > p {

@@ -1,4 +1,5 @@
-import { useContext } from "react"
+import { useContext, type Dispatch } from "react"
+import type { NodesAction } from "~/types/actions.ts"
 import { NodesContext, NodesDispatchContext } from "~/context/contexts.ts"
 import { WriterNodeFormat } from "~/types/enums.ts"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
@@ -8,7 +9,7 @@ import type { FolderWriterNodeOptions } from "~/types/options"
 import { NodesActionType } from "~/types/actions.ts"
 import {useTranslation} from "react-i18next"
 
-export function FolderWriterNodeBody({ id }: { id: number }) {
+export function FolderWriterNodeBody({ id, dispatch: dispatchProp }: { id: number; dispatch?: Dispatch<NodesAction> }) {
   const {t} = useTranslation()
   const nodes = useContext(NodesContext)
   const node = nodes.find((item) => item.id === id)
@@ -16,7 +17,8 @@ export function FolderWriterNodeBody({ id }: { id: number }) {
     return null
   }
   const options = node.options as FolderWriterNodeOptions
-  const dispatch = useContext(NodesDispatchContext)
+  const contextDispatch = useContext(NodesDispatchContext)
+  const dispatch = dispatchProp ?? contextDispatch
   const changeValue = (newOptions: Partial<FolderWriterNodeOptions>) => {
     dispatch({
       type: NodesActionType.CHANGE,

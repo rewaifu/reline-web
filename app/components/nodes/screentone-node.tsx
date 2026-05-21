@@ -1,4 +1,5 @@
-import {useContext, useEffect} from "react"
+import {useContext, useEffect, type Dispatch} from "react"
+import type { NodesAction } from "~/types/actions.ts"
 import {NodesContext, NodesDispatchContext} from "~/context/contexts.ts"
 import {Label} from "../ui/label"
 import {Input} from "../ui/input"
@@ -21,7 +22,7 @@ import {useTranslation} from "react-i18next"
 import {Separator} from "~/components/ui/separator.tsx";
 import {Field, FieldGroup, FieldLabel} from "~/components/ui/field.tsx";
 
-export function ScreentoneNodeBody({id}: { id: number }) {
+export function ScreentoneNodeBody({id, dispatch: dispatchProp, idSuffix}: { id: number; dispatch?: Dispatch<NodesAction>; idSuffix?: string }) {
     const {t} = useTranslation()
     const nodes = useContext(NodesContext)
     const node = nodes.find((item) => item.id === id)
@@ -39,7 +40,9 @@ export function ScreentoneNodeBody({id}: { id: number }) {
             })
         }
     }, [])
-    const dispatch = useContext(NodesDispatchContext)
+    const contextDispatch = useContext(NodesDispatchContext)
+    const dispatch = dispatchProp ?? contextDispatch
+    const sid = (baseId: string) => idSuffix ? `${baseId}-${idSuffix}` : `${baseId}-${id}`
     const changeValue = (newOptions: Partial<ScreentoneNodeOptions>) => {
         dispatch({
             type: NodesActionType.CHANGE,
@@ -332,13 +335,13 @@ export function ScreentoneNodeBody({id}: { id: number }) {
             <FieldGroup>
                 <Field orientation="horizontal">
                     <Checkbox
-                        id = "auto-dot-check"
+                        id = {sid("auto-dot-check")}
                         checked={options.disable_auto_dot === true}
                         onCheckedChange={(value) => {
                             changeValue({disable_auto_dot: value === true ? true : undefined})
                         }}
                     />
-                    <FieldLabel htmlFor="auto-dot-check">{t('nodes.screentone.disable-auto-dot')}</FieldLabel>
+                    <FieldLabel htmlFor={sid("auto-dot-check")}>{t('nodes.screentone.disable-auto-dot')}</FieldLabel>
                 </Field>
             </FieldGroup>
         </div>
