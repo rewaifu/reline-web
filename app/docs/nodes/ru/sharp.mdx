@@ -1,1 +1,24 @@
-# SHARP RU
+# Резкость
+
+<DemoNode type="sharp"/>
+
+## Что делает?
+Делает линии более резкими для подготовки к обработке при помощи узла <NodeRef type="screentone"/>.
+
+## Для чего это нужно?
+Из-за особенностей алгоритма, используемого в узле <NodeRef type="screentone"/>,
+{/* todo: вставить скрин с примером */}
+
+## Параметры
+* <code><T k="nodes.sharp.low-input"/></code> — усиление тёмных тонов (тёмный темнее);
+* <code><T k="nodes.sharp.high-input"/></code> — усиление светлых томов (светлый светлее);
+* <code><T k="nodes.sharp.gamma"/></code> — цветовая гамма (смещение средних тонов);
+* <code><T k="nodes.sharp.diapason-white"/></code> — todo: Леся добавь описание;
+* <code><T k="nodes.sharp.diapason-black"/></code> — todo: Леся добавь описание;
+* <code><T k="nodes.sharp.canny"/></code> — включает алгоритм Кэнни для применения резкости на границах;
+* <code><T k="nodes.sharp.canny-type"/></code> — выбор типа Кэнни:
+    * <code><T k="nodes.sharp.canny-type-options.normal"/></code> — накладывает чёрную битную линию поверх контуров, делая их жирнее;
+    * <code><T k="nodes.sharp.canny-type-options.invert"/></code> — накладывает белую битную линию поверх контуров, выжигая их;
+    * <code><T k="nodes.sharp.canny-type-options.unsharp"/></code> — todo: Леся, поясни как работает сие чудо;
+
+{/* todo: Вставить сюда скрин-сравнение между типами */}

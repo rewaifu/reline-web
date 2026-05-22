@@ -1,1 +1,19 @@
-# RESIZE RU
+# Размер
+
+<DemoNode type="resize"/>
+
+## Что делает?
+Меняет размер изображения.
+
+## Для чего это нужно?
+Привычные читалки пережимают изображения в слишком высоком разрешении, поэтому этот узел удобно использовать для пакетного уменьшения обработанных сканов.
+
+## Параметры
+* <code><T k="nodes.resize.filter"/></code> — фильтр для интерполяции;
+* <code><T k="nodes.resize.resize-type"/></code> — выбирает метод масштабирования:
+    * <code><T k="nodes.resize.resize-type-options.width"/></code> — масштабирует изображение по горизонтали до указанного в <code><T k="nodes.resize.width"/></code> значения с сохранением соотношением сторон;
+    * <code><T k="nodes.resize.resize-type-options.height"/></code> — масштабирует изображение по вертикали до указанного в <code><T k="nodes.resize.height"/></code> значения с сохранением соотношением сторон;
+    * <code><T k="nodes.resize.resize-type-options.absolute"/></code> — масштабирует изображение до указанных в <code><T k="nodes.resize.width"/></code> и <code><T k="nodes.resize.height"/></code> значений;
+    * <code><T k="nodes.resize.resize-type-options.percent"/></code> — масштабирует изображение в <code><T k="nodes.resize.percent"/></code> раз;
+* <code><T k="nodes.resize.spread"/></code> — если ширина изображения больше его высоты, то оно масштабируется по ширине, указанной в <code><T k="nodes.resize.spread-size"/></code>. Работает только при <code><T k="nodes.resize.resize-type"/></code> = <code><T k="nodes.resize.resize-type-options.width"/></code>;
+* <code><T k="nodes.resize.spread-size"/></code> — значение в пикселях по горизонтали для масштабирования картинки при включенном параметре <code><T k="nodes.resize.spread"/></code>.

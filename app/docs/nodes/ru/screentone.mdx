@@ -1,1 +1,21 @@
-# SCREENTONE RU
+# Полутон
+
+<DemoNode type="screentone"/>
+
+## Что делает?
+Накладывает полутоновый рисунок при помощи регулярного алгоритма.
+
+{/* todo: вставить скрин с примером */}
+
+## Параметры
+* <code><T k="nodes.screentone.halftone-mode"/></code> — выбор алгоритма для полутонового дизеринга:
+    * <code><T k="nodes.screentone.halftone-mode-options.gray"/></code> — для градаций серого, присутствует только белый и чёрный цвет;
+    * <code><T k="nodes.screentone.halftone-mode-options.rgb"/></code> — доступна настройка трёх цветовых каналов;
+    * <code><T k="nodes.screentone.halftone-mode-options.cmyk"/></code> — доступна настройка четырёх цветовых каналов;
+    * <code><T k="nodes.screentone.halftone-mode-options.hsv"/></code> — доступна настройка одного канала канала яркости {/* todo: Леся фактчек */};
+* <code><T k="nodes.screentone.dot-type"/></code> — узор, используемый для алгоритма дизеринга;
+* <code><T k="nodes.screentone.angle"/></code> — угол, под которым строится сетка точек;
+* <code><T k="nodes.screentone.dot-size"/></code> — максимальный диаметр точки в пикселях;
+* <code><T k="nodes.screentone.ssaa-scale"/></code> — коэффициент временного увеличения изображения для наложения более плавного скринтона (подробнее в <ArticleRef slug="rescreentone"/>). При включении, справа от <code><T k="nodes.screentone.dot-size"/></code> появляется примерное значение накладываемой точки;
+* <code><T k="nodes.screentone.ssaa-filter"/></code> — фильтр интерполяции при уменьшении изображения до оригинального размера;
+* <code><T k="nodes.screentone.disable-auto-dot"/></code> — позволяет отключить расчёт значения <code><T k="nodes.screentone.dot-size"/></code> при включенном SSAA по формуле <code><T k="nodes.screentone.dot-size"/></code> * <code><T k="nodes.screentone.ssaa-scale"/></code>, и использовать <code><T k="nodes.screentone.dot-size"/></code> напрямую.
