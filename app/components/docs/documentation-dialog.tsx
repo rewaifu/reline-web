@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState, useEffect } from "react"
 import { IconChevronDown, IconChevronRight, IconQuestionMark } from "@tabler/icons-react"
 import { Button } from "~/components/ui/button.tsx"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "~/components/ui/collapsible.tsx"
@@ -40,6 +40,32 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
   )
 
   const locale: DocumentationLocale = i18n.resolvedLanguage?.startsWith("ru") ? "ru" : "en"
+
+  const scrollPositions = useRef<Record<string, number>>({})
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const root = scrollAreaRef.current
+    if (!root) return
+    const viewport = root.querySelector("[data-slot=\"scroll-area-viewport\"]") as HTMLDivElement | null
+    if (!viewport) return
+
+    const handleScroll = () => {
+      scrollPositions.current[selectedSlug] = viewport.scrollTop
+    }
+
+    viewport.addEventListener("scroll", handleScroll, { passive: true })
+    return () => viewport.removeEventListener("scroll", handleScroll)
+  }, [selectedSlug])
+
+  useEffect(() => {
+    const root = scrollAreaRef.current
+    if (!root) return
+    const viewport = root.querySelector("[data-slot=\"scroll-area-viewport\"]") as HTMLDivElement | null
+    if (!viewport) return
+
+    viewport.scrollTop = scrollPositions.current[selectedSlug] ?? 0
+  }, [selectedSlug])
 
   const activeArticle =
       useMemo(
@@ -164,7 +190,7 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
             </aside>
             <section className="min-h-0 flex-1 bg-background">
               <DocsNavigationContext.Provider value={setSelectedSlug}>
-              <ScrollArea className="h-full">
+              <ScrollArea className="h-full" ref={scrollAreaRef}>
                 <div className="mx-auto w-full max-w-3xl px-5 py-5 md:px-8 md:py-7">
                   <article className="docs-article">
                     <ActiveArticleComponent components={{ NodeRef, ArticleRef, T, DocImage, DemoNode }} />

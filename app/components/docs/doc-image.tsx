@@ -148,10 +148,13 @@ export function DocImage({
     if (!render) return
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeViewer()
+      if (e.key === "Escape") {
+        e.stopPropagation()
+        closeViewer()
+      }
     }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    document.addEventListener("keydown", onKey, true)
+    return () => document.removeEventListener("keydown", onKey, true)
   }, [render, closeViewer])
 
   useEffect(() => {
