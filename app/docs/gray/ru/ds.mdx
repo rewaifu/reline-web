@@ -33,6 +33,9 @@
 <p className="text-muted-foreground italic">※Значения интерполированы из <a href="https://teletype.in/@anicos/wtpupscale" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400  underline">cтатьи от AniChan</a></p>
 
 Но есть важный нюанс — из-за особенности алгоритма скринтона, если поставить в параметр <code><T k="nodes.screentone.dot-size"/></code> меньше 7, то палитра цветов будет слишком маленькой (128 цветов при <code><T k="nodes.screentone.dot-size"/></code> = 6), чтобы отрисовать плавные градиенты.
+<br/>На картинке ниже пример градиента, его урезанной до 16 цветов версии, и наложенный на чистый градиент скринтон с <code><T k="nodes.screentone.dot-size"/></code> = 3.
+<DocImage src="/docs/low-dot.webp" alt="low dot demonstation" caption="Полный градиент VS Урезанный до 16 цветов VS Скринтон с точкой = 3" />
+
 <br/>Просто сделать <code><T k="nodes.screentone.dot-size"/></code> побольше не вариант — будет отличаться от оригинала и скорее всего будет слишком крупно.
 <br/>Для решения данной проблемы нужно увеличить изображение, что можно сделать несколькими способами:
 
@@ -72,4 +75,5 @@
 3. SSAA — самый простой и в то же время элегантный алгоритм. Увеличивает изображение в N раз (интерполяция методом ближайшего соседа), накладывает скринтон, размер которого рассчитывает по формуле <code><T k="nodes.screentone.dot-size"/></code> * N, и потом уменьшает обратно в N раз.
 <br/>SSAA сейчас встроен в узел <NodeRef type="screentone" /> (параметры <code><T k="nodes.screentone.ssaa-scale"/></code> и <code><T k="nodes.screentone.ssaa-filter"/></code>), и для того, чтобы не терять лишней информации из-за интерполяции, обязательно применяйте перед ним узел <NodeRef type="sharp"/> с включенным параметром <code><T k="nodes.sharp.canny"/></code>.
 
-{/* todo: Встроить сюда скрин-сравнение между методами */}
+
+<a href="https://slow.pics/c/twIllqHo" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400  underline">Сравнение между методами.</a>

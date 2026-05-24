@@ -12,7 +12,7 @@
 Чем больше <code><T k="nodes.upscale.tile-size"/></code>, тем быстрее обработаются изображения, но и больше потребление видеопамяти.
 <br/>С большей плиткой у модели больше контекста и после склейки минимизируются резкие переходы между плитками.
 {/* Вставить пример Леси из закрепов в #general на равкуме*/}
-<br/>Размер плитки зависит и от модели, например, `4x_dwtp_ds_moesr_v2` в Colab иногда может заработать с <code><T k="nodes.upscale.tile-size"/></code> = 1000, а `4x_dwtp_ds_rgts_v1` не заведётся и с <code><T k="nodes.upscale.tile-size"/></code> = 500.
+<br/>Размер плитки зависит и от модели, например, `4x_dwtp_ds_moesr_v2` в Colab иногда может заработать с <code><T k="nodes.upscale.tile-size"/></code> = 1024, а `4x_dwtp_ds_rgts_v1` не заведётся и с <code><T k="nodes.upscale.tile-size"/></code> = 512.
 
 ## Параметры
 * <code><T k="nodes.upscale.model"/></code> — выбор модели для запуска. При включенном <code><T k="nodes.upscale.own-model"/></code> нужно вписать путь к модели (для блокнота в Colab путь должен начинаться с `/content/drive/MyDrive/`);
