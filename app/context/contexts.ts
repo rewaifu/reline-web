@@ -5,3 +5,4 @@ import type { NodesAction } from "~/types/actions.ts"
 export const NodesContext = createContext<StackNode[]>([])
 export const NodesDispatchContext = createContext<Dispatch<NodesAction>>(() => {})
 export const ModelsContext = createContext<string[]>([])
+export const DocsNavigationContext = createContext<(slug: string) => void>(() => {})

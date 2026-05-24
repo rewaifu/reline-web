@@ -68,7 +68,7 @@ export function FileUploadDialogContent({ onImport }: FileUploadDialogContentPro
             processContent(clipboardText)
         } catch (err: any) {
             console.error(err)
-            toast.error('toasts.clipboard-read-failure')
+            toast.error(t('toasts.clipboard-read-failure'))
         }
     }
 

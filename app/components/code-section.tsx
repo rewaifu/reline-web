@@ -47,9 +47,9 @@ export function CodeSection() {
     }, [nodes])
     return (
         <Card className="flex flex-col h-full min-h-0">
-            <CardHeader className="flex flex-row items-center mx-2">
+            <CardHeader className="flex flex-row items-center mx-2 h-[25px] md:h-[32px]">
                 <h2 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">{t('home-page.code')}</h2>
-                <div className="flex flex-row gap-2 ml-auto">
+                <div className="flex flex-row gap-1.5 ml-auto">
                     <div className="flex flex-row gap-4 items-center">
                         <p className="select-none text-sm translate-x-1">{t('config-presets.presets')}</p>
                         <Select value={selectedPreset} onValueChange={handlePresetChange}>
@@ -69,7 +69,7 @@ export function CodeSection() {
                     <Dialog>
                         <Tooltip>
                             <TooltipTrigger>
-                                <DialogTrigger render={<Button size="icon" variant="ghost">
+                                <DialogTrigger render={<Button size="icon-lg" variant="ghost">
                                     <IconFileUpload />
                                 </Button>} />
                             </TooltipTrigger>
@@ -91,7 +91,7 @@ export function CodeSection() {
                     <Tooltip>
                         <TooltipTrigger>
                             <Button
-                                size="icon"
+                                size="icon-lg"
                                 variant="ghost"
                                 onClick={() => {
                                     navigator.clipboard.writeText(nodesToString(nodes)).then(() => {
@@ -112,7 +112,7 @@ export function CodeSection() {
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
-                            <Button size="icon" variant="ghost"
+                            <Button size="icon-lg" variant="ghost"
                                     onClick={async () => {
                                         const data = nodesToString(nodes);
                                         if ('showSaveFilePicker' in window) {

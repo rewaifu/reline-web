@@ -7,6 +7,10 @@
       "path": "Путь к папке",
       "placeholder": "Путь/к/папке",
       "mode": "Режим",
+      "mode-options": {
+        "rgb": "RGB",
+        "gray": "Серый"
+      },
       "recursive": "Рекурсивно",
       "unarchive": "Разархивировать"
     },
@@ -27,6 +31,12 @@
       "select-filter": "Выберите фильтр...",
       "no-items-found": "Ничего не найдено.",
       "resize-type": "Тип масштабирования",
+      "resize-type-options": {
+        "width": "По ширине",
+        "height": "По высоте",
+        "absolute": "Абсолютно",
+        "percent": "В процентах"
+      },
       "width": "Ширина (px)",
       "height": "Высота (px)",
       "percent": "Проценты",
@@ -36,10 +46,23 @@
     },
     "screentone": {
       "dot-type": "Тип Точки",
+      "dot-type-options": {
+        "circle": "Круг",
+        "line": "Линия",
+        "cross": "Крест",
+        "ellipse": "Эллипс",
+        "invline": "Инвертированная линия"
+      },
       "channel": "Канал",
       "dot-size": "Размер Точки",
       "angle": "Угол",
       "halftone-mode": "Режим полутона",
+      "halftone-mode-options": {
+        "gray": "Серый",
+        "rgb": "RGB",
+        "hsv": "HSV",
+        "cmyk": "CMYK"
+      },
       "ssaa-scale": "Коэффициент SSAA",
       "ssaa-scale-placeholder": "Нет",
       "ssaa-filter": "Фильтр SSAA",
@@ -52,7 +75,12 @@
       "diapason-white": "Диапазон белого",
       "diapason-black": "Диапазон чёрного",
       "canny": "Кэнни",
-      "canny-type": "Тип Кэнни"
+      "canny-type": "Тип Кэнни",
+      "canny-type-options": {
+        "normal": "Обычный",
+        "invert": "Инвертированный",
+        "unsharp": "Unsharp"
+      }
     },
     "upscale": {
       "search": "Выберите модель...",
@@ -60,6 +88,10 @@
       "model": "Модель",
       "placeholder": "Путь/к/модели",
       "tiler": "Метод разбиения",
+      "tiler-options": {
+        "exact": "Точный",
+        "no_tiling": "Без разбиения"
+      },
       "tile-size": "Размер плитки",
       "dtype": "Тип данных",
       "own-model": "Своя модель",
@@ -68,6 +100,16 @@
       "target-scale-size": "Коэффициент увеличения",
       "target-scale-warning": "Выбранный коэффициент увеличения превышает возможности модели ({{modelScale}}x)",
       "target-scale-unknown": "Коэффициент не найден, при превышении возможностей модели будет вызвана ошибка"
+    },
+    "node-type-options": {
+      "folder_reader": "Чтение",
+      "folder_writer": "Запись",
+      "upscale": "Апскейл",
+      "sharp": "Резкость",
+      "resize": "Размер",
+      "screentone": "Полутон",
+      "level": "Уровни",
+      "cvt_color": "ЦВ палитра"
     }
   },
   "home-page": {
@@ -108,6 +150,29 @@
     "json": "Поддерживает: JSON",
     "clear": "Очистить",
     "import": "Импортировать"
+  },
+  "docs": {
+    "ui": {
+      "open_label":"Открыть документацию",
+      "title": "Документация",
+      "close": "Закрыть"
+    },
+    "sections": {
+      "basics": "Основы",
+      "bw-scale": "Апскейл ЧБ",
+      "color-scale": "Апскейл цвета",
+      "nodes": "Узлы"
+    },
+    "articles": {
+      "getting_started": "Введение",
+      "common": "Общее",
+      "ds": "Переналожение скринтона",
+      "ssaa": "SSAA Полутон"
+    },
+    "image-viewer": {
+      "mode": "Режим сравнения",
+      "slider": "Слайдер",
+      "switch": "Переключение"
+    }
   }
 }
-

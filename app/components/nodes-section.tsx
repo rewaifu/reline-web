@@ -12,6 +12,7 @@ import {isSortableOperation} from "@dnd-kit/react/sortable";
 import {cn} from "~/lib/utils";
 import {NodesActionType} from "~/types/actions";
 import {useMediaQuery} from "~/hooks/useMediaQuery";
+import {DocumentationDialog} from "~/components/docs/documentation-dialog.tsx"
 
 const EDGE_DROP_ZONE_START = "nodes-edge-start"
 const EDGE_DROP_ZONE_END = "nodes-edge-end"
@@ -140,7 +141,10 @@ export function NodesSection() {
         <Card className="pb-2 md:pb-4">
             <CardHeader className="flex flex-row items-center mx-2 h-[25px] md:h-[32px]">
                 <h2 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">{t('home-page.nodes')}</h2>
-                <AddNodeButton/>
+                <div className="flex flex-row items-center ml-auto gap-1">
+                    <DocumentationDialog />
+                    <AddNodeButton/>
+                </div>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden px-2 md:px-4">
                 <DragDropProvider

@@ -1,7 +1,8 @@
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui";
 import { useTranslation } from "react-i18next";
 import { AVAILABLE_LANGUAGES } from "../i18n/languages-enum";
-import {IconCheck, IconLanguage} from "@tabler/icons-react";
+import { IconCheck, IconLanguage } from "@tabler/icons-react";
+import { FlagIcon } from "~/components/flag-icon";
 import React from "react";
 
 export function LanguageSelect() {
@@ -12,7 +13,7 @@ export function LanguageSelect() {
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon-lg" className="relative">
-                    <IconLanguage/>
+                    <IconLanguage className="size-[1.2rem] -mb-[1px]" />
                 </Button>
             </DropdownMenuTrigger>
 
@@ -24,10 +25,10 @@ export function LanguageSelect() {
                         className="flex items-center justify-between"
                     >
                         <div className="flex items-center">
-                            <span className={`fi ${lang.flag} mr-2`} />
+                            <FlagIcon code={lang.flag} className="mr-2 h-3.5 w-5" />
                             {lang.label}
                         </div>
-                        {i18n.language === lang.code && <IconCheck size={16} className="ml-2" />}
+                        {i18n.language === lang.code && <IconCheck size={16} className="ml-auto" />}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

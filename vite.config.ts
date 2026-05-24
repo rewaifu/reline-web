@@ -1,4 +1,5 @@
 import { defineConfig } from "vite"
+import mdx from "@mdx-js/rollup"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import tsconfigPaths from "vite-tsconfig-paths"
@@ -8,7 +9,10 @@ import svgr from "vite-plugin-svgr"
 export default defineConfig({
   base: process.env.BASE_URL ?? '/',
   plugins: [
-    react(),
+    { enforce: "pre", ...mdx() },
+    react({
+      include: /\.(mdx|js|jsx|ts|tsx)$/,
+    }),
     tailwindcss(),
     tsconfigPaths(),
     svgr(),

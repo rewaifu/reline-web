@@ -7,15 +7,17 @@ import {NodesContext, NodesDispatchContext} from "~/context/contexts"
 import {DEFAULT_NODE_OPTIONS, NODE_ICONS} from "~/constants"
 import {Button} from "./ui/button"
 import {NodesActionType} from "~/types/actions"
+import {useTranslation} from "react-i18next"
 
 export function AddNodeButton() {
+    const {t} = useTranslation()
     const [open, setOpen] = useState(false)
     const dispatch = useContext(NodesDispatchContext)
     const nodes = useContext(NodesContext)
     const nextNodeId = nodes.reduce((maxId, node) => Math.max(maxId, node.id), -1) + 1
     return (
         <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger render={<Button className="ml-auto " variant="ghost" size="icon" aria-expanded={open}>
+            <PopoverTrigger render={<Button className="ml-auto " variant="ghost" size="icon-lg" aria-expanded={open}>
                     <IconPlus/>
                 </Button>} />
             <PopoverContent className="w-[200px] p-0">
@@ -45,8 +47,8 @@ export function AddNodeButton() {
                                         className="flex items-center gap-2 cursor-pointer"
                                     >
                                         {Icon && <Icon size={18} className="text-muted-foreground" />}
-                                        <span className="capitalize">
-                                            {value.replace('_', ' ')}
+                                        <span>
+                                            {t(`nodes.node-type-options.${value}`, {defaultValue: value.replace('_', ' ')})}
                                         </span>
                                     </CommandItem>
                                 );
