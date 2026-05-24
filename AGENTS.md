@@ -63,7 +63,6 @@ Use `~/` consistently (existing code uses both; `~` is the convention).
 ## Notes
 
 - No test setup exists (no test dependencies in `package.json`).
-- `react-router-dom` is in dependencies but **not used**.
 - `.gitignore` excludes `.ai/`, `.claude/`, and `tsconfig.tsbuildinfo`.
 - No README or contributing guide.
 - Favicon: `/favicon.png`.
