@@ -169,6 +169,11 @@
       "ds": "ReScreentone",
       "double": "Double Scale",
       "ssaa": "SSAA Halftone"
+    },
+    "image-viewer": {
+      "mode": "Comparison mode",
+      "slider": "Slider",
+      "switch": "Switch"
     }
   }
 }

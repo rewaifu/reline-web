@@ -25,6 +25,7 @@ import { NodeRef } from "~/components/docs/node-ref.tsx";
 import { ArticleRef } from "~/components/docs/article-ref.tsx";
 import { T } from "~/components/docs/t-ref.tsx";
 import { DocImage } from "~/components/docs/doc-image.tsx";
+import { DocImageCompare } from "~/components/docs/doc-image-compare.tsx";
 import { DemoNode } from "~/components/docs/demo-node.tsx";
 import { DocsNavigationContext } from "~/context/contexts.ts";
 
@@ -99,10 +100,10 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
         >
           <DialogHeader className="flex-row items-stretch gap-0 border-b bg-muted/20 p-0">
             <div className="flex w-[300px] shrink-0 items-center border-r px-5 py-4">
-              <DialogTitle>{t(DOCUMENTATION_UI.title)}</DialogTitle>
+              <DialogTitle className="select-none">{t(DOCUMENTATION_UI.title)}</DialogTitle>
             </div>
             <div className="hidden min-w-0 flex-1 items-center px-5 md:flex">
-              <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground select-none">
                 <span className="truncate">{activeSection ? t(activeSection.title) : activeArticle.sectionId}</span>
                 <span aria-hidden="true">/</span>
                 <span className="truncate font-medium text-foreground">
@@ -193,7 +194,7 @@ export function DocumentationDialog({ triggerClassName }: DocumentationDialogPro
               <ScrollArea className="h-full" ref={scrollAreaRef}>
                 <div className="mx-auto w-full max-w-3xl px-5 py-5 md:px-8 md:py-7">
                   <article className="docs-article">
-                    <ActiveArticleComponent components={{ NodeRef, ArticleRef, T, DocImage, DemoNode }} />
+                    <ActiveArticleComponent components={{ NodeRef, ArticleRef, T, DocImage, DocImageCompare, DemoNode }} />
                   </article>
                 </div>
                 <ScrollBar className="mr-1 my-2 pb-4" />
