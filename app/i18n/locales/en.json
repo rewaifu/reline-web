@@ -151,6 +151,36 @@
     "clear": "Clear",
     "import": "Import"
   },
+  "backend": {
+    "settings": "Settings",
+    "dependencies": "Dependencies",
+    "depsStatus": {
+      "uv": "UV package manager",
+      "repo": "reline-ws repository",
+      "venv": "Python virtual environment",
+      "deps": "Python dependencies"
+    },
+    "versions": "Versions",
+    "torchCuda": "CUDA",
+    "torchCudaFail": "NO CUDA",
+    "noNvidiaGpu": "No NVIDIA GPU detected. Processing on CPU will be extremely slow.",
+    "installDeps": "Install Dependencies",
+    "installDepsDesc": "~2.5 GB — UV, repository, venv, PyTorch, resselt, reline",
+    "updateLibs": "Update Libraries",
+    "updateLibsDesc": "~200 MB — Only resselt + reline",
+    "installDepsPrompt": "Install dependencies",
+    "installing": "Installing...",
+    "viewLogs": "Logs",
+    "clearLogs": "Clear logs",
+    "noLogs": "No logs yet",
+    "refresh": "Refresh",
+    "close": "Close",
+    "serverRunning": "Running on 127.0.0.1:{{port}}",
+    "serverOffline": "Offline",
+    "serverStarting": "Starting...",
+    "startServer": "Start Server",
+    "stopServer": "Stop Server"
+  },
   "docs": {
     "ui": {
       "open_label":"Open documentation",

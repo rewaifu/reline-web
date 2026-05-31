@@ -29,6 +29,23 @@ Use `~/` consistently (existing code uses both; `~` is the convention).
 | `bun run typecheck` | `tsc` only |
 | `bun run lint` | `biome lint --write --unsafe .` — ⚠️ Never run on whole project; only on specific new/changed files |
 | `bun run format` | `biome format --write --no-errors-on-unmatched .` |
+| `bun tauri dev` | Start Vite + Tauri webview (dev mode) |
+| `bun tauri build` | Production Tauri build |
+| `cargo check` | **Verify Rust compilation** (run in `src-tauri/`). Must pass with zero errors before committing Tauri changes |
+
+### Verification pipeline (when changing Tauri/Rust files)
+
+After editing `src-tauri/src/lib.rs` or other Rust files, run:
+
+```powershell
+# 1. Check Rust compilation
+Set-Location -LiteralPath "src-tauri"; if ($?) { cargo check }; Set-Location -LiteralPath ".."
+
+# 2. Check frontend typecheck
+bun run typecheck
+```
+
+Both must pass with zero errors. Warnings are acceptable but should be reviewed.
 
 **Safety**: Never run `bun run lint` (or `biome lint --write --unsafe .`) on the whole project. The `--unsafe` flag applies auto-fixes like `useImportType` project-wide, which turns runtime `import * as React` into `import type * as React` incorrectly. Always target specific files:
 ```powershell
@@ -77,15 +94,20 @@ The app has a desktop variant via Tauri V2. The Rust backend at `src-tauri/src/l
 
 | Command | Signature | Description |
 |---|---|---|
-| `initialize` | `async fn initialize(app, backend_state, port_state) -> Result<(), String>` | Clones repo, creates venv, installs deps, starts uvicorn. Emits `backend-status` events throughout. |
+| `initialize` | `async fn initialize(app, backend_state, port_state) -> Result<(), String>` | Checks deps installed, starts uvicorn. Emits `backend-status` events throughout. |
 | `stop_backend` | `fn stop_backend(app, backend_state, port_state) -> Result<(), String>` | Kills backend process, emits `Stage::Idle`. |
 | `get_backend_port` | `fn get_backend_port(state) -> Option<u16>` | Returns current backend port or `null`. |
 | `open_reline_config` | `async fn open_reline_config() -> ConfigReline` | Reads `config.json` from disk. |
 | `save_config_reline` | `async fn save_config_reline(config) -> bool` | Writes `config.json` to disk. |
+| `check_deps` | `fn check_deps() -> DepsStatus` | Checks uv, repo, venv, uvicorn presence + NVIDIA GPU. Does NOT launch Python. |
+| `check_versions` | `async fn check_versions(app) -> DepsVersions` | Runs `uv pip freeze`, parses torch/resselt/reline versions. Torch CUDA = `+cu` in version string. |
+| `install_deps` | `async fn install_deps(app, full: bool) -> Result<(), String>` | **full=true**: uv → clone → venv → torch(Win) → pip install. **full=false**: only `pip install -e .`. Streams stdout/stderr via `backend-log`. |
+| `get_logs` | `fn get_logs(state) -> Vec<LogEntry>` | Returns collected session logs. |
+| `clear_logs` | `fn clear_logs(state)` | Clears log buffer. |
 
 ### Events
 
-**`backend-status`** — emitted by all stages of `initialize`. Payload:
+**`backend-status`** — emitted by all stages of `initialize` and `install_deps`. Payload:
 
 ```ts
 interface BackendStatusEvent {
@@ -97,10 +119,21 @@ interface BackendStatusEvent {
 
 Processing stages (backend is busy): `cloning`, `creating_venv`, `installing`, `starting`, `running`. Idle stages: `idle`, `error`.
 
+**`backend-log`** — emitted for every stdout/stderr line from shell commands. Payload:
+
+```ts
+interface LogEntry {
+  timestamp: string  // UTC "HH:MM:SS"
+  level: string      // "stdout" | "stderr" | "info" | "error"
+  message: string
+}
+```
+
 ### State (Rust)
 
 - `BackendProcess(Mutex<Option<CommandChild>>)` — holds spawned uvicorn child process
 - `BackendPort(Mutex<Option<u16>>)` — holds allocated port (8000–9000 range)
+- `BackendLogs(Mutex<Vec<LogEntry>>)` — session log buffer
 - On `Destroyed` window event: backend is killed automatically
 
 ### Tauri plugins

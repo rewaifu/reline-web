@@ -151,6 +151,36 @@
     "clear": "Очистить",
     "import": "Импортировать"
   },
+  "backend": {
+    "settings": "Настройки",
+    "dependencies": "Зависимости",
+    "depsStatus": {
+      "uv": "UV пакетный менеджер",
+      "repo": "Репозиторий reline-ws",
+      "venv": "Виртуальное окружение Python",
+      "deps": "Python зависимости"
+    },
+    "versions": "Версии",
+    "torchCuda": "CUDA",
+    "torchCudaFail": "БЕЗ CUDA",
+    "noNvidiaGpu": "Видеокарта NVIDIA не обнаружена. Обработка на процессоре будет крайне медленной.",
+    "installDeps": "Установить зависимости",
+    "installDepsDesc": "~2.5 GB — UV, репозиторий, venv, PyTorch, resselt, reline",
+    "updateLibs": "Обновить библиотеки",
+    "updateLibsDesc": "~200 MB — Только resselt + reline",
+    "installDepsPrompt": "Установить зависимости",
+    "installing": "Установка...",
+    "viewLogs": "Логи",
+    "clearLogs": "Очистить логи",
+    "noLogs": "Логов пока нет",
+    "refresh": "Обновить",
+    "close": "Закрыть",
+    "serverRunning": "Запущен на 127.0.0.1:{{port}}",
+    "serverOffline": "Не запущен",
+    "serverStarting": "Запуск...",
+    "startServer": "Запустить сервер",
+    "stopServer": "Остановить сервер"
+  },
   "docs": {
     "ui": {
       "open_label":"Открыть документацию",

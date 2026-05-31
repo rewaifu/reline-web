@@ -1,9 +1,9 @@
 use git2::Repository;
 use serde::{Deserialize, Serialize};
 use std::net::TcpListener;
-use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Mutex;
+use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::Emitter;
 use tauri::Manager;
 use tauri_plugin_shell::process::CommandChild;
@@ -45,6 +45,39 @@ fn emit_status(
             port,
         },
     );
+}
+
+// ─── Logs ─────────────────────────────────────────────────────────────────────
+
+#[derive(Debug, Serialize, Clone)]
+struct LogEntry {
+    timestamp: String,
+    level: String,
+    message: String,
+}
+
+struct BackendLogs(Mutex<Vec<LogEntry>>);
+
+fn timestamp() -> String {
+    let secs = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs();
+    let h = (secs / 3600) % 24;
+    let m = (secs / 60) % 60;
+    let s = secs % 60;
+    format!("{:02}:{:02}:{:02}", h, m, s)
+}
+
+fn push_log(app: &tauri::AppHandle, level: &str, message: &str) {
+    let entry = LogEntry {
+        timestamp: timestamp(),
+        level: level.to_string(),
+        message: message.to_string(),
+    };
+    let state = app.state::<BackendLogs>();
+    state.0.lock().unwrap().push(entry.clone());
+    let _ = app.emit("backend-log", entry);
 }
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -121,6 +154,8 @@ fn find_free_port(start: u16, end: u16) -> Option<u16> {
     (start..=end).find(|&port| TcpListener::bind(("127.0.0.1", port)).is_ok())
 }
 
+// ─── UV ───────────────────────────────────────────────────────────────────────
+
 const UV_VERSION: &str = "0.10.4";
 
 fn uv_platform() -> Option<(&'static str, &'static str, &'static str)> {
@@ -148,12 +183,7 @@ fn uv_local_path(subdir: &str, bin_name: &str) -> Result<PathBuf, String> {
 
 async fn find_or_install_uv(app: &tauri::AppHandle) -> Result<PathBuf, String> {
     if let Some(path) = uv_in_path() {
-        emit_status(
-            app,
-            Stage::Idle,
-            format!("Found system uv: {}", path.display()),
-            None,
-        );
+        push_log(app, "info", &format!("Found system uv: {}", path.display()));
         return Ok(path);
     }
 
@@ -164,29 +194,19 @@ async fn find_or_install_uv(app: &tauri::AppHandle) -> Result<PathBuf, String> {
                 "No prebuilt uv for {}/{}, please install uv manually: https://docs.astral.sh/uv/getting-started/installation/",
                 std::env::consts::OS, std::env::consts::ARCH
             );
+            push_log(app, "error", &msg);
             return Err(msg);
         }
     };
 
     let local_path = uv_local_path(subdir, bin_name)?;
     if local_path.exists() {
-        emit_status(
-            app,
-            Stage::Idle,
-            format!("Found local uv: {}", local_path.display()),
-            None,
-        );
+        push_log(app, "info", &format!("Found local uv: {}", local_path.display()));
         ensure_executable(&local_path)?;
         return Ok(local_path);
     }
 
-    emit_status(
-        app,
-        Stage::Idle,
-        format!("uv not found, downloading v{UV_VERSION}..."),
-        None,
-    );
-
+    push_log(app, "info", &format!("Downloading uv v{UV_VERSION}..."));
     let url = format!("https://github.com/astral-sh/uv/releases/download/{UV_VERSION}/{asset}");
 
     let response = reqwest::get(&url)
@@ -205,7 +225,7 @@ async fn find_or_install_uv(app: &tauri::AppHandle) -> Result<PathBuf, String> {
         .await
         .map_err(|e| format!("Failed to read uv download: {e}"))?;
 
-    emit_status(app, Stage::Idle, "Extracting uv...", None);
+    push_log(app, "info", "Extracting uv...");
 
     let parent = local_path.parent().unwrap();
     fs::create_dir_all(parent)
@@ -231,13 +251,7 @@ async fn find_or_install_uv(app: &tauri::AppHandle) -> Result<PathBuf, String> {
 
     ensure_executable(&local_path)?;
 
-    emit_status(
-        app,
-        Stage::Idle,
-        format!("uv installed to {}", local_path.display()),
-        None,
-    );
-
+    push_log(app, "info", &format!("uv installed to {}", local_path.display()));
     Ok(local_path)
 }
 
@@ -249,6 +263,10 @@ fn ensure_executable(path: &PathBuf) -> Result<(), String> {
         let mut perms = meta.permissions();
         perms.set_mode(0o755);
         std::fs::set_permissions(path, perms).map_err(|e| e.to_string())?;
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = path;
     }
     Ok(())
 }
@@ -306,6 +324,51 @@ fn extract_zip(bytes: &[u8], bin_name: &str, dest: &PathBuf) -> Result<(), Strin
     Err(format!("'{bin_name}' not found inside zip"))
 }
 
+// ─── NVIDIA GPU check ─────────────────────────────────────────────────────────
+
+fn check_nvidia_gpu() -> bool {
+    #[cfg(target_os = "windows")]
+    {
+        if let Ok(out) = std::process::Command::new("wmic")
+            .args(["path", "win32_VideoController", "get", "name"])
+            .output()
+        {
+            let text = String::from_utf8_lossy(&out.stdout);
+            if text.to_lowercase().contains("nvidia") {
+                return true;
+            }
+        }
+        if let Ok(out) = std::process::Command::new("powershell")
+            .args([
+                "-NoProfile",
+                "-Command",
+                "Get-CimInstance Win32_VideoController | Select-Object -ExpandProperty Name",
+            ])
+            .output()
+        {
+            let text = String::from_utf8_lossy(&out.stdout);
+            if text.to_lowercase().contains("nvidia") {
+                return true;
+            }
+        }
+        false
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        if let Ok(out) = std::process::Command::new("lspci").output() {
+            let text = String::from_utf8_lossy(&out.stdout);
+            return text.to_lowercase().contains("nvidia");
+        }
+        false
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        false
+    }
+}
+
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -341,12 +404,17 @@ fn default_config() -> ConfigReline {
     }
 }
 
-const CONFIG_PATH: &str = "config.json";
+fn config_path() -> Result<PathBuf, String> {
+    Ok(get_workspace_path()?.join("config.json"))
+}
 
 #[tauri::command]
 async fn open_reline_config() -> ConfigReline {
-    let config_path = Path::new(CONFIG_PATH);
-    if let Ok(data) = fs::read_to_string(config_path).await {
+    let config_path = match config_path() {
+        Ok(p) => p,
+        Err(_) => return default_config(),
+    };
+    if let Ok(data) = fs::read_to_string(&config_path).await {
         if !data.is_empty() {
             if let Ok(cfg) = serde_json::from_str::<ConfigReline>(&data) {
                 return cfg;
@@ -357,34 +425,299 @@ async fn open_reline_config() -> ConfigReline {
     if let Some(parent) = config_path.parent() {
         let _ = fs::create_dir_all(parent).await;
     }
-    let _ = fs::write(config_path, serde_json::to_string_pretty(&cfg).unwrap()).await;
+    let _ = fs::write(&config_path, serde_json::to_string_pretty(&cfg).unwrap()).await;
     cfg
 }
 
 #[tauri::command]
 async fn save_config_reline(config: ConfigReline) -> bool {
-    let config_path = Path::new(CONFIG_PATH);
+    let config_path = match config_path() {
+        Ok(p) => p,
+        Err(_) => return false,
+    };
     if let Some(parent) = config_path.parent() {
         let _ = fs::create_dir_all(parent).await;
     }
-    fs::write(config_path, serde_json::to_string_pretty(&config).unwrap())
+    fs::write(&config_path, serde_json::to_string_pretty(&config).unwrap())
         .await
         .is_ok()
 }
 
-// ─── Initialize ───────────────────────────────────────────────────────────────
-#[cfg(not(target_os = "windows"))]
-fn find_system_python() -> Option<PathBuf> {
-    // Ищем python3, который НЕ внутри монтирования AppImage
-    for candidate in &["python3", "python"] {
-        if let Ok(path) = which::which(candidate) {
-            if !path.to_str().unwrap_or("").starts_with("/tmp/.mount_") {
-                return Some(path);
-            }
+// ─── Deps status / versions ───────────────────────────────────────────────────
+
+#[derive(Debug, Serialize, Clone)]
+struct DepsStatus {
+    uv_installed: bool,
+    repo_cloned: bool,
+    venv_created: bool,
+    deps_installed: bool,
+    has_nvidia_gpu: bool,
+}
+
+#[derive(Debug, Serialize, Clone)]
+struct DepsVersions {
+    torch_version: Option<String>,
+    torch_cuda: bool,
+    resselt_version: Option<String>,
+    reline_version: Option<String>,
+}
+
+fn uvicorn_path(workspace: &PathBuf) -> PathBuf {
+    if cfg!(windows) {
+        workspace.join(".venv").join("Scripts").join("uvicorn.exe")
+    } else {
+        workspace.join(".venv").join("bin").join("uvicorn")
+    }
+}
+
+fn check_deps_sync() -> DepsStatus {
+    let uv_installed = uv_in_path().is_some()
+        || uv_platform()
+            .and_then(|(s, _, n)| uv_local_path(s, n).ok())
+            .map(|p| p.exists())
+            .unwrap_or(false);
+
+    let workspace = get_workspace_path().unwrap_or_else(|_| PathBuf::from(""));
+    let repo_cloned = workspace.join(".git").exists();
+    let venv_created = workspace.join(".venv").exists();
+    let deps_installed = uvicorn_path(&workspace).exists();
+
+    DepsStatus {
+        uv_installed,
+        repo_cloned,
+        venv_created,
+        deps_installed,
+        has_nvidia_gpu: check_nvidia_gpu(),
+    }
+}
+
+// ─── Check commands ───────────────────────────────────────────────────────────
+
+#[tauri::command]
+fn check_deps() -> DepsStatus {
+    check_deps_sync()
+}
+
+#[tauri::command]
+async fn check_versions(app: tauri::AppHandle) -> DepsVersions {
+    let empty = DepsVersions {
+        torch_version: None,
+        torch_cuda: false,
+        resselt_version: None,
+        reline_version: None,
+    };
+
+    let uv_path = match find_or_install_uv(&app).await {
+        Ok(p) => p,
+        Err(_) => return empty,
+    };
+
+    let workspace = match get_workspace_path() {
+        Ok(p) => p,
+        Err(_) => return empty,
+    };
+
+    if !workspace.join(".venv").exists() {
+        return empty;
+    }
+
+    let out = match app
+        .shell()
+        .command(uv_path.to_str().unwrap())
+        .args(["pip", "freeze"])
+        .current_dir(&workspace)
+        .output()
+        .await
+    {
+        Ok(o) => o,
+        Err(_) => return empty,
+    };
+
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    let mut versions = empty;
+
+    for line in stdout.lines() {
+        let line = line.trim();
+        if let Some(ver) = line.strip_prefix("torch==") {
+            versions.torch_version = Some(ver.to_string());
+            versions.torch_cuda = ver.contains("+cu");
+        } else if let Some(ver) = line.strip_prefix("resselt==") {
+            versions.resselt_version = Some(ver.to_string());
+        } else if let Some(ver) = line.strip_prefix("reline==") {
+            versions.reline_version = Some(ver.to_string());
         }
     }
-    None
+
+    versions
 }
+
+// ─── Install deps ─────────────────────────────────────────────────────────────
+
+async fn spawn_and_stream(
+    app: &tauri::AppHandle,
+    uv_path: &PathBuf,
+    args: &[&str],
+    workspace: &PathBuf,
+) -> Result<(), String> {
+    let cmd = app
+        .shell()
+        .command(uv_path.to_str().unwrap())
+        .args(args)
+        .current_dir(workspace);
+
+    let (mut rx, _child) = cmd
+        .spawn()
+        .map_err(|e| format!("spawn failed: {e}"))?;
+
+    while let Some(event) = rx.recv().await {
+        match event {
+            tauri_plugin_shell::process::CommandEvent::Stdout(line) => {
+                let text = String::from_utf8_lossy(&line);
+                push_log(app, "stdout", &text);
+            }
+            tauri_plugin_shell::process::CommandEvent::Stderr(line) => {
+                let text = String::from_utf8_lossy(&line);
+                push_log(app, "stderr", &text);
+            }
+            tauri_plugin_shell::process::CommandEvent::Terminated(status) => {
+                if status.code != Some(0) {
+                    let msg = format!("Command failed with exit code: {:?}", status.code);
+                    push_log(app, "error", &msg);
+                    return Err(msg);
+                }
+                break;
+            }
+            _ => {}
+        }
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+async fn install_deps(app: tauri::AppHandle, full: bool) -> Result<(), String> {
+    if !full {
+        let deps = check_deps_sync();
+        if !deps.uv_installed {
+            return Err("UV not found. Run full installation first.".into());
+        }
+        if !deps.repo_cloned {
+            return Err("Repository not found. Run full installation first.".into());
+        }
+        if !deps.venv_created {
+            return Err("Virtual environment not found. Run full installation first.".into());
+        }
+    }
+
+    let workspace = get_workspace_path()?;
+
+    emit_status(&app, Stage::Cloning, "Setting up UV...", None);
+    let uv_path = find_or_install_uv(&app).await?;
+
+    if full {
+        let repo_url = "https://github.com/rewaifu/reline_ws";
+        if !workspace.join(".git").exists() {
+            emit_status(&app, Stage::Cloning, "Cloning repository...", None);
+            if workspace.exists() {
+                std::fs::remove_dir_all(&workspace).map_err(|e| e.to_string())?;
+            }
+            unsafe {
+                git2::opts::set_verify_owner_validation(false).unwrap();
+            }
+            if let Err(e) = Repository::clone(repo_url, &workspace) {
+                let msg = format!("Clone failed: {e:?}");
+                emit_status(&app, Stage::Error, &msg, None);
+                return Err(msg);
+            }
+            push_log(&app, "info", "Repository cloned");
+        } else {
+            push_log(&app, "info", "Repository already exists, skipping clone");
+        }
+
+        let venv_dir = workspace.join(".venv");
+        if !venv_dir.exists() {
+            emit_status(&app, Stage::CreatingVenv, "Creating virtual environment...", None);
+            let out = app
+                .shell()
+                .command(uv_path.to_str().unwrap())
+                .args(["venv", ".venv"])
+                .current_dir(&workspace)
+                .output()
+                .await
+                .map_err(|e| format!("uv venv failed: {e}"))?;
+            if !out.status.success() {
+                let msg = format!("venv error: {}", String::from_utf8_lossy(&out.stderr));
+                emit_status(&app, Stage::Error, &msg, None);
+                return Err(msg);
+            }
+            push_log(&app, "info", "Virtual environment created");
+        } else {
+            push_log(&app, "info", "Virtual environment already exists, skipping");
+        }
+    }
+
+    emit_status(&app, Stage::Installing, "Installing dependencies...", None);
+
+    if full && cfg!(windows) {
+        emit_status(&app, Stage::Installing, "Installing PyTorch (CUDA)...", None);
+        spawn_and_stream(
+            &app,
+            &uv_path,
+            &[
+                "pip",
+                "install",
+                "torch",
+                "--index-url",
+                "https://download.pytorch.org/whl/cu128",
+                "--index-strategy",
+                "unsafe-best-match",
+                "--no-cache",
+                "--link-mode=copy",
+            ],
+            &workspace,
+        )
+        .await?;
+    }
+
+    spawn_and_stream(
+        &app,
+        &uv_path,
+        &[
+            "pip",
+            "install",
+            "-e",
+            ".",
+            "--index-strategy",
+            "unsafe-best-match",
+            "--no-cache",
+            "--link-mode=copy",
+        ],
+        &workspace,
+    )
+    .await?;
+
+    // Verify torch CUDA
+    let versions = check_versions(app.clone()).await;
+    if let Some(ref v) = versions.torch_version {
+        if versions.torch_cuda {
+            push_log(&app, "info", &format!("Torch {} with CUDA ✓", v));
+        } else {
+            let msg = format!("Torch {} installed WITHOUT CUDA support. Check PyTorch CUDA wheel availability.", v);
+            push_log(&app, "error", &msg);
+        }
+    }
+
+    let deps = check_deps_sync();
+    if !deps.has_nvidia_gpu {
+        push_log(&app, "info", "No NVIDIA GPU detected. Processing on CPU will be extremely slow.");
+    }
+
+    emit_status(&app, Stage::Idle, "Dependencies installed", None);
+    Ok(())
+}
+
+// ─── Initialize (start backend) ───────────────────────────────────────────────
+
 #[tauri::command]
 async fn initialize(
     app: tauri::AppHandle,
@@ -394,160 +727,16 @@ async fn initialize(
     kill_backend(&backend_state);
     *port_state.0.lock().unwrap() = None;
 
-    emit_status(&app, Stage::Idle, "Detecting platform...", None);
-
-    let uv_path = match find_or_install_uv(&app).await {
-        Ok(p) => p,
-        Err(e) => {
-            emit_status(&app, Stage::Error, format!("uv setup failed: {e}"), None);
-            return Err(e);
-        }
-    };
-
-    let workspace = match get_workspace_path() {
-        Ok(p) => p,
-        Err(e) => {
-            emit_status(&app, Stage::Error, format!("workspace error: {e}"), None);
-            return Err(e);
-        }
-    };
-
-    // ── Clone ─────────────────────────────────────────────────────────────────
-    let repo_url = "https://github.com/rewaifu/reline_ws";
-    if !workspace.join(".git").exists() {
-        emit_status(&app, Stage::Cloning, "Cloning repository...", None);
-        if workspace.exists() {
-            std::fs::remove_dir_all(&workspace).map_err(|e| e.to_string())?;
-        }
-        unsafe {
-            git2::opts::set_verify_owner_validation(false).unwrap();
-        }
-        if let Err(e) = Repository::clone(repo_url, &workspace) {
-            let msg = format!("Clone failed: {e:?}");
-            emit_status(&app, Stage::Error, &msg, None);
-            return Err(msg);
-        }
-        emit_status(&app, Stage::Cloning, "Repository cloned ✓", None);
-    } else {
-        emit_status(
-            &app,
-            Stage::Cloning,
-            "Repository already exists, skipping clone ✓",
-            None,
-        );
+    let deps = check_deps_sync();
+    if !deps.uv_installed || !deps.repo_cloned || !deps.venv_created || !deps.deps_installed {
+        let msg = "Dependencies not installed. Please install them in Settings.";
+        emit_status(&app, Stage::Error, msg, None);
+        return Err(msg.into());
     }
 
-    // ── venv ──────────────────────────────────────────────────────────────────
-    let venv_dir = workspace.join(".venv");
-    if venv_dir.exists() {
-        emit_status(
-            &app,
-            Stage::CreatingVenv,
-            "Virtual environment already exists, skipping ✓",
-            None,
-        );
-    } else {
-        emit_status(
-            &app,
-            Stage::CreatingVenv,
-            "Creating virtual environment...",
-            None,
-        );
-        let mut venv_args = vec!["venv", ".venv"];
-
-        let out = app
-            .shell()
-            .command(uv_path.to_str().unwrap())
-            .args(&venv_args)
-            .current_dir(&workspace)
-            .output()
-            .await
-            .map_err(|e| format!("uv venv failed: {e}"))?;
-        if !out.status.success() {
-            let msg = format!("venv error: {}", String::from_utf8_lossy(&out.stderr));
-            emit_status(&app, Stage::Error, &msg, None);
-            return Err(msg);
-        }
-        emit_status(
-            &app,
-            Stage::CreatingVenv,
-            "Virtual environment created ✓",
-            None,
-        );
-    }
-
+    let workspace = get_workspace_path()?;
     let python_bin = venv_python(&workspace);
 
-    // ── Install deps ──────────────────────────────────────────────────────────
-    let uvicorn_check = if cfg!(windows) {
-        workspace.join(".venv").join("Scripts").join("uvicorn.exe")
-    } else {
-        workspace.join(".venv").join("bin").join("uvicorn")
-    };
-
-    if uvicorn_check.exists() {
-        emit_status(
-            &app,
-            Stage::Installing,
-            "Dependencies already installed, skipping ✓",
-            None,
-        );
-    } else {
-        emit_status(&app, Stage::Installing, "Installing dependencies...", None);
-
-        if cfg!(windows) {
-            let out = app
-                .shell()
-                .command(uv_path.to_str().unwrap())
-                .args([
-                    "pip",
-                    "install",
-                    "torch",
-                    "--index-url",
-                    "https://download.pytorch.org/whl/cu128",
-                    "--index-strategy",
-                    "unsafe-best-match",
-                    "--no-cache",
-                    "--link-mode=copy",
-                ])
-                .current_dir(&workspace)
-                .output()
-                .await
-                .map_err(|e| format!("uv pip install failed: {e}"))?;
-            if !out.status.success() {
-                let msg = format!("install error: {}", String::from_utf8_lossy(&out.stderr));
-                emit_status(&app, Stage::Error, &msg, None);
-                return Err(msg);
-            }
-        }
-
-        let out = app
-            .shell()
-            .command(uv_path.to_str().unwrap())
-            .args([
-                "pip",
-                "install",
-                "-e",
-                ".",
-                "--index-strategy",
-                "unsafe-best-match",
-                "--no-cache",
-                "--link-mode=copy",
-            ])
-            .current_dir(&workspace)
-            .output()
-            .await
-            .map_err(|e| format!("uv pip install failed: {e}"))?;
-        if !out.status.success() {
-            let msg = format!("install error: {}", String::from_utf8_lossy(&out.stderr));
-            emit_status(&app, Stage::Error, &msg, None);
-            return Err(msg);
-        }
-
-        emit_status(&app, Stage::Installing, "Dependencies installed ✓", None);
-    }
-
-    // ── Port ──────────────────────────────────────────────────────────────────
     let port = match find_free_port(8000, 9000) {
         Some(p) => p,
         None => {
@@ -600,13 +789,15 @@ async fn initialize(
         while let Some(event) = rx.recv().await {
             match event {
                 tauri_plugin_shell::process::CommandEvent::Stdout(line) => {
-                    println!("[backend] {}", String::from_utf8_lossy(&line));
+                    let text = String::from_utf8_lossy(&line);
+                    push_log(&app_clone, "stdout", &text);
                 }
                 tauri_plugin_shell::process::CommandEvent::Stderr(line) => {
-                    eprintln!("[backend ERR] {}", String::from_utf8_lossy(&line));
+                    let text = String::from_utf8_lossy(&line);
+                    push_log(&app_clone, "stderr", &text);
                 }
                 tauri_plugin_shell::process::CommandEvent::Terminated(status) => {
-                    println!("[backend] terminated: {:?}", status.code);
+                    push_log(&app_clone, "error", &format!("Backend terminated: {:?}", status.code));
                     emit_status(
                         &app_clone,
                         Stage::Error,
@@ -644,8 +835,24 @@ fn get_backend_port(state: tauri::State<'_, BackendPort>) -> Option<u16> {
 fn kill_backend(state: &BackendProcess) {
     if let Some(child) = state.0.lock().unwrap().take() {
         let _ = child.kill();
-        println!("[backend] killed");
+        push_log_simple("Backend process killed");
     }
+}
+
+fn push_log_simple(message: &str) {
+    println!("[backend] {message}");
+}
+
+// ─── Log commands ─────────────────────────────────────────────────────────────
+
+#[tauri::command]
+fn get_logs(state: tauri::State<'_, BackendLogs>) -> Vec<LogEntry> {
+    state.0.lock().unwrap().clone()
+}
+
+#[tauri::command]
+fn clear_logs(state: tauri::State<'_, BackendLogs>) {
+    state.0.lock().unwrap().clear();
 }
 
 // ─── Entry point ──────────────────────────────────────────────────────────────
@@ -660,6 +867,7 @@ pub fn run() {
         .setup(|app| {
             app.manage(BackendProcess(Mutex::new(None)));
             app.manage(BackendPort(Mutex::new(None)));
+            app.manage(BackendLogs(Mutex::new(Vec::new())));
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -674,6 +882,11 @@ pub fn run() {
             get_backend_port,
             open_reline_config,
             save_config_reline,
+            check_deps,
+            check_versions,
+            install_deps,
+            get_logs,
+            clear_logs,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

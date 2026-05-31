@@ -13,16 +13,50 @@ interface BackendStatusEvent {
   port: number | null
 }
 
-const PROCESSING_STAGES: BackendStage[] = ["cloning", "creating_venv", "installing", "starting", "running"]
+interface DepsStatus {
+  uv_installed: boolean
+  repo_cloned: boolean
+  venv_created: boolean
+  deps_installed: boolean
+  has_nvidia_gpu: boolean
+}
+
+interface DepsVersions {
+  torch_version: string | null
+  torch_cuda: boolean
+  resselt_version: string | null
+  reline_version: string | null
+}
+
+interface LogEntry {
+  timestamp: string
+  level: string
+  message: string
+}
+
+const PROCESSING_STAGES: BackendStage[] = ["cloning", "creating_venv", "installing", "starting"]
 
 interface UseBackendReturn {
   stage: BackendStage
   isProcessing: boolean
+  installingDeps: boolean
   pipelineActive: boolean
+  serverRunning: boolean
+  serverPort: number | null
   progress: number
   statusMessage: string
+  depsStatus: DepsStatus | null
+  depsReady: boolean
+  versions: DepsVersions | null
+  logs: LogEntry[]
   handleStart: () => Promise<void>
   handleStop: () => void
+  handleStartServer: () => Promise<void>
+  handleStopServer: () => void
+  handleCheckDeps: () => Promise<void>
+  handleInstallDeps: (full: boolean) => Promise<void>
+  handleGetLogs: () => Promise<void>
+  handleClearLogs: () => Promise<void>
 }
 
 export function useBackend(): UseBackendReturn {
@@ -31,11 +65,25 @@ export function useBackend(): UseBackendReturn {
   const [pipelineActive, setPipelineActive] = useState(false)
   const [progress, setProgress] = useState(0)
   const [statusMessage, setStatusMessage] = useState("")
+  const [depsStatus, setDepsStatus] = useState<DepsStatus | null>(null)
+  const [versions, setVersions] = useState<DepsVersions | null>(null)
+  const [logs, setLogs] = useState<LogEntry[]>([])
   const nodes = useContext(NodesContext)
   const nodesRef = useRef(nodes)
   nodesRef.current = nodes
   const wsRef = useRef<WebSocket | null>(null)
+  const pendingConfigRef = useRef(false)
 
+  const sendConfig = useCallback(() => {
+    const ws = wsRef.current
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(nodesToString(nodesRef.current))
+      return
+    }
+    pendingConfigRef.current = true
+  }, [])
+
+  // ── Listen for backend-status events ──────────────────────────
   useEffect(() => {
     let cancelled = false
     let unlisten: UnlistenFn | null = null
@@ -66,6 +114,28 @@ export function useBackend(): UseBackendReturn {
     }
   }, [])
 
+  // ── Listen for backend-log events ─────────────────────────────
+  useEffect(() => {
+    let cancelled = false
+    let unlisten: UnlistenFn | null = null
+
+    listen<LogEntry>("backend-log", (event) => {
+      if (cancelled) return
+      setLogs((prev) => [...prev, event.payload])
+    })
+      .then((fn) => {
+        if (cancelled) fn()
+        else unlisten = fn
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+      if (unlisten) unlisten()
+    }
+  }, [])
+
+  // ── On mount: check for existing port, check deps ─────────────
   useEffect(() => {
     invoke<number | null>("get_backend_port")
       .then((p) => {
@@ -75,13 +145,34 @@ export function useBackend(): UseBackendReturn {
         }
       })
       .catch(() => {})
+
+    handleCheckDepsSilent()
   }, [])
 
+  const handleCheckDepsSilent = async () => {
+    try {
+      const deps = await invoke<DepsStatus>("check_deps")
+      setDepsStatus(deps)
+      try {
+        const vers = await invoke<DepsVersions>("check_versions")
+        setVersions(vers)
+      } catch {
+        setVersions(null)
+      }
+    } catch {
+      setDepsStatus(null)
+    }
+  }
+
+  const handleCheckDeps = async () => {
+    await handleCheckDepsSilent()
+  }
+
+  // ── WebSocket connection to running backend ───────────────────
   useEffect(() => {
     if (stage !== "running" || port == null) return
 
     let retries = 0
-    const maxRetries = 20
     const retryDelay = 500
     let timer: ReturnType<typeof setTimeout> | null = null
     let stopped = false
@@ -89,14 +180,15 @@ export function useBackend(): UseBackendReturn {
     const connect = () => {
       if (stopped) return
       const ws = new WebSocket(`ws://127.0.0.1:${port}/ws`)
-      let hasOpened = false
 
       ws.onopen = () => {
-        hasOpened = true
         retries = 0
         setPipelineActive(false)
         setProgress(0)
-        ws.send(nodesToString(nodesRef.current))
+        if (pendingConfigRef.current) {
+          pendingConfigRef.current = false
+          ws.send(nodesToString(nodesRef.current))
+        }
       }
 
       ws.onmessage = (event) => {
@@ -112,6 +204,7 @@ export function useBackend(): UseBackendReturn {
           } else if (msg.status === "queued") {
             setStatusMessage(msg.message ?? "Waiting...")
           } else if (msg.status === "done") {
+            setPipelineActive(false)
             setProgress(100)
             setStatusMessage("Pipeline completed")
             toast.success("Pipeline completed")
@@ -131,10 +224,11 @@ export function useBackend(): UseBackendReturn {
 
       ws.onclose = () => {
         wsRef.current = null
-        if (!hasOpened && !stopped && retries < maxRetries) {
+        if (!stopped) {
           retries++
-          setStatusMessage(`Connecting to backend... (attempt ${retries}/${maxRetries})`)
-          timer = setTimeout(connect, retryDelay)
+          const delay = Math.min(retries * retryDelay, 5000)
+          setStatusMessage(`Reconnecting... (${retries})`)
+          timer = setTimeout(connect, delay)
         }
       }
 
@@ -145,7 +239,7 @@ export function useBackend(): UseBackendReturn {
       wsRef.current = ws
     }
 
-    connect()
+    timer = setTimeout(connect, 300)
 
     return () => {
       stopped = true
@@ -157,13 +251,22 @@ export function useBackend(): UseBackendReturn {
     }
   }, [stage, port])
 
+  // ── Actions ───────────────────────────────────────────────────
+
   const handleStart = useCallback(async () => {
+    if (stage === "running") {
+      sendConfig()
+      return
+    }
+    setLogs([])
+    pendingConfigRef.current = true
     try {
       await invoke("initialize")
     } catch (err) {
+      pendingConfigRef.current = false
       toast.error(String(err))
     }
-  }, [])
+  }, [stage, sendConfig])
 
   const handleStop = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -171,13 +274,71 @@ export function useBackend(): UseBackendReturn {
     }
   }, [])
 
+  const handleStartServer = useCallback(async () => {
+    setLogs([])
+    pendingConfigRef.current = false
+    try {
+      await invoke("initialize")
+    } catch (err) {
+      toast.error(String(err))
+    }
+  }, [])
+
+  const handleStopServer = useCallback(() => {
+    invoke("stop_backend").catch(() => {})
+    setStage("idle")
+    setPort(null)
+    setPipelineActive(false)
+  }, [])
+
+  const handleInstallDeps = useCallback(async (full: boolean) => {
+    try {
+      setLogs([])
+      await invoke("install_deps", { full })
+      await handleCheckDepsSilent()
+    } catch (err) {
+      toast.error(String(err))
+    }
+  }, [])
+
+  const handleGetLogs = useCallback(async () => {
+    try {
+      const entries = await invoke<LogEntry[]>("get_logs")
+      setLogs(entries)
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  const handleClearLogs = useCallback(async () => {
+    try {
+      await invoke("clear_logs")
+      setLogs([])
+    } catch {
+      setLogs([])
+    }
+  }, [])
+
   return {
     stage,
     isProcessing: PROCESSING_STAGES.includes(stage),
+    installingDeps: stage === "cloning" || stage === "creating_venv" || stage === "installing",
     pipelineActive,
+    serverRunning: stage === "running",
+    serverPort: port,
     progress,
     statusMessage,
+    depsStatus,
+    depsReady: depsStatus?.deps_installed === true && depsStatus.repo_cloned && depsStatus.venv_created && depsStatus.uv_installed,
+    versions,
+    logs,
     handleStart,
     handleStop,
+    handleStartServer,
+    handleStopServer,
+    handleCheckDeps,
+    handleInstallDeps,
+    handleGetLogs,
+    handleClearLogs,
   }
 }

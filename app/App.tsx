@@ -137,7 +137,10 @@ function HomePage() {
           </NodesContext.Provider>
         </div>
       </div>
-      <div className="h-10 md:hidden bg-card rounded-xl ring-1 ring-foreground/10 p-1 mx-3">
+      <NodesContext.Provider value={nodes}>
+        <NodesDispatchContext.Provider value={dispatch}>
+          <ModelsContext.Provider value={models}>
+            <div className="h-10 md:hidden bg-card rounded-xl ring-1 ring-foreground/10 p-1 mx-3">
         <div className="flex flex-row gap-1 items-center justify-center">
           <div className="flex flex-row gap-4 items-center">
             <Select value={selectedPreset} onValueChange={handlePresetChange}>
@@ -252,6 +255,9 @@ function HomePage() {
         </div>
       </div>
       <FooterBar />
+            </ModelsContext.Provider>
+          </NodesDispatchContext.Provider>
+        </NodesContext.Provider>
     </main>
   )
 }
