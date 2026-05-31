@@ -6,8 +6,13 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import unfonts from "unplugin-fonts/vite"
 import svgr from "vite-plugin-svgr"
 
+const host = process.env.TAURI_DEV_HOST;
+const isTauri = process.env.TAURI_ENV_PLATFORM || host !== undefined;
+
 export default defineConfig({
-  base: process.env.BASE_URL ?? '/',
+  base: isTauri ? './' : (process.env.BASE_URL ?? '/'),
+  clearScreen: !isTauri,
+
   plugins: [
     { enforce: "pre", ...mdx() },
     react({
@@ -22,4 +27,29 @@ export default defineConfig({
       },
     }),
   ],
+  server: isTauri ? {
+    port: 5173,
+    strictPort: true,
+    host: host || false,
+    hmr: host
+        ? {
+          protocol: "ws",
+          host,
+          port: 5174,
+        }
+        : undefined,
+    watch: {
+      ignored: ["**/src-tauri/**"],
+    },
+  } : undefined,
+
+  envPrefix: ['VITE_', 'TAURI_'],
+
+  build: {
+    target: isTauri
+        ? (process.env.TAURI_ENV_PLATFORM === 'windows' ? 'chrome105' : 'safari15')
+        : undefined,
+    minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
+    sourcemap: !!process.env.TAURI_DEBUG,
+  },
 })

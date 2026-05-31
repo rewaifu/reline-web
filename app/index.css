@@ -344,3 +344,8 @@
 .docs-article figcaption {
   @apply mt-2 text-center text-sm text-muted-foreground;
 }
+
+html, body {
+  overscroll-behavior: none;
+}
+

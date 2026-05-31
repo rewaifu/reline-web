@@ -60,6 +60,75 @@ Use `~/` consistently (existing code uses both; `~` is the convention).
 - Use `import type` for type-only imports.
 - Tailwind CSS 4: use `@theme` + CSS variables; avoid legacy `@apply` patterns where possible.
 
+## Tauri V2
+
+The app has a desktop variant via Tauri V2. The Rust backend at `src-tauri/src/lib.rs` manages a Python backend (uvicorn server) for Reline image processing.
+
+### Detection
+
+`useIsTauri()` hook at `app/hooks/useIsTauri.ts` checks for `__TAURI_INTERNALS__` or `__TAURI__` on `window`. `__TAURI_INTERNALS__` is always injected by Tauri webview; `__TAURI__` appears when `@tauri-apps/api` is initialized.
+
+### Frontend deps
+
+- `@tauri-apps/cli` (devDeps) — CLI for `bun tauri dev` / `bun tauri build`
+- `@tauri-apps/api` (deps) — `invoke()` from `@tauri-apps/api/core`, `listen()`/`UnlistenFn` from `@tauri-apps/api/event`
+
+### Backend commands (`src-tauri/src/lib.rs`)
+
+| Command | Signature | Description |
+|---|---|---|
+| `initialize` | `async fn initialize(app, backend_state, port_state) -> Result<(), String>` | Clones repo, creates venv, installs deps, starts uvicorn. Emits `backend-status` events throughout. |
+| `stop_backend` | `fn stop_backend(app, backend_state, port_state) -> Result<(), String>` | Kills backend process, emits `Stage::Idle`. |
+| `get_backend_port` | `fn get_backend_port(state) -> Option<u16>` | Returns current backend port or `null`. |
+| `open_reline_config` | `async fn open_reline_config() -> ConfigReline` | Reads `config.json` from disk. |
+| `save_config_reline` | `async fn save_config_reline(config) -> bool` | Writes `config.json` to disk. |
+
+### Events
+
+**`backend-status`** — emitted by all stages of `initialize`. Payload:
+
+```ts
+interface BackendStatusEvent {
+  stage: "idle" | "cloning" | "creating_venv" | "installing" | "starting" | "running" | "error"
+  message: string
+  port: number | null
+}
+```
+
+Processing stages (backend is busy): `cloning`, `creating_venv`, `installing`, `starting`, `running`. Idle stages: `idle`, `error`.
+
+### State (Rust)
+
+- `BackendProcess(Mutex<Option<CommandChild>>)` — holds spawned uvicorn child process
+- `BackendPort(Mutex<Option<u16>>)` — holds allocated port (8000–9000 range)
+- On `Destroyed` window event: backend is killed automatically
+
+### Tauri plugins
+
+`tauri_plugin_shell`, `tauri_plugin_fs`, `tauri_plugin_opener`, `tauri_plugin_dialog` in `Cargo.toml`.
+
+### Config
+
+`src-tauri/tauri.conf.json` — window 800x600, title "Reline Configurator", `frontendDist: "../dist"`, dev URL `http://localhost:5173`.
+
+### Frontend UI (Tauri mode)
+
+**`FooterBar`** component at `app/components/footer-bar.tsx` conditionally renders:
+
+- **Non-Tauri**: regular footer (Colab, GitHub, Discord links)
+- **Tauri**: `h-15` bar with Run/Stop buttons on the left:
+  - **Run** (`IconPlayerPlay`): green border/bg → amber (`IconLoader2 animate-spin`) during processing, calls `invoke("initialize")`
+  - **Stop** (`IconPlayerStop`): gray/disabled when idle → red when processing, calls `invoke("stop_backend")`
+
+### Dev
+
+```bash
+bun tauri dev    # starts Vite + Tauri webview
+bun tauri build  # production Tauri build
+```
+
+Vite config (`vite.config.ts:9-10`) detects Tauri at build time via `TAURI_ENV_PLATFORM` / `TAURI_DEV_HOST` env vars for base path and dev server config.
+
 ## Notes
 
 - No test setup exists (no test dependencies in `package.json`).
