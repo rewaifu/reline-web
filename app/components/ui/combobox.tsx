@@ -123,15 +123,23 @@ function ComboboxInput({
   disabled = false,
   showTrigger = true,
   showClear = false,
+  renderValue,
   ...props
 }: ComboboxPrimitive.Input.Props & {
   showTrigger?: boolean
   showClear?: boolean
+  renderValue?: (value: string) => string
 }) {
   return (
     <InputGroup className={cn("w-auto", className)}>
       <ComboboxPrimitive.Input
-        render={<InputGroupInput disabled={disabled} />}
+        render={(inputProps) => {
+          const rawProps = inputProps as React.InputHTMLAttributes<HTMLInputElement>
+          const displayValue = renderValue && rawProps.value != null
+            ? renderValue(rawProps.value as string)
+            : rawProps.value
+          return <InputGroupInput {...rawProps} value={displayValue ?? ''} disabled={disabled} />
+        }}
         {...props}
       />
       <InputGroupAddon align="inline-end">

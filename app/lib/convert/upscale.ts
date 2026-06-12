@@ -3,11 +3,15 @@ import type { PureUpscaleNodeOptions, UpscaleNodeOptions } from "~/types/options
 import { NodeType, PureNodeType } from "~/types/enums"
 import { DEFAULT_COLLAPSED, MODEL_POSTFIX, MODEL_PREFIX } from "~/constants"
 
+function isFilesystemPath(model: string): boolean {
+  return /^[A-Za-z]:[/\\]/.test(model) || model.includes('/') || model.includes('\\')
+}
+
 export const convertUpscaleToPure: ConvertToPureFunction = (nodes, index) => {
   const result = []
   const node = nodes[index]
   const { is_own_model, ...options } = node.options as UpscaleNodeOptions
-  if (is_own_model) {
+  if (is_own_model || isFilesystemPath(options.model)) {
     result.push({
       type: PureNodeType.UPSCALE,
       options,

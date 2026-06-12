@@ -10,9 +10,13 @@ import {NodesActionType} from "~/types/actions.ts"
 import type {FolderReaderNodeOptions} from "~/types/options"
 import {FieldGroup, FieldLabel, Field} from "~/components/ui/field.tsx"
 import {useTranslation} from "react-i18next"
+import {useIsTauri} from "~/hooks/useIsTauri"
+import {IconFolderOpen} from "@tabler/icons-react"
+import {Button} from "~/components/ui/button"
 
 export function FolderReaderNodeBody({id, dispatch: dispatchProp, idSuffix}: { id: number; dispatch?: Dispatch<NodesAction>; idSuffix?: string }) {
     const {t} = useTranslation()
+    const isTauri = useIsTauri()
     const nodes = useContext(NodesContext)
     const node = nodes.find((item) => item.id === id)
     if (!node) {
@@ -34,17 +38,38 @@ export function FolderReaderNodeBody({id, dispatch: dispatchProp, idSuffix}: { i
             },
         })
     }
+
+    const handleBrowse = async () => {
+        try {
+            const { open } = await import("@tauri-apps/plugin-dialog")
+            const folder = await open({ directory: true, multiple: false, title: t('nodes.folder-reader.path') })
+            if (folder) {
+                changeValue({ path: folder as string })
+            }
+        } catch (err) {
+            console.error("Folder dialog failed:", err)
+        }
+    }
+
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-col space-y-2">
                 <Label>{t('nodes.folder-reader.path')}</Label>
-                <Input
-                    placeholder={t('nodes.folder-reader.placeholder')}
-                    value={options.path}
-                    onChange={(e) => {
-                        changeValue({path: e.target.value})
-                    }}
-                />
+                <div className="flex items-center gap-2">
+                    <Input
+                        className="flex-1"
+                        placeholder={t('nodes.folder-reader.placeholder')}
+                        value={options.path}
+                        onChange={(e) => {
+                            changeValue({path: e.target.value})
+                        }}
+                    />
+                    {isTauri && (
+                        <Button variant="outline" size="icon" onClick={handleBrowse}>
+                            <IconFolderOpen className="size-4" />
+                        </Button>
+                    )}
+                </div>
             </div>
             <div className="flex flex-col space-y-2">
                 <Label>{t('nodes.folder-reader.mode')}</Label>

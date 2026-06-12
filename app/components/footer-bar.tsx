@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { IconBrandDiscordFilled, IconBrandGithub, IconLoader2, IconPlayerPlay, IconPlayerStop, IconServer, IconSettings, IconTerminal2 } from "@tabler/icons-react"
+import { IconBrandDiscordFilled, IconBrandGithub, IconLoader2, IconPlayerPlay, IconPlayerStop, IconSettings, IconTerminal2 } from "@tabler/icons-react"
 import { Button } from "~/components/ui/button"
 import { Progress } from "~/components/ui/progress"
 import { useBackend } from "~/hooks/useBackend"
@@ -92,15 +92,37 @@ function TauriFooter() {
   const playDisabled = !depsReady && !isProcessing && !serverRunning
   const playGreen = { borderColor: "#22c55e", color: "#22c55e", backgroundColor: "rgba(34,197,94,0.1)" }
   const playAmber = { borderColor: "#f59e0b", color: "#f59e0b", backgroundColor: "rgba(245,158,11,0.1)" }
-  const playGray = { borderColor: "#9ca3af", color: "#9ca3af", backgroundColor: "rgba(156,163,175,0.1)" }
+  const playGray = { borderColor: "#404040", color: "#404040", backgroundColor: "rgba(156,163,175,0.1)" }
   const stopRed = { borderColor: "#ef4444", color: "#ef4444", backgroundColor: "rgba(239,68,68,0.1)" }
-  const stopGray = { borderColor: "#9ca3af", color: "#9ca3af", backgroundColor: "rgba(156,163,175,0.1)" }
+  const stopGray = { borderColor: "#5a5a5a", color: "#5a5a5a", backgroundColor: "rgba(156,163,175,0.1)" }
 
   const serverStarting = stage === "starting"
 
+  const dotColor = serverRunning
+    ? "#22c55e"
+    : serverStarting || isProcessing
+      ? "#f59e0b"
+      : stage === "error"
+        ? "#ef4444"
+        : "#6b7280"
+
+  const parseProgressText = (msg: string) => {
+    const match = msg.match(/^Processing\s+(\d+)\s*\/\s*(\d+)$/)
+    if (match) return `${match[1]}/${match[2]}`
+    return msg
+  }
+
+  const statusText = serverRunning && serverPort != null
+    ? t("backend.serverRunning", { port: serverPort })
+    : serverStarting
+      ? t("backend.serverStarting")
+      : stage === "error"
+        ? statusMessage || t("backend.serverOffline")
+        : t("backend.serverOffline")
+
   return (
     <>
-      <footer className="flex h-12 bg-card rounded-xl ring-1 ring-foreground/10 p-2 px-2 mb-3 md:mb-5 mx-3 md:mx-5 items-center gap-2">
+      <footer className="relative flex h-12 bg-card rounded-xl ring-1 ring-foreground/10 p-2 px-2 mb-3 md:mb-5 mx-3 md:mx-5 items-center gap-2">
         {/* Play */}
         {playBusy ? (
           <Button size="icon-lg" variant="outline" disabled style={playAmber}>
@@ -129,61 +151,48 @@ function TauriFooter() {
           </Button>
         )}
 
-        {/* Server panel */}
-        <div className="flex flex-col items-center gap-0.5 flex-1 mx-1 min-w-0">
+        {/* Progress bar + text */}
+        {!depsReady && !serverRunning ? (
+          <button
+            type="button"
+            className="text-xs underline cursor-pointer text-muted-foreground whitespace-nowrap"
+            onClick={() => openSettings("deps")}
+          >
+            {t("backend.installDepsPrompt")}
+          </button>
+        ) : pipelineActive ? (
           <div className="flex items-center gap-1.5">
-            <IconServer className="size-3 shrink-0 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground truncate">
-              {serverRunning && serverPort != null
-                ? t("backend.serverRunning", { port: serverPort })
-                : serverStarting
-                  ? t("backend.serverStarting")
-                  : t("backend.serverOffline")}
-            </span>
+            <Progress value={progress} className="w-16 shrink-0" />
+            {statusMessage && (
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {parseProgressText(statusMessage)}
+              </span>
+            )}
           </div>
+        ) : null}
+
+        {/* Centered server card */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-lg bg-muted-foreground/10 border p-1">
+          <span className="w-2 h-2 rounded-full shrink-0 ml-2" style={{ backgroundColor: dotColor }} />
+          <span className="text-sm text-muted-foreground whitespace-nowrap">{statusText}</span>
           {serverRunning ? (
-            <Button variant="destructive" size="xs" className="h-5 text-[10px] px-1.5" onClick={handleStopServer}>
+            <Button variant="destructive" size="sm" onClick={handleStopServer}>
               {t("backend.stopServer")}
             </Button>
           ) : (
             <Button
               variant="default"
-              size="xs"
-              className="h-5 text-[10px] px-1.5"
+              size="sm"
               onClick={handleStartServer}
               disabled={serverStarting || installingDeps}
             >
               {t("backend.startServer")}
             </Button>
           )}
-        </div>
-
-        {/* Status / Install prompt */}
-        <div className="flex items-center gap-1 min-w-0 max-w-40">
-          {!depsReady && !serverRunning ? (
-            <button
-              type="button"
-              className="text-xs underline cursor-pointer text-muted-foreground truncate min-w-0 text-left"
-              onClick={() => openSettings("deps")}
-            >
-              {t("backend.installDepsPrompt")}
-            </button>
-          ) : (
-            <div className="flex items-center gap-1 min-w-0">
-              {(pipelineActive || statusMessage) && (
-                <>
-                  <span className="text-xs text-muted-foreground truncate min-w-0">{statusMessage}</span>
-                  {stage === "error" && (
-                    <Button variant="ghost" size="icon-xs" className="shrink-0" onClick={() => openSettings("logs")}>
-                      <IconTerminal2 className="size-3" />
-                    </Button>
-                  )}
-                </>
-              )}
-              {pipelineActive && (
-                <Progress value={progress} className="w-16 shrink-0" />
-              )}
-            </div>
+          {stage === "error" && (
+            <Button variant="ghost" size="icon-sm" className="shrink-0 mr-1" onClick={() => openSettings("logs")}>
+              <IconTerminal2 />
+            </Button>
           )}
         </div>
 
