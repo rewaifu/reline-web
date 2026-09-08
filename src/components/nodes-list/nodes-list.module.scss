@@ -1,0 +1,157 @@
+@use "../../styles/mixins" as *;
+
+// The workspace column is the card — this is only a flex host, so the
+// add-node popover and the inner scrollbar are not clipped by a surface.
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+// Scroll lives here, not on `.panel`, so the add-node popover is never clipped.
+.items {
+  @include scroll-y;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: var(--space-2);
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-strong);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    transform var(--transition-fast),
+    opacity var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:hover:not(.active) {
+    border-color: var(--color-text-muted);
+  }
+
+  &.active {
+    border-color: var(--color-text);
+  }
+
+  &.dragging {
+    opacity: 0.35;
+    transform: scale(0.97);
+  }
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-2);
+  font-size: var(--font-size-md);
+}
+
+.nameText {
+  @include truncate;
+}
+
+.typeHint {
+  @include truncate;
+
+  flex: none;
+  max-width: 45%;
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+}
+
+.remove {
+  @include ghost-button;
+
+  flex: none;
+  padding: 0 2px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.dropPlaceholder {
+  flex: none;
+  height: 0;
+  border: 1px dashed transparent;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition:
+    height var(--transition-fast),
+    opacity var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+
+  &.visible {
+    height: 10px;
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    opacity: 1;
+  }
+}
+
+// Positioning anchor for the add-node popover (menu is absolute above it).
+.addNode {
+  position: relative;
+  flex: none;
+}
+
+.addButton {
+  @include field;
+
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+.addMenu {
+  @include popover;
+
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: var(--z-menu);
+  max-height: min(280px, 40vh);
+  padding: var(--space-1);
+  // Chromium paints classic custom scrollbars square, so the surface keeps
+  // the radius and clips; only the inner list scrolls.
+  overflow: hidden;
+}
+
+.addMenuList {
+  @include scroll-y;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: calc(min(280px, 40vh) - 2 * var(--space-1));
+}
+
+.addMenuItem {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-surface-strong);
+    color: var(--color-primary);
+  }
+}

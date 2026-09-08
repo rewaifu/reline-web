@@ -1,0 +1,80 @@
+// Reusable style fragments shared by every component stylesheet.
+// Mixins only — no output, so importing this file is side-effect free.
+
+/// Rounded surface used by panels, cards and popovers.
+@mixin surface($radius: var(--radius-md), $bg: var(--color-surface)) {
+  border-radius: $radius;
+  background: $bg;
+}
+
+/// Vertical scroll container that can shrink inside a flex/grid parent.
+/// `position: relative` keeps absolutely positioned descendants (visually
+/// hidden inputs, popper anchors) inside the scroll box instead of
+/// stretching the document.
+@mixin scroll-y {
+  position: relative;
+  overflow-y: auto;
+  // keeps the layout still when the scrollbar appears
+  scrollbar-gutter: stable;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+/// Single-line text that ellipsizes instead of overflowing.
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/// Text field / trigger baseline: input, select trigger.
+@mixin field {
+  width: 100%;
+  min-width: 0;
+  // compact density: 5px 10px instead of 8px 12px — less air, more info
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-field);
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: var(--color-primary);
+    // the green border IS the focus indicator; the global ::focus-visible
+    // ring would double it into two parallel green lines
+    outline: none;
+  }
+}
+
+/// Borderless icon button (remove "×", chevrons, code actions).
+@mixin ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+/// Popover surface: portaled menus, select content.
+@mixin popover {
+  z-index: var(--z-popover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-popover);
+}

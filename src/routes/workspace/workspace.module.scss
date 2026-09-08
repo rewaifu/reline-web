@@ -1,0 +1,191 @@
+@use "../../styles/mixins" as *;
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  min-height: 0;
+  padding: var(--space-2);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.topbar {
+  @include surface(var(--radius-lg));
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  min-height: 32px;
+}
+
+.logo {
+  @include truncate;
+
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.viewToggles {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.toggle {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-strong);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  &:hover:not(:enabled){
+      border-color: var(--color-primary);
+  }
+  &:hover:not(:disabled) {
+    color: var(--color-text);
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--color-text-muted);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+.columns {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+// While a divider is dragged: no text selection, consistent cursor.
+.columns.resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+// Every column is the same card — surface, border, padding and rounded
+// corners. Padding also insets the inner scrollbar from the card edge.
+.column {
+  @include surface(var(--radius-lg));
+
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: var(--col-width, auto);
+  min-width: var(--col-min-width, 0);
+  min-height: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+// Middle column (or the only visible one) takes the remaining space.
+.column.flex {
+  flex: 1;
+  width: auto;
+}
+
+.column.hidden {
+  display: none;
+}
+
+.splitter {
+  display: flex;
+  align-items: center;
+  width: 10px;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+
+  &::after {
+    content: "";
+    width: 2px;
+    height: 48px;
+    border-radius: 999px;
+    background: transparent;
+    transition: background var(--transition-fast);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    background: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.splitter.hidden {
+  display: none;
+}
+
+// Narrow screens: cap the side columns so the stack keeps a usable width.
+@media (max-width: 1200px) {
+  .column:not(.flex) {
+    width: max(min(var(--col-width), 28vw), var(--col-min-width, 0));
+  }
+}
+
+.statusbar {
+  @include surface(var(--radius-md));
+
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  min-height: 40px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+}
+
+.statusText {
+  @include truncate;
+}
+
+// Stacked layout: one scroll container, every section keeps a usable height.
+@media (max-width: 860px) {
+  .workspace {
+    padding: var(--space-3);
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .columns {
+    @include scroll-y;
+
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .column {
+    width: auto;
+    min-height: 40vh;
+
+    &:first-child {
+      min-height: 32vh;
+    }
+  }
+
+  .splitter {
+    display: none;
+  }
+}

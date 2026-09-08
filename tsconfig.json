@@ -1,26 +1,25 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["vite/client", "unplugin-fonts/client"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "target": "ES2022",
-    "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    // General
+    "jsx": "preserve",
+    "jsxImportSource": "@solidjs/web",
+    "target": "ESNext",
+
     "baseUrl": ".",
-    "paths": {
-      "~/*": ["./app/*"],
-      "@/*": ["./app/*"]
-    },
+    "paths": { "~/*": ["src/*"] },
+
+    // Modules
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "noEmit": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+
+    // Type Checking & Safety
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["vite/client"]
   }
 }

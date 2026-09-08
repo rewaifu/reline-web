@@ -1,0 +1,71 @@
+@use "tokens";
+@use "mixins";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+// The app owns the viewport height and scrolls inside its own regions.
+#root,
+main {
+  height: 100dvh;
+}
+
+// Inputs, buttons and tabs get the ring; items inside popper surfaces do not —
+// their highlight is the background tint, and Kobalte moves DOM focus onto the
+// hovered item, which would otherwise paint an input-style outline on hover.
+:focus-visible:not([role="option"], [role="menuitem"]) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+[role="option"]:focus-visible,
+[role="menuitem"]:focus-visible {
+  outline: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar) transparent;
+}
+
+// The gutter is painted by the scroll container itself, so the thumb is the
+// only visible part: a rounded pill inset from both edges, never a square
+// block glued to the panel side.
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+  background-color: var(--color-scrollbar);
+
+  &:hover {
+    background-color: var(--color-scrollbar-hover);
+  }
+}

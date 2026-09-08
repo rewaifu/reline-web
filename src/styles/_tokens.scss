@@ -1,0 +1,51 @@
+// Single source of truth for the design language.
+// Loaded once from styles/global.scss — every other file consumes these as
+// CSS custom properties, so component styles never need to import it.
+
+:root {
+  // surfaces — each nesting level is lighter than the one above it:
+  // app bg → workspace column → node card → option group → field (lightest)
+  --color-bg: #09090b;
+  --color-surface: #131316;
+  --color-surface-strong: #1b1b1f;
+  --color-surface-raised: #222227;
+  --color-surface-sunken: #0e0e11;
+  --color-field: #29292f;
+  --color-border: #303038;
+  // scrollbars — mid-surface grey, never pure black
+  --color-scrollbar: #3f3f48;
+  --color-scrollbar-hover: #52525c;
+  --color-text: #e6e7ea;
+  --color-text-muted: #9a9da6;
+
+  // accents
+  --color-primary: #3fb950;
+  --color-accent: #975151;
+  --color-success: #4ade80;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  // spacing
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+
+  // typography
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.875rem;
+  --font-size-lg: 0.9375rem;
+  --font-size-xl: 1.125rem;
+
+  // elevation & layering
+  --shadow-popover: 0 8px 24px rgb(0 0 0 / 45%);
+  --z-popover: 50;
+  --z-menu: 60;
+
+  // motion
+  --transition-fast: 120ms ease;
+}

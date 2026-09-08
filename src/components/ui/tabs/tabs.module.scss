@@ -1,0 +1,66 @@
+@use "../../../styles/mixins" as *;
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.list {
+  display: flex;
+  flex: none;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+  // too narrow for all labels → scroll sideways instead of breaking labels
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.trigger {
+  display: inline-flex;
+  // grow from the content basis: wide labels get proportionally more room,
+  // narrow ones don't balloon — and min-width keeps text from clipping
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content;
+  padding: var(--space-1) 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-strong);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  cursor: pointer;
+
+  // obvious hover affordance: enabled tabs tint like the preset rows do,
+  // selected/disabled tabs keep their own look
+  transition: background-color 120ms ease, border-color 120ms ease;
+
+  &:hover:not([data-selected]) {
+    border-color: var(--color-border);
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-strong));
+  }
+
+  &[data-selected] {
+    border-color: var(--color-border);
+    background: var(--color-surface);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  &:focus-visible {
+    outline: none;
+  }
+}

@@ -1,0 +1,133 @@
+@use "../../styles/mixins" as *;
+
+// Padding comes from the workspace column card, so the scrollbar sits
+// inside the card instead of on its edge.
+.stack {
+  @include scroll-y;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+.card {
+  @include surface(var(--radius-md), var(--color-surface-strong));
+
+  flex: none;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    opacity var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:hover:not(.selected) {
+    border-color: var(--color-text-muted);
+  }
+
+  &.selected {
+    border-color: var(--color-success);
+    cursor: default;
+
+    .header {
+      cursor: default;
+    }
+  }
+
+  &.dragging {
+    opacity: 0.35;
+    transform: scale(0.97);
+  }
+}
+
+.dragHandle {
+  @include ghost-button;
+
+  flex: none;
+  padding: 0 2px;
+  font-size: 0.875rem;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+}
+
+.titleText {
+  @include truncate;
+}
+
+.typeHint {
+  flex: none;
+  margin-left: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.chevron {
+  @include ghost-button;
+
+  flex: none;
+  padding: 0 4px;
+}
+
+.renameInput {
+  @include field;
+
+  flex: 1;
+  font-size: var(--font-size-lg);
+}
+
+.separator {
+  flex: none;
+  height: 1px;
+  margin: 0 var(--space-3) var(--space-2);
+  background: var(--color-border);
+}
+
+
+.dropPlaceholder {
+  // display:none keeps the inactive placeholder out of the flex flow —
+  // otherwise the 8px gap is counted around it twice (18px between cards)
+  display: none;
+  flex: none;
+  border: 1px dashed transparent;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition:
+    height var(--transition-fast),
+    margin var(--transition-fast),
+    opacity var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+
+  &.visible {
+    display: block;
+    height: 12px;
+    margin: 0 var(--space-2);
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    opacity: 1;
+  }
+}

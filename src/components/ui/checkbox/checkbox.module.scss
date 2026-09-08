@@ -1,0 +1,52 @@
+@use "../../../styles/mixins" as *;
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-strong);
+  color: var(--color-bg);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+
+  svg {
+    display: none;
+    width: 12px;
+    height: 12px;
+  }
+
+  &[data-checked] {
+    border-color: var(--color-text);
+    background: var(--color-text);
+
+    svg {
+      display: block;
+    }
+  }
+}
+
+.checkbox:focus-within .control {
+  border-color: var(--color-primary);
+}
+
+.label {
+  font-size: var(--font-size-md);
+}
