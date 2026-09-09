@@ -46,8 +46,8 @@
   font: inherit;
   font-size: var(--font-size-sm);
   cursor: pointer;
-  &:hover:not(:enabled){
-      border-color: var(--color-primary);
+  &:hover:not(:enabled) {
+    border-color: var(--color-primary);
   }
   &:hover:not(:disabled) {
     color: var(--color-text);

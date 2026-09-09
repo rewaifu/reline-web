@@ -45,7 +45,11 @@
 
   &:hover:not([data-selected]) {
     border-color: var(--color-border);
-    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-strong));
+    background: color-mix(
+      in srgb,
+      var(--color-primary) 14%,
+      var(--color-surface-strong)
+    );
   }
 
   &[data-selected] {

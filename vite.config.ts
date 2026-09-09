@@ -1,34 +1,37 @@
-import { defineConfig } from 'vitest/config';
-import solid from '@solidjs/vite-plugin';
+import { defineConfig } from "vitest/config";
+import solid from "@solidjs/vite-plugin";
 
 import { fileURLToPath } from "node:url";
 
 export default defineConfig({
-  base: '/', // relative './' for CDN is applied at build time via --base
+  base: "/", // relative './' for CDN is applied at build time via --base
   resolve: {
     alias: [
-      { find: "~", replacement: fileURLToPath(new URL("./src", import.meta.url)) },
+      {
+        find: "~",
+        replacement: fileURLToPath(new URL("./src", import.meta.url)),
+      },
     ],
   },
   // generates the entries around src/App.tsx, wrapped in src/Document.tsx
   // (or a built-in shell). `vite build` prerenders the shell into
   // dist/client/index.html and emits a purely static dist/client.
   plugins: [
-    solid({ start: true, extensions: ['.jsx', '.tsx'], diagnostics: true }), // add `ssr: true` for streaming SSR
+    solid({ start: true, extensions: [".jsx", ".tsx"], diagnostics: true }), // add `ssr: true` for streaming SSR
   ],
   server: {
     port: 3000,
   },
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
     globals: false,
-    setupFiles: ['./vitest-setup.ts'],
+    setupFiles: ["./vitest-setup.ts"],
     // if you have few tests, try commenting this
     // out to improve performance:
     isolate: false,
   },
   build: {
-    target: 'esnext',
+    target: "esnext",
     // Keep images as asset files instead of inlining them into the JS bundle.
     assetsInlineLimit: 0,
     manifest: false,

@@ -29,10 +29,17 @@ main {
   height: 100dvh;
 }
 
-// Inputs, buttons and tabs get the ring; items inside popper surfaces do not —
-// their highlight is the background tint, and Kobalte moves DOM focus onto the
+// Buttons and tabs get the ring; items inside popper surfaces do not — their
+// highlight is the background tint, and Kobalte moves DOM focus onto the
 // hovered item, which would otherwise paint an input-style outline on hover.
-:focus-visible:not([role="option"], [role="menuitem"]) {
+// Text fields are excluded too: they show focus through the field border.
+:focus-visible:not(
+    [role="option"],
+    [role="menuitem"],
+    input,
+    textarea,
+    select
+  ) {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }

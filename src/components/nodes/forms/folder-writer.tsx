@@ -1,21 +1,22 @@
-import { type Component } from "solid-js"
-import { WriterNodeFormat } from "~/types/enums"
-import { useNodeForm, TextRow, SelectRow } from "./shared"
-import type { FolderWriterNodeOptions } from "~/types/options"
-import styles from "./forms.module.scss"
+import { type Component } from "solid-js";
+import { WriterNodeFormat } from "~/types/enums";
+import { useNodeForm, PathRow, SelectRow } from "./shared";
+import type { FolderWriterNodeOptions } from "~/types/options";
+import styles from "./forms.module.scss";
 
-type FormProps = { nodeId: number }
+type FormProps = { nodeId: number };
 
 export const FolderWriterForm: Component<FormProps> = (props) => {
-  const form = useNodeForm(() => props.nodeId)
-  const options = () => form.options() as FolderWriterNodeOptions
+  const form = useNodeForm(() => props.nodeId);
+  const options = () => form.options() as FolderWriterNodeOptions;
   return (
     <div class={styles.form}>
-      <TextRow
+      <PathRow
         label="Path to folder"
         placeholder="/content/drive/MyDrive/output"
         value={options().path}
         onInput={(path) => form.set({ path })}
+        source="dirs"
       />
       <SelectRow
         label="Format"
@@ -24,5 +25,5 @@ export const FolderWriterForm: Component<FormProps> = (props) => {
         onChange={(format) => form.set({ format: format as WriterNodeFormat })}
       />
     </div>
-  )
-}
+  );
+};

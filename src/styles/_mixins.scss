@@ -14,8 +14,9 @@
 @mixin scroll-y {
   position: relative;
   overflow-y: auto;
-  // keeps the layout still when the scrollbar appears
-  scrollbar-gutter: stable;
+  // `both-edges` keeps the content centered when the gutter is reserved —
+  // Chromium ignores unknown values on old builds and falls back to no gutter
+  scrollbar-gutter: stable both-edges;
   min-height: 0;
   overscroll-behavior: contain;
 }

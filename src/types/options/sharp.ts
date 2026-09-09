@@ -1,14 +1,14 @@
-import * as v from "valibot"
-import { CannyType } from "~/types/enums"
+import * as v from "valibot";
+import { CannyType } from "~/types/enums";
 
 export interface PureSharpNodeOptions {
-  low_input: number
-  high_input: number
-  gamma: number
-  diapason_white: number
-  diapason_black: number
-  canny: boolean
-  canny_type: CannyType
+  low_input: number;
+  high_input: number;
+  gamma: number;
+  diapason_white: number;
+  diapason_black: number;
+  canny: boolean;
+  canny_type: CannyType;
 }
 
 export const sharpNodeOptionsSchema = v.object({
@@ -19,6 +19,6 @@ export const sharpNodeOptionsSchema = v.object({
   diapason_black: v.pipe(v.number(), v.minValue(0), v.maxValue(255)),
   canny: v.boolean(),
   canny_type: v.picklist(Object.values(CannyType)),
-})
+});
 
-export type SharpNodeOptions = v.InferOutput<typeof sharpNodeOptionsSchema>
+export type SharpNodeOptions = v.InferOutput<typeof sharpNodeOptionsSchema>;

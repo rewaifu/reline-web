@@ -111,5 +111,5 @@ export enum HalftoneMode {
   GRAY = "gray",
   RGB = "rgb",
   HSV = "hsv",
-  CMYK = "cmyk"
+  CMYK = "cmyk",
 }

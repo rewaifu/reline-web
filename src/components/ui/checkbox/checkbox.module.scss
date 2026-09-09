@@ -1,6 +1,6 @@
 @use "../../../styles/mixins" as *;
 
-.checkbox {
+.switch {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -14,37 +14,43 @@
   }
 }
 
-.control {
+.track {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   flex: none;
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-strong);
-  color: var(--color-bg);
-  transition: background var(--transition-fast), border-color var(--transition-fast);
-
-  svg {
-    display: none;
-    width: 12px;
-    height: 12px;
-  }
+  width: 34px;
+  height: 19px;
+  padding: 2px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface-sunken);
+  transition: background var(--transition-fast),
+    border-color var(--transition-fast);
 
   &[data-checked] {
-    border-color: var(--color-text);
-    background: var(--color-text);
-
-    svg {
-      display: block;
-    }
+    border-color: var(--color-primary);
+    background: var(--color-primary);
   }
 }
 
-.checkbox:focus-within .control {
+.thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  transition: transform var(--transition-fast),
+    background var(--transition-fast);
+
+  [data-checked] & {
+    background: #0c130d;
+    transform: translateX(15px);
+  }
+}
+
+.switch:focus-within .track {
   border-color: var(--color-primary);
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  outline-offset: 1px;
 }
 
 .label {

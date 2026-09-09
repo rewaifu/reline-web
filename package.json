@@ -9,7 +9,8 @@
     "build": "vite build && rm -rf dist/client/.vite",
     "serve": "vite preview",
     "test": "vitest",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "format": "prettier --write ."
   },
   "license": "MIT",
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@solidjs/signals": "2.0.0-rc.6",
     "@solidjs/web": "2.0.0-rc.6",
     "marked": "^18.0.12",
+    "notepack.io": "^3.0.1",
     "solid-js": "2.0.0-rc.6",
     "valibot": "^1.4.2"
   }

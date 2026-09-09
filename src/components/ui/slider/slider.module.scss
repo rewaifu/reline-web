@@ -1,0 +1,80 @@
+@use "../../../styles/mixins" as *;
+
+.slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-width: 0;
+  height: 18px;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+
+  // track
+  &::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      var(--color-primary) 0%,
+      var(--color-primary) var(--fill, 0%),
+      var(--color-surface-sunken) var(--fill, 0%),
+      var(--color-surface-sunken) 100%
+    );
+    border: 1px solid var(--color-border);
+  }
+
+  &::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border);
+  }
+
+  &::-moz-range-progress {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-primary);
+  }
+
+  // thumb
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: calc((14px - 4px) / -2 - 1px);
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    background: var(--color-surface-strong);
+    transition: box-shadow var(--transition-fast);
+  }
+
+  &::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    background: var(--color-surface-strong);
+  }
+
+  &:hover::-webkit-slider-thumb,
+  &:focus-visible::-webkit-slider-thumb,
+  &:active::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px
+      color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+
+  &::-moz-range-thumb:hover,
+  &::-moz-range-thumb:active {
+    box-shadow: 0 0 0 4px
+      color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::-webkit-slider-runnable-track {
+      border-color: var(--color-primary);
+    }
+  }
+}

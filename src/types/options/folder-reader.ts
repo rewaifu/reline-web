@@ -1,10 +1,10 @@
-import * as v from "valibot"
-import { ReaderNodeMode } from "~/types/enums"
+import * as v from "valibot";
+import { ReaderNodeMode } from "~/types/enums";
 
 export interface PureFolderReaderNodeOptions {
-  path: string
-  mode: ReaderNodeMode
-  recursive: boolean
+  path: string;
+  mode: ReaderNodeMode;
+  recursive: boolean;
 }
 
 export const folderReaderOptionsSchema = v.object({
@@ -13,6 +13,8 @@ export const folderReaderOptionsSchema = v.object({
   recursive: v.boolean(),
   /** When set, the reader spawns an Unarchive preprocessor for `${path}.zip`. */
   unarchive: v.boolean(),
-})
+});
 
-export type FolderReaderNodeOptions = v.InferOutput<typeof folderReaderOptionsSchema>
+export type FolderReaderNodeOptions = v.InferOutput<
+  typeof folderReaderOptionsSchema
+>;

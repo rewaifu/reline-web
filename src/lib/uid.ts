@@ -1,4 +1,4 @@
-import type { StackNode } from "~/types/node"
+import type { StackNode } from "~/types/node";
 
 /**
  * Stable per-node identity for FLIP reorder animations: `id` is reindexed to
@@ -7,9 +7,12 @@ import type { StackNode } from "~/types/node"
  * nodes loaded from storage or imported from serialized configs.
  */
 export const newUid = (): string => {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
-  return `uid-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
-}
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto)
+    return crypto.randomUUID();
+  return `uid-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 10)}`;
+};
 
 export const ensureUids = (list: StackNode[]): StackNode[] =>
-  list.map((node) => (node.uid ? node : { ...node, uid: newUid() }))
+  list.map((node) => (node.uid ? node : { ...node, uid: newUid() }));

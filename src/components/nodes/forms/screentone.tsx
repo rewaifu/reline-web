@@ -1,53 +1,210 @@
-import { type Component, Show } from "solid-js"
-import { DotType, HalftoneMode } from "~/types/enums"
-import { useNodeForm, SelectRow, CheckRow, NumberRow, NumberOrListRow } from "./shared"
-import type { ScreentoneNodeOptions } from "~/types/options"
-import styles from "./forms.module.scss"
+import { type Component, For, Show } from "solid-js";
+import { DotType, HalftoneMode } from "~/types/enums";
+import {
+  useNodeForm,
+  SelectRow,
+  CheckRow,
+  NumberRow,
+  SliderRow,
+  ComboboxRow,
+} from "./shared";
+import type { ScreentoneNodeOptions } from "~/types/options";
+import styles from "./forms.module.scss";
 
-type FormProps = { nodeId: number }
+type FormProps = { nodeId: number };
 
-const DOT_TYPES = [DotType.CIRCLE, DotType.LINE, DotType.ELLIPSE, DotType.INVERT, DotType.INVLINE] as const
+const DOT_TYPES = [
+  DotType.CIRCLE,
+  DotType.LINE,
+  DotType.ELLIPSE,
+  DotType.INVERT,
+  DotType.INVLINE,
+] as const;
+
+/** Channels per halftone mode: gray drives one dot grid, the color modes
+ * drive one grid per channel. */
+const CHANNELS: Record<HalftoneMode, string[]> = {
+  [HalftoneMode.GRAY]: [""],
+  [HalftoneMode.RGB]: ["R", "G", "B"],
+  [HalftoneMode.HSV]: ["H", "S", "V"],
+  [HalftoneMode.CMYK]: ["C", "M", "Y", "K"],
+};
+
+/** Mode switch stashes the current shape here and restores the shape of
+ * the mode being activated, so a node only ever carries the params its
+ * mode parses. */
+const STASH_KEY = "reline-web:halftone-stash";
+
+type Stash = Partial<
+  Record<
+    HalftoneMode,
+    Partial<Record<"dot_size" | "angle" | "dot_type", unknown>>
+  >
+>;
+
+const readStash = (): Stash => {
+  try {
+    return JSON.parse(localStorage.getItem(STASH_KEY) ?? "{}") as Stash;
+  } catch {
+    return {};
+  }
+};
+
+const lastNum = (value: unknown, dflt: number): number =>
+  Array.isArray(value)
+    ? (value[value.length - 1] as number) ?? dflt
+    : typeof value === "number"
+    ? value
+    : dflt;
+
+const lastType = (value: unknown): DotType => {
+  if (Array.isArray(value))
+    return (value[value.length - 1] as DotType) ?? DotType.CIRCLE;
+  return typeof value === "string" ? (value as DotType) : DotType.CIRCLE;
+};
+
+const channelAt = (value: number | number[], i: number): number =>
+  Array.isArray(value) ? value[i] ?? 0 : value;
 
 export const ScreentoneForm: Component<FormProps> = (props) => {
-  const form = useNodeForm(() => props.nodeId)
-  const options = () => form.options() as ScreentoneNodeOptions
+  const form = useNodeForm(() => props.nodeId);
+  const options = () => form.options() as ScreentoneNodeOptions;
+  const multi = () => options().halftone_mode !== HalftoneMode.GRAY;
+  const channels = () => CHANNELS[options().halftone_mode];
+  const changeMode = (next: HalftoneMode) => {
+    const curMode = options().halftone_mode;
+    if (curMode === next) return;
+    const stash = readStash();
+    stash[curMode] = {
+      dot_size: options().dot_size,
+      angle: options().angle,
+      dot_type: options().dot_type,
+    };
+    localStorage.setItem(STASH_KEY, JSON.stringify(stash));
+
+    const from = stash[next] ?? {};
+    const count = CHANNELS[next].length;
+    const num = (
+      field: "dot_size" | "angle",
+      dflt: number
+    ): number | number[] => {
+      if (count === 1) return lastNum(from[field] ?? options()[field], dflt);
+      const src = from[field] ?? options()[field];
+      const fallback = lastNum(src, dflt);
+      return Array.from({ length: count }, (_, i) =>
+        Array.isArray(src)
+          ? src[i] ?? fallback
+          : typeof src === "number"
+          ? src
+          : dflt
+      );
+    };
+    const dtype = (): DotType | DotType[] => {
+      if (count === 1) return lastType(from.dot_type ?? options().dot_type);
+      const src = from.dot_type ?? options().dot_type;
+      const fallback = lastType(src);
+      return Array.from({ length: count }, (_, i) =>
+        Array.isArray(src) ? (src[i] as DotType) ?? fallback : fallback
+      );
+    };
+    form.set({
+      halftone_mode: next,
+      dot_size: num("dot_size", 8),
+      angle: num("angle", 45),
+      dot_type: dtype(),
+    });
+  };
+
+  const num = (field: "dot_size" | "angle", i: number): number => {
+    const raw = options()[field];
+    if (!Array.isArray(raw)) return raw ?? 0;
+    return raw[i] ?? raw[raw.length - 1] ?? 0;
+  };
+  const setNum = (field: "dot_size" | "angle", i: number, value: number) => {
+    if (!multi()) {
+      form.set({ [field]: value } as Partial<ScreentoneNodeOptions>);
+      return;
+    }
+    const next = channels().map((_, k) => (k === i ? value : num(field, k)));
+    form.set({ [field]: next } as Partial<ScreentoneNodeOptions>);
+  };
+
+  const dtypeAt = (i: number): DotType => {
+    const raw = options().dot_type;
+    if (Array.isArray(raw))
+      return raw[i] ?? raw[raw.length - 1] ?? DotType.CIRCLE;
+    return raw;
+  };
+  const setDtype = (i: number, value: DotType) => {
+    if (!multi()) {
+      form.set({ dot_type: value });
+      return;
+    }
+    const next = channels().map((_, k) => (k === i ? value : dtypeAt(k)));
+    form.set({ dot_type: next });
+  };
+
   return (
     <div class={styles.form}>
       <SelectRow
         label="Halftone mode"
         value={options().halftone_mode}
-        items={[HalftoneMode.GRAY, HalftoneMode.RGB, HalftoneMode.HSV, HalftoneMode.CMYK]}
-        onChange={(halftone_mode) => form.set({ halftone_mode: halftone_mode as HalftoneMode })}
+        items={[
+          HalftoneMode.GRAY,
+          HalftoneMode.RGB,
+          HalftoneMode.HSV,
+          HalftoneMode.CMYK,
+        ]}
+        onChange={(value) => changeMode(value as HalftoneMode)}
       />
-      <NumberOrListRow
-        label="Dot size"
-        value={options().dot_size}
-        onInput={(dot_size) => form.set({ dot_size } as Partial<ScreentoneNodeOptions>)}
-      />
-      <NumberOrListRow
-        label="Angle"
-        value={options().angle}
-        onInput={(angle) => form.set({ angle } as Partial<ScreentoneNodeOptions>)}
-      />
-      <Show
-        when={Array.isArray(options().dot_type)}
-        fallback={
-          <SelectRow
-            label="Dot type"
-            value={options().dot_type as string}
-            items={DOT_TYPES as unknown as readonly string[]}
-            onChange={(dot_type) => form.set({ dot_type: dot_type as DotType })}
-          />
-        }
-      >
-        <p class={styles.hint}>Dot type list editing: [{(options().dot_type as string[]).join(", ")}]</p>
-      </Show>
+      <div class={styles.channels}>
+        <For each={channels()}>
+          {(channel, i) => (
+            <div class={styles.group}>
+              <p class={styles.groupTitle}>
+                <Show when={multi()} fallback="Channel">
+                  {channel}
+                </Show>
+              </p>
+              <SliderRow
+                label="Dot size"
+                value={num("dot_size", i())}
+                min={1}
+                max={128}
+                step={1}
+                onInput={(value) => setNum("dot_size", i(), value)}
+              />
+              <SliderRow
+                label="Angle"
+                value={num("angle", i())}
+                min={0}
+                max={180}
+                step={1}
+                onInput={(value) => setNum("angle", i(), value)}
+              />
+              <ComboboxRow
+                label="Dot type"
+                value={dtypeAt(i())}
+                items={DOT_TYPES as unknown as readonly string[]}
+                onChange={(value) => setDtype(i(), value as DotType)}
+              />
+            </div>
+          )}
+        </For>
+      </div>
       <CheckRow
         label="Disable auto dot"
         checked={options().disable_auto_dot ?? false}
         onChange={(disable_auto_dot) => form.set({ disable_auto_dot })}
       />
-      <NumberRow label="SSAA scale" value={options().ssaa_scale} min={0} step={1} onInput={(ssaa_scale) => form.set({ ssaa_scale })} />
+      <NumberRow
+        label="SSAA scale"
+        value={options().ssaa_scale}
+        min={1}
+        step={1}
+        max={16}
+        onInput={(ssaa_scale) => form.set({ ssaa_scale })}
+      />
     </div>
-  )
-}
+  );
+};

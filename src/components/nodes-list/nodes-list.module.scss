@@ -32,9 +32,7 @@
   background: var(--color-surface-strong);
   cursor: pointer;
   user-select: none;
-  transition:
-    transform var(--transition-fast),
-    opacity var(--transition-fast),
+  transition: transform var(--transition-fast), opacity var(--transition-fast),
     border-color var(--transition-fast);
 
   &:hover:not(.active) {
@@ -88,11 +86,8 @@
   border: 1px dashed transparent;
   border-radius: var(--radius-sm);
   opacity: 0;
-  transition:
-    height var(--transition-fast),
-    opacity var(--transition-fast),
-    border-color var(--transition-fast),
-    background var(--transition-fast);
+  transition: height var(--transition-fast), opacity var(--transition-fast),
+    border-color var(--transition-fast), background var(--transition-fast);
 
   &.visible {
     height: 10px;
@@ -102,56 +97,17 @@
   }
 }
 
-// Positioning anchor for the add-node popover (menu is absolute above it).
+// Positioning context — the combobox popover is portaled, this only
+// keeps layout flow.
 .addNode {
-  position: relative;
   flex: none;
 }
 
-.addButton {
-  @include field;
+.addCombo {
+  width: 100%;
 
-  cursor: pointer;
-  text-align: left;
-
-  &:hover {
+  &:hover input,
+  &:focus-within input {
     border-color: var(--color-primary);
-  }
-}
-
-.addMenu {
-  @include popover;
-
-  position: absolute;
-  bottom: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  z-index: var(--z-menu);
-  max-height: min(280px, 40vh);
-  padding: var(--space-1);
-  // Chromium paints classic custom scrollbars square, so the surface keeps
-  // the radius and clips; only the inner list scrolls.
-  overflow: hidden;
-}
-
-.addMenuList {
-  @include scroll-y;
-
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-height: calc(min(280px, 40vh) - 2 * var(--space-1));
-}
-
-.addMenuItem {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  font-size: var(--font-size-md);
-  cursor: pointer;
-
-  &:hover {
-    background: var(--color-surface-strong);
-    color: var(--color-primary);
   }
 }

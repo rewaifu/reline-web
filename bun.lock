@@ -10,6 +10,7 @@
         "@solidjs/signals": "2.0.0-rc.6",
         "@solidjs/web": "2.0.0-rc.6",
         "marked": "^18.0.12",
+        "notepack.io": "^3.0.1",
         "solid-js": "2.0.0-rc.6",
         "valibot": "^1.4.2",
       },
@@ -535,6 +536,8 @@
     "node-addon-api": ["node-addon-api@7.1.1", "", {}, ""],
 
     "node-releases": ["node-releases@2.0.54", "", {}, ""],
+
+    "notepack.io": ["notepack.io@3.0.1", "", {}, "sha512-TKC/8zH5pXIAMVQio2TvVDTtPRX+DJPHDqjRbxogtFiByHyzKmy96RA0JtCQJ+WouyyL4A10xomQzgbUT+1jCg=="],
 
     "nwsapi": ["nwsapi@2.2.27", "", {}, ""],
 

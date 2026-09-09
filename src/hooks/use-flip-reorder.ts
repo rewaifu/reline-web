@@ -13,35 +13,42 @@ export const flipReorder = (
   container: HTMLElement | undefined,
   itemSelector: string,
   mutate: () => void,
-  getKey: (el: HTMLElement) => string | null = (el) => el.dataset.nodeId ?? null,
+  getKey: (el: HTMLElement) => string | null = (el) => el.dataset.nodeId ?? null
 ): void => {
   if (!container) {
-    mutate()
-    return
+    mutate();
+    return;
   }
 
   const relativeTop = (el: HTMLElement): number =>
-    el.getBoundingClientRect().top - container.getBoundingClientRect().top
+    el.getBoundingClientRect().top - container.getBoundingClientRect().top;
 
-  const firstTop = new Map<string, number>()
-  for (const el of Array.from(container.querySelectorAll<HTMLElement>(itemSelector))) {
-    const key = getKey(el)
-    if (key !== null) firstTop.set(key, relativeTop(el))
+  const firstTop = new Map<string, number>();
+  for (const el of Array.from(
+    container.querySelectorAll<HTMLElement>(itemSelector)
+  )) {
+    const key = getKey(el);
+    if (key !== null) firstTop.set(key, relativeTop(el));
   }
 
-  mutate()
+  mutate();
 
   requestAnimationFrame(() => {
-    for (const el of Array.from(container.querySelectorAll<HTMLElement>(itemSelector))) {
-      const key = getKey(el)
-      const prevTop = key === null ? undefined : firstTop.get(key)
-      if (prevTop === undefined) continue
-      const delta = prevTop - relativeTop(el)
-      if (Math.abs(delta) < 1) continue
-      el.animate([{ transform: `translateY(${delta}px)` }, { transform: "none" }], {
-        duration: 350,
-        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-      })
+    for (const el of Array.from(
+      container.querySelectorAll<HTMLElement>(itemSelector)
+    )) {
+      const key = getKey(el);
+      const prevTop = key === null ? undefined : firstTop.get(key);
+      if (prevTop === undefined) continue;
+      const delta = prevTop - relativeTop(el);
+      if (Math.abs(delta) < 1) continue;
+      el.animate(
+        [{ transform: `translateY(${delta}px)` }, { transform: "none" }],
+        {
+          duration: 350,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        }
+      );
     }
-  })
-}
+  });
+};

@@ -1,21 +1,27 @@
-import { type Component, Show } from "solid-js"
-import { DType, TilerType } from "~/types/enums"
-import { useNodeForm, TextRow, NumberRow, SelectRow, CheckRow } from "./shared"
-import type { UpscaleNodeOptions } from "~/types/options"
-import styles from "./forms.module.scss"
+import { type Component, Show } from "solid-js";
+import { DType, TilerType } from "~/types/enums";
+import { useNodeForm, PathRow, NumberRow, SelectRow, CheckRow } from "./shared";
+import type { UpscaleNodeOptions } from "~/types/options";
+import styles from "./forms.module.scss";
 
-type FormProps = { nodeId: number }
+type FormProps = { nodeId: number };
 
 export const UpscaleForm: Component<FormProps> = (props) => {
-  const form = useNodeForm(() => props.nodeId)
-  const options = () => form.options() as UpscaleNodeOptions
+  const form = useNodeForm(() => props.nodeId);
+  const options = () => form.options() as UpscaleNodeOptions;
   return (
     <div class={styles.form}>
-      <TextRow
+      <PathRow
         label="Model"
-        placeholder="/content/models/4x_wtp_MangaScale_UltraSharp"
+        placeholder={
+          options().is_own_model
+            ? "/content/models/4x_wtp_MangaScale_UltraSharp"
+            : "Model name"
+        }
         value={options().model}
-        onInput={(model) => form.set({ model })}
+        onInput={(model) => form.set({ model, model_url: undefined })}
+        onPick={(_, meta) => form.set({ model_url: meta.url })}
+        source={options().is_own_model ? "weights" : "mdb"}
       />
       <CheckRow
         label="Own model"
@@ -41,7 +47,7 @@ export const UpscaleForm: Component<FormProps> = (props) => {
           label="Exact tiler size"
           value={options().exact_tiler_size}
           min={0}
-          step={1}
+          step={128}
           onInput={(exact_tiler_size) => form.set({ exact_tiler_size })}
         />
       </Show>
@@ -58,5 +64,5 @@ export const UpscaleForm: Component<FormProps> = (props) => {
         onInput={(target_scale) => form.set({ target_scale })}
       />
     </div>
-  )
-}
+  );
+};

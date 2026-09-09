@@ -1,13 +1,20 @@
-import type { ConvertToPureFunction, ConvertToStackFunction } from "~/lib/convert/index"
-import type { ScreentoneNodeOptions } from "~/types/options"
-import { NodeType, PureNodeType } from "~/types/enums"
-import { DEFAULT_COLLAPSED } from "~/constants"
+import type {
+  ConvertToPureFunction,
+  ConvertToStackFunction,
+} from "~/lib/convert/index";
+import type { ScreentoneNodeOptions } from "~/types/options";
+import { NodeType, PureNodeType } from "~/types/enums";
+import { DEFAULT_COLLAPSED } from "~/constants";
 
-const unwrap = (value: unknown) => (Array.isArray(value) && value.length === 1 ? value[0] : value)
+const unwrap = (value: unknown) =>
+  Array.isArray(value) && value.length === 1 ? value[0] : value;
 
-export const convertScreentoneToPure: ConvertToPureFunction = (nodes, index) => {
-  const node = nodes[index]
-  const options = node.options as ScreentoneNodeOptions
+export const convertScreentoneToPure: ConvertToPureFunction = (
+  nodes,
+  index
+) => {
+  const node = nodes[index];
+  const options = node.options as ScreentoneNodeOptions;
   return [
     [
       {
@@ -23,12 +30,15 @@ export const convertScreentoneToPure: ConvertToPureFunction = (nodes, index) => 
       },
     ],
     index + 1,
-  ]
-}
+  ];
+};
 
-export const convertHalftoneToStack: ConvertToStackFunction = (nodes, index) => {
-  const node = nodes[index]
-  const options = node.options as ScreentoneNodeOptions
+export const convertHalftoneToStack: ConvertToStackFunction = (
+  nodes,
+  index
+) => {
+  const node = nodes[index];
+  const options = node.options as ScreentoneNodeOptions;
   return [
     [
       {
@@ -39,5 +49,5 @@ export const convertHalftoneToStack: ConvertToStackFunction = (nodes, index) => 
       },
     ],
     index + 1,
-  ]
-}
+  ];
+};

@@ -1,26 +1,31 @@
-import { omit, type Component, For } from "solid-js"
-import type { JSX } from "@solidjs/web"
-import { Tabs } from "@kobalte/core/tabs"
-import styles from "./tabs.module.scss"
+import { omit, type Component, For } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { Tabs } from "@kobalte/core/tabs";
+import styles from "./tabs.module.scss";
 
 export interface UiTabDef {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 export interface UiTabsProps {
-  value: string
-  onChange: (value: string) => void
-  tabs: readonly UiTabDef[]
-  content: (value: string) => JSX.Element
-  class?: string
+  value: string;
+  onChange: (value: string) => void;
+  tabs: readonly UiTabDef[];
+  content: (value: string) => JSX.Element;
+  class?: string;
 }
 
 export const UiTabs: Component<UiTabsProps> = (props) => {
-  const rest = omit(props, "value", "onChange", "tabs", "content", "class")
+  const rest = omit(props, "value", "onChange", "tabs", "content", "class");
 
   return (
-    <Tabs class={[styles.tabs, props.class]} value={props.value} onChange={props.onChange} {...rest}>
+    <Tabs
+      class={[styles.tabs, props.class]}
+      value={props.value}
+      onChange={props.onChange}
+      {...rest}
+    >
       <Tabs.List class={styles.list}>
         <For each={props.tabs}>
           {(tab) => (
@@ -34,5 +39,5 @@ export const UiTabs: Component<UiTabsProps> = (props) => {
         {props.content(props.value)}
       </Tabs.Content>
     </Tabs>
-  )
-}
+  );
+};

@@ -260,6 +260,26 @@
   @include field;
 }
 
+.runControls {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.runBar {
+  height: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.runBarFill {
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  background: var(--color-primary);
+  transition: width 200ms ease;
+}
+
 .runBtn {
   @include surface(var(--radius-sm), var(--color-surface-raised));
 
@@ -400,7 +420,6 @@
   }
 }
 
-
 // JSON syntax colors — green family, tuned for the sunken surface.
 .tokKey {
   color: #56d364;
@@ -417,4 +436,3 @@
 .tokBool {
   color: #95d8a8;
 }
-

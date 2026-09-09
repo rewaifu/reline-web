@@ -50,9 +50,11 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  max-height: min(304px, calc(var(--kb-popper-content-available-height, 320px) - 2 * var(--space-1)));
+  max-height: min(
+    304px,
+    calc(var(--kb-popper-content-available-height, 320px) - 2 * var(--space-1))
+  );
 }
-
 
 .item {
   padding: var(--space-2) var(--space-3);

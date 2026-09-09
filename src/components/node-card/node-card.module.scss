@@ -18,9 +18,7 @@
   flex: none;
   border: 1px solid var(--color-border);
   cursor: pointer;
-  transition:
-    transform var(--transition-fast),
-    opacity var(--transition-fast),
+  transition: transform var(--transition-fast), opacity var(--transition-fast),
     border-color var(--transition-fast);
 
   &:hover:not(.selected) {
@@ -46,9 +44,13 @@
   @include ghost-button;
 
   flex: none;
-  padding: 0 2px;
-  font-size: 0.875rem;
+  padding: 0 1px;
+  color: var(--color-text-muted);
   cursor: grab;
+
+  &:hover {
+    color: var(--color-text);
+  }
 
   &:active {
     cursor: grabbing;
@@ -58,19 +60,46 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  // fixed so nothing (title line box vs rename input) can shift the rows
+  // below by a rounding pixel
+  height: calc(22px + 2 * var(--space-2));
+  padding: 0 var(--space-3);
   cursor: pointer;
 }
+// Short, thick divider between the header strip and the option rows —
+// rendered only while the node is expanded.
+.separator {
+  flex: none;
+  height: 2px;
+  margin: 0 var(--space-3);
+  border-radius: 1px;
+  background: var(--color-border-strong);
+}
 
+.renameInput {
+  @include field;
+
+  flex: 1;
+  min-width: 0;
+  // matches the title's line box so the header height does not jump
+  // when renaming starts
+  height: 22px;
+  padding: 0 6px;
+  font-size: var(--font-size-lg);
+}
 .title {
   display: flex;
   align-items: baseline;
+  flex: 1;
+  height: 22px;
   min-width: 0;
   gap: var(--space-2);
   color: var(--color-text);
   font-size: var(--font-size-lg);
+  line-height: 22px;
+  // double click renames — selecting the name text is noise
+  user-select: none;
 }
 
 .titleText {
@@ -89,37 +118,31 @@
   @include ghost-button;
 
   flex: none;
-  padding: 0 4px;
+  padding: 2px;
+  border-radius: var(--radius-sm);
 }
 
-.renameInput {
-  @include field;
+.iconBtn {
+  @include ghost-button;
 
-  flex: 1;
-  font-size: var(--font-size-lg);
-}
-
-.separator {
   flex: none;
-  height: 1px;
-  margin: 0 var(--space-3) var(--space-2);
-  background: var(--color-border);
-}
+  padding: 2px;
+  border-radius: var(--radius-sm);
 
+  &:hover {
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+}
 
 .dropPlaceholder {
-  // display:none keeps the inactive placeholder out of the flex flow —
-  // otherwise the 8px gap is counted around it twice (18px between cards)
   display: none;
   flex: none;
   border: 1px dashed transparent;
   border-radius: var(--radius-sm);
   opacity: 0;
-  transition:
-    height var(--transition-fast),
-    margin var(--transition-fast),
-    opacity var(--transition-fast),
-    border-color var(--transition-fast),
+  transition: height var(--transition-fast), margin var(--transition-fast),
+    opacity var(--transition-fast), border-color var(--transition-fast),
     background var(--transition-fast);
 
   &.visible {

@@ -1,5 +1,5 @@
-import * as v from "valibot"
-import { DType, TilerType } from "~/types/enums"
+import * as v from "valibot";
+import { DType, TilerType } from "~/types/enums";
 
 export const UpscaleOptionsSchema = v.object({
   model: v.string(),
@@ -10,9 +10,15 @@ export const UpscaleOptionsSchema = v.object({
   exact_tiler_size: v.number(),
   allow_cpu_upscale: v.boolean(),
   target_scale: v.optional(v.number()),
-})
+  /** mdb download link of the picked model; UI-only, exported into the
+   * Download preprocessor. Cleared whenever the model name is retyped. */
+  model_url: v.optional(v.string()),
+});
 
-export type UpscaleNodeOptions = v.InferOutput<typeof UpscaleOptionsSchema>
+export type UpscaleNodeOptions = v.InferOutput<typeof UpscaleOptionsSchema>;
 
-/** Serialized upscale has no UI flag; the model path points at the downloaded file. */
-export type PureUpscaleNodeOptions = Omit<UpscaleNodeOptions, "is_own_model">
+/** Serialized upscale has no UI flags; the model is the bare name. */
+export type PureUpscaleNodeOptions = Omit<
+  UpscaleNodeOptions,
+  "is_own_model" | "model_url"
+>;

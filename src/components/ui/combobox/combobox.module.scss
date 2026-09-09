@@ -1,0 +1,78 @@
+@use "../../../styles/mixins" as *;
+
+.combobox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.control {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+// The Control wraps input + trigger; the trigger floats over the input's
+// right padding and is vertically centered on the field.
+.input {
+  @include field;
+
+  padding-right: 34px;
+}
+
+.trigger {
+  @include ghost-button;
+
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  transform: translateY(-50%);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.content {
+  @include popover;
+
+  min-width: var(--kb-popper-anchor-width, 180px);
+  max-height: min(280px, var(--kb-popper-content-available-height, 280px));
+  padding: var(--space-1);
+  overflow: hidden;
+}
+
+.listbox {
+  @include scroll-y;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(
+    264px,
+    calc(var(--kb-popper-content-available-height, 280px) - 2 * var(--space-1))
+  );
+}
+
+.item {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  cursor: pointer;
+
+  &[data-highlighted] {
+    background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+
+  &[data-selected] {
+    color: var(--color-primary);
+  }
+}
